@@ -4,6 +4,10 @@
     box-sizing: border-box;
 }
 
+:root{
+    --bg-yellow: #FCAE2D;
+}
+
 body {
     font-family: 'Poppins', sans-serif;
     background-color: #121212;
@@ -45,6 +49,13 @@ body {
     border: 1px solid #333;
 }
 
+.login-form:hover {
+    outline: none;
+    border-color: var(--bg-yellow);
+transition: ease-in-out 0.8s; 
+
+
+}
 .login-title {
     color: #ffffff;
     margin-bottom: 2rem;
@@ -72,8 +83,7 @@ body {
 
 .login-input:focus {
     outline: none;
-    border-color: #64ffda;
-    box-shadow: 0 0 0 3px rgba(100, 255, 218, 0.1);
+    border-color: var(--bg-yellow);
     background-color: #333;
 }
 
@@ -88,7 +98,7 @@ body {
 .login-button {
     width: 100%;
     padding: 14px;
-    background-color: #64ffda;
+    background-color: var(--bg-yellow);
     color: #1a1a1a;
     border: none;
     border-radius: 8px;
@@ -102,9 +112,9 @@ body {
 }
 
 .login-button:hover {
-    background-color: #5ae6c4;
+    background-color: #F18E1E;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(100, 255, 218, 0.2);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
 }
 
 .login-button:active {
@@ -131,7 +141,7 @@ body {
 }
 
 .forgot-password {
-    color: #64ffda;
+    color: var(--bg-yellow);
     text-decoration: none;
     font-size: 14px;
 }
@@ -149,7 +159,7 @@ body {
 }
 
 .signup-link {
-    color: #64ffda;
+    color: var(--bg-yellow);
     text-decoration: none;
     font-weight: 600;
 }
