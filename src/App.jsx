@@ -3,10 +3,11 @@ import { BrowserRouter as Router, Link, Routes, Route, useLocation } from 'react
 import Login from './pages/Login/Login';
 import Cadastro from './pages/Cadastro/Cadastro';
 import './App.css';
+import Header  from './components/Header/Header';
 
 function NavBar() {
   const location = useLocation();
-  const hideNav = ['/login', '/cadastro'].includes(location.pathname);
+  const hideNav = ['/login', '/cadastro', '/header'].includes(location.pathname);
   
   if (hideNav) return null;
   
@@ -14,6 +15,7 @@ function NavBar() {
     <nav>
       <Link to="/login">Login</Link>
       <Link to="/cadastro">Cadastro</Link>
+      <Link to="/header">Header</Link>
     </nav>
   );
 }
@@ -26,6 +28,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/cadastro" element={<Cadastro />} />
+        <Route path="/header" element={<Header />} />
       </Routes>
     </div>
    </Router>
