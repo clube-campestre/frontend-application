@@ -1,25 +1,27 @@
-import React from 'react' 
-import '../Header/Header.css'
-import logo from './Logo.png'
+import React from 'react';
+import { useNavigate } from 'react-router-dom'; 
+import '../Header/Header.css';
+import logo from './Logo.png';
+
 const Header = () => {
-return (
+  const navigate = useNavigate();
 
-<header>
+  const handleLoginClick = () => {
+    navigate('/login');
+  };
 
-    <div className="separation-img">
-    <img src={logo} alt="" />
-    <ul>
+  return (
+    <header>
+      <div className="separation-img">
+        <img src={logo} alt="Logo" />
+        <ul>
+          <li>Unidades</li>
+          <li>Classes</li>
+          <button className='login-header' onClick={handleLoginClick}>LOGIN</button>
+        </ul>
+      </div>
+    </header>
+  );
+};
 
-
-    <li>Unidades</li>
-    <li>Classes</li>
-    <button className='login-header'>LOGIN</button>
-
-    </ul></div>
-
-</header>
-
-)
-}
-
-export default Header
+export default Header;
