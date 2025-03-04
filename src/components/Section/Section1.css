@@ -1,0 +1,95 @@
+*{
+    font-family: 'Poppins', sans-serif;
+}
+
+.section1-container {
+    background-image: url("../Section/img-desbravadores.png");
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100vh; 
+    
+}
+
+.text-section1 {
+    height: 52vh;
+    display: flex;
+    align-items: center;
+    width: 34vw;
+    justify-content: center;
+    color: white;
+    margin-left: 11vw;
+    font-size: 1.3em;
+}
+
+strong{
+    display: inline;
+    font-weight: 900;
+}
+
+.container-info {
+    width: 100%;
+    height: 30vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: 6vw;
+    padding: 1rem;
+}
+
+.container {
+    border-radius: 10px;
+    height: 93%;
+    background-color: rgba(87, 85, 73, 0.5); 
+    width: 23%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+
+    img{
+        width: 5vw;
+        height: 10vh;
+    }
+
+    .align-img-text{
+        display: flex
+        ;
+            align-items: center;
+            gap: 1.5vw;
+            width: 85%;
+            text-align: center;
+            flex-direction: row;
+    }
+
+    h4{
+        color: #BF7905;
+        text-align: center;
+        gap: 10vw;
+    }
+    .container-text {
+        display: flex;
+        height: 50%;
+        align-items: center;
+        color: white;
+        font-size: 0.9em;
+        text-align: center;
+    }
+}
+
+
+
+.container-info .container {
+    transition: transform 0.3s, filter 0.3s; 
+}
+
+.container-info .container:hover {
+    transform: scale(1.1);
+    border: 2px solid #BF7905;
+    
+}
+
+.container-info .container:not(:hover) {
+    transform: scale(0.9); 
+}
