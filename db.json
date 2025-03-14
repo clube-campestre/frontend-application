@@ -1,16 +1,22 @@
 {
-	"users": [
-		{
-			"id": 1,
-			"email": "usuario@exemplo.com",
-			"password": "senha123",
-			"name": "Usuário Teste"
-		},
-		{
-			"id": 2,
-			"email": "admin@desbravadores.com",
-			"password": "admin123",
-			"name": "Administrador"
-		}
-	]
+  "users": [
+    {
+      "id": "48c6",
+      "name": "teste",
+      "email": "teste@teste123.com",
+      "password": "Teste@123"
+    },
+    {
+      "id": "e3e4",
+      "name": "teste",
+      "email": "teste@teste123.com",
+      "password": "Teste@123"
+    },
+    {
+      "id": "4f54",
+      "name": "teste2",
+      "email": "teste@teste123.com",
+      "password": "Teste@123"
+    }
+  ]
 }

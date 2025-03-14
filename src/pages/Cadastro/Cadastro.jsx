@@ -1,49 +1,53 @@
 import React, { useState } from 'react'
 import './Cadastro.css';
-import { FaEye, FaEyeSlash, FaEnvelope} from 'react-icons/fa';
+import { FaEye, FaEyeSlash, FaEnvelope, FaUser} from 'react-icons/fa';
 import anelImagem1 from '../../images/anel1-login-cadastro.png'
 import Logo from '../../images/Logo.png'
 import anelImagem2 from '../../images/anel2-login-cadastro.png'
-import AlertaFlutuante from '../../utils/alerts/AlertaFlutuante.jsx';
 import { validateEmail, validatePassword, validateConfirmPassword } from '../../utils/validations/cadastroValidation';
-import { showTemporaryAlert } from '../../utils/alerts/alertaUtils';
+import { registerService } from '../../services/userService';
+import Swal from 'sweetalert2'
 
-const Cadastro = () => {
+const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [alertMessages, setAlertMessages] = useState([]);
-  const [showAlert, setShowAlert] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
+
+    const register = await registerService(name, email, password, confirmPassword);
     
-    const errors = [];
-    const emailError = validateEmail(email);
-    const passwordError = validatePassword(password);
-    const confirmPasswordError = validateConfirmPassword(password, confirmPassword);
-    
-    if (emailError) errors.push(emailError);
-    if (passwordError) errors.push(passwordError);
-    if (confirmPasswordError) errors.push(confirmPasswordError);
-    
-    if (errors.length > 0) {
-      setAlertMessages(errors);
-      showTemporaryAlert(setShowAlert);
+    if (register) {
+      let timerInterval;
+      Swal.fire({
+        title: `Cadastro efetuado com sucesso!`,
+        html: "Você será redirecionado para tela de login em <b></b> millisegundos.",
+        timer: 2500,
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading();
+          const timer = Swal.getPopup().querySelector("b");
+          timerInterval = setInterval(() => {
+            timer.textContent = `${Swal.getTimerLeft()}`;
+          }, 100);
+        },
+        willClose: () => {
+          clearInterval(timerInterval);
+        }
+      }).then((result) => {
+        if (result.dismiss === Swal.DismissReason.timer) {
+          window.location.href = '/login';
+        }
+      });
     }
   };
 
   return (
     <div className='cadastro-container'>
-      {showAlert && (
-        <AlertaFlutuante 
-          messages={alertMessages}
-          onClose={() => setShowAlert(false)}
-          type="error"
-        />
-      )}
 
       <div className="cadastro-image">
         <div className="img1">
@@ -59,8 +63,18 @@ const Cadastro = () => {
         </div>
       </div>
 
-      <form className='cadastro-form' onSubmit={handleSubmit}>
+      <form className='cadastro-form' onSubmit={handleRegister}>
         <h1 className='cadastro-title'>Criar Conta</h1>
+        <div className='input-container'>
+          <input 
+            type="text" 
+            placeholder='Insira seu nome' 
+            className='cadastro-input'
+            value={name}
+            onChange={(e) => setName(e.target.value)} 
+          />
+          <FaUser className='input-icon' />
+        </div>
         <div className='input-container'>
           <input 
             type="email" 
@@ -113,5 +127,5 @@ const Cadastro = () => {
   )
 }
 
-export default Cadastro
+export default Register
 

@@ -11,6 +11,7 @@ export const validatePassword = (password) => {
     if (password !== confirmPassword) return 'As senhas não coincidem';
     return '';
   }; 
+  
   export const validateEmail = (email) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email) return 'O email é obrigatório';
