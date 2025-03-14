@@ -1,0 +1,85 @@
+
+.floating-alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    animation: slideInRight 0.5s ease-in-out;
+    max-width: 400px;
+    width: 90%;
+}
+
+.floating-alert-content {
+    background-color: #fff3f3;
+    border: 1px solid #ff3333;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    position: relative;
+}
+
+.floating-alert-icon {
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+.floating-alert-messages {
+    flex: 1;
+}
+
+.floating-alert-messages p {
+    color: #ff3333;
+    font-size: 0.9rem;
+    margin: 0.3rem 0;
+}
+
+.floating-alert-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.floating-alert-close:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.floating-alert.hiding {
+    animation: slideOutRight 0.5s ease-in-out;
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}

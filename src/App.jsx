@@ -1,6 +1,7 @@
 import './App.css';
-import { BrowserRouter as Router, Routes, Route, useLocation, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, Link } from 'react-router-dom';
 import Login from './pages/Login/Login';
+import Cadastro from './pages/Cadastro/Cadastro';
 
 import Section1 from './components/Section/Section1';
 
@@ -15,13 +16,14 @@ function NavBar() {
 
 function App() {
   return (
-    <Router>
+    <BrowserRouter>
       <NavBar />
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/cadastro" element={<Cadastro />} />
         <Route path="/" element={<Section1 />} />
       </Routes>
-    </Router>
+    </BrowserRouter>
   );
 }
 
