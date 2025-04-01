@@ -2,10 +2,10 @@ import { useState } from "react";
 import { FaEnvelope, FaKey } from "react-icons/fa";
 import anelImagem1 from "../../assets/images/anel1-login-cadastro.png";
 import Logo from "../../assets/images/logo.png";
-import anelImagem2 from "../../assets/images//anel2-login-cadastro.png";
+import anelImagem2 from "../../assets/images/anel2-login-cadastro.png";
 import { loginService } from "../../services/userService";
 import Swal from "sweetalert2";
-import FloatingInput from "../../components/floating-input/floating-input";
+import FloatingInput from "../../components/floating-input/FloatingInput";
 
 const Login = () => {
 	const [email, setEmail] = useState("");

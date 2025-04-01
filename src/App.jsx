@@ -1,16 +1,15 @@
 import './index.css'
 import { BrowserRouter, Routes, Route, useLocation, Link } from 'react-router';
-import Login from './Pages/Login/Login';
-import Register from './Pages/Register/Register';
+import Login from './pages/login/Login';
+import Register from './pages/register/Register';
+import Main from './pages/main/Main';
 
 
 function NavBar() {
   const location = useLocation();
-  const hideNav = ['/login', '/cadastro'].includes(location.pathname);
+  const hideNav = ['/login', '/cadastro', '/header'].includes(location.pathname);
 
   if (hideNav) return null;
-
-
 }
 
 function App() {
@@ -21,7 +20,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/cadastro" element={<Register />} />
-        <Route path="/" element={<Register />} />
+        <Route path="/" element={<Main/>} />
       </Routes>
     </BrowserRouter>
   )

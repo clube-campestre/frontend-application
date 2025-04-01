@@ -7,7 +7,7 @@ const FloatingInput = ({id, type = "text", label, value, onChange, icon: Icon, c
 
 	const inputType = type === "password" ? (showPassword ? "text" : "password") : type;
 
-	return (
+	return (	
 		<div className={`relative w-full ${className}`}>
 			<div className="relative">
 				<input
