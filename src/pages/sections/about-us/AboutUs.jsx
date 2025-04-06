@@ -10,7 +10,7 @@ import desbravador4 from "../../../assets/images/desbravador-4.png"
 
 const AboutUs = () => {
   return (
-    <section className="flex flex-col items-center text-center p-8">
+    <section className="flex flex-col h-screen items-center text-center p-8">
       <h2 className="text-4xl font-bold mb-6">Conheça um pouco mais sobre nós</h2>
       <div className="flex flex-wrap justify-center gap-8 mb-8">
         <AboutUsCard 
