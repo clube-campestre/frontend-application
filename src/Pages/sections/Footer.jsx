@@ -2,7 +2,7 @@ import Logo from '../../assets/images/Logo.png';
 import Maps from '../../assets/images/maps.jpg';
 import Wpp from '../../assets/images/whatsapp.png';
 import Face from '../../assets/images/facebook.png';
-import Mail from '../../assets/images/email (1).png';
+import Mail from '../../assets/images/email.png';
 import setaScroll from '../../assets/images/setaScroll.png'
 import Insta from '../../assets/images/instagram.png';
 
