@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import ButtonPrimary from "../../../components/button-primary/ButtonPrimary";
 import desbravadoresHome from "../../../assets/images/desbravador-home.jpg";
 import Logo from "../../../assets/images/Logo.png";
@@ -26,25 +27,24 @@ const Header = () => {
 					<a href="/" className="text-white hover:text-gray-300">
 						Início
 					</a>
-					<a href="/about" className="text-white hover:text-gray-300">
+					<a href="#about-us" className="text-white hover:text-gray-300">
 						Sobre nós
 					</a>
 					<a
-						href="/contact"
+						href="#unities"
 						className="text-white hover:text-gray-300"
 					>
 						Unidades
 					</a>
 					<a
-						href="/services"
+						href="#classes"
 						className="text-white hover:text-gray-300"
 					>
 						Classes
 					</a>
-					<ButtonPrimary
-						text="LOGIN"
-						onClick={() => console.log("Login")}
-					/>
+					<Link to="/login">
+					<ButtonPrimary text="LOGIN"/>
+					</Link>
 				</nav>
 			</div>
 
@@ -61,10 +61,9 @@ const Header = () => {
 			</article>
 
 			<div className="absolute z-30 left-1/2 transform -translate-x-1/2 bottom-[22%]">
-				<ButtonPrimary
-					text="SAIBA MAIS"
-					onClick={() => console.log("Saiba mais")}
-				/>
+			<a href="#about-us">
+				<ButtonPrimary text="SAIBA MAIS"/>
+			</a>
 			</div>
 
 			<style jsx>{`

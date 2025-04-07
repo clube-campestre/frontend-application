@@ -1,10 +1,10 @@
 import Logo from "../../assets/images/Logo.png";
 import Maps from "../../assets/images/maps.jpg";
-import Wpp from "../../assets/images/whatsapp.png";
-import Face from "../../assets/images/facebook.png";
+import WhatsApp from "../../assets/images/whatsapp.png";
+import Facebook from "../../assets/images/facebook.png";
 import Mail from "../../assets/images/email.png";
 import setaScroll from "../../assets/images/setaScroll.png";
-import Insta from "../../assets/images/instagram.png";
+import Instagram from "../../assets/images/instagram.png";
 
 const Footer = () => {
 	return (
@@ -26,13 +26,14 @@ const Footer = () => {
 					<p>Ruth Fernandes</p>
 				</div>
 
-				<div>
+				<div className="flex flex-col">
 					<h4 className="text-[#FCAE2D] text-lg font-semibold mb-2">
 						Páginas:
 					</h4>
-					<p>Início</p>
-					<p>Sobre nós</p>
-					<p>Classes</p>
+					<a href="#header">Início</a>
+					<a href="#about-us">Sobre nós</a>
+					<a href="#unities">Unidades</a>
+					<a href="#classes">Classes</a>
 				</div>
 
 				<div>
@@ -40,7 +41,7 @@ const Footer = () => {
 						Redes sociais:
 					</h4>
 					<div className="grid grid-cols-2 gap-3">
-						{[Face, Insta, Mail, Wpp].map((icon, index) => (
+						{[Facebook, Instagram, Mail, WhatsApp].map((icon, index) => (
 							<div
 								key={index}
 								className="bg-white rounded-full p-2 flex items-center justify-center w-10 h-10"

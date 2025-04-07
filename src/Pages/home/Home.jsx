@@ -1,9 +1,9 @@
-import Header from "../sections/header/header";
+import Header from "../sections/header/header.jsx";
 import Footer from "../sections/Footer.jsx"
 import AboutUs from "../sections/about-us/AboutUs.jsx"
 import Unities from "../sections/unities/Unities.jsx"
 
-const Main = () => {
+const Home = () => {
     return (
         <>
         <Header/>
@@ -14,4 +14,4 @@ const Main = () => {
     );
 }
 
-export default Main;
+export default Home;
