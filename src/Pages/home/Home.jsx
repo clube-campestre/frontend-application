@@ -7,11 +7,10 @@ import Sidebar from "../../components/side-bar/SideBar.jsx";
 const Home = () => {
     return (
         <>
-        {/* <Header/>
+        <Header/>
         <AboutUs/>
         <Unities/>
-        <Footer/> */}
-        <Sidebar activePath={"/admin"}/>
+        <Footer/>
         </>
     );
 }

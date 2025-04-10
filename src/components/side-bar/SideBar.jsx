@@ -26,7 +26,7 @@ const menuItems = [
 
 function SideBar({ activePath }) {
 	return (
-		<aside className="h-[95vh] w-16 bg-black flex flex-col items-center py-10 space-y-10 ml-6 mt-5 rounded-xl">
+		<aside className="h-[90vh] w-16 bg-black flex flex-col items-center py-7 space-y-8 ml-6 mt-5 rounded-xl">
 			{menuItems.map((item, index) => {
 				const isActive = activePath === item.path;
 				const Icon = item.icon;
@@ -38,7 +38,7 @@ function SideBar({ activePath }) {
 						title={item.label}
 						className="w-13 flex items-center justify-center rounded-full transition hover:bg-gray-600"
 					>
-						{({ isActive }) => {
+						{() => {
 							const fill = isActive ? "#FCAE2D" : "#CCC";
 							const color = isActive ? "#022C81" : "#000";
 
