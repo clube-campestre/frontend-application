@@ -33,15 +33,15 @@ const MainLayout = () => {
             default:
                 return location.pathname.slice(1).charAt(0).toUpperCase() + location.pathname.slice(2);
         }
-
     }
+
   return (
     <div className="flex">
       <Sidebar activePath={location.pathname} />
       <div className="flex-1 bg-white px-6 py-4">
         <header className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-semibold text-[#022C81]">
-            {sectionTitle}
+            {sectionTitle()}
           </h1>
           <img src={logo} alt="Logo" className="h-10" />
         </header>

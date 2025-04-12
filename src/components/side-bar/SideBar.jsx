@@ -13,7 +13,7 @@ import { HiLogout } from "react-icons/hi";
 import { NavLink } from "react-router-dom";
 
 const menuItems = [
-	{ icon: FaHome, label: "Início", path: "/inicio" },
+	{ icon: FaHome, label: "Início", path: "/internal-home" },
 	{ icon: FaUserPlus, label: "Administração", path: "/admin" },
 	{ icon: LuFolderCheck, label: "Secretaria", path: "/secretaria" },
 	{ icon: FaFileInvoiceDollar, label: "Tesouraria", path: "/tesouraria" },
