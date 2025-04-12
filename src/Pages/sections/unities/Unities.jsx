@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { GoChevronLeft, GoChevronRight } from "react-icons/go";
 import UnityItem from "../../../components/unity-item/UnityItem";
 import loboImage from "../../../assets/images/lobo.png";
 import falcaoImage from "../../../assets/images/falcao.png";
@@ -13,53 +13,53 @@ import aguiaRealImage from "../../../assets/images/aguia-real.png";
 const unityData = [
 	{
 		imagePath: pandaImage,
-		description:
-			"Panda (10 anos) – Com espírito curioso e cheio de energia, as integrantes da unidade Panda iniciam sua jornada no clube com entusiasmo e muita vontade de aprender.",
+		description: "Com espírito curioso e cheio de energia, as integrantes da unidade Panda iniciam sua jornada no clube com entusiasmo e muita vontade de aprender.",
+		title: "Panda (10 anos)"
 	},
 	{
 		imagePath: '',
-		description:
-			"Lince (11 anos) – Ágeis e atentas, as desbravadoras da unidade Lince estão sempre prontas para novos desafios e descobertas.",
+		description: "Ágeis e atentas, as desbravadoras da unidade Lince estão sempre prontas para novos desafios e descobertas.",
+		title: "Lince (11 anos)"
 	},
 	{
 		imagePath: aguiaRealImage,
-		description:
-			"Águia Real (12 anos) – Determinadas e visionárias, as Águias Reais buscam aprimorar suas habilidades e alcançar grandes alturas.",
+		description: "Determinadas e visionárias, as Águias Reais buscam aprimorar suas habilidades e alcançar grandes alturas.",
+		title: "Águia Real (12 anos)"
 	},
 	{
 		imagePath: raposaImage,
-		description:
-			"Raposa (13 anos) – Inteligentes e estratégicas, as desbravadoras da unidade Raposa demonstram criatividade e astúcia em cada atividade.",
+		description: "Inteligentes e estratégicas, as desbravadoras da unidade Raposa demonstram criatividade e astúcia em cada atividade.",
+		title: "Raposa (13 anos)"
 	},
 	{
 		imagePath: panteraImage,
-		description:
-			"Pantera (14-15 anos) – Destemidas e ágeis, as Panteras combinam força e elegância, sempre prontas para desafios que exigem coragem e estratégia.",
+		description: "Destemidas e ágeis, as Panteras combinam força e elegância, sempre prontas para desafios que exigem coragem e estratégia.",
+		title: "Pantera (14-15 anos)"
 	},
 	{
 		imagePath: falcaoImage,
-		description:
-			"Falcão (10 anos) – Os Falcões iniciam sua caminhada no clube com olhos atentos e asas prontas para voar rumo ao conhecimento.",
+		description: "Os Falcões iniciam sua caminhada no clube com olhos atentos e asas prontas para voar rumo ao conhecimento.",
+		title: "Falcão (10 anos)"
 	},
 	{
 		imagePath: '',
-		description:
-			"Leão (11 anos) – Corajosos e cheios de energia, os membros da unidade Leão enfrentam desafios com determinação.",
+		description: "Corajosos e cheios de energia, os membros da unidade Leão enfrentam desafios com determinação.",
+		title: "Leão (11 anos)"
 	},
 	{
 		imagePath: tigreImage,
-		description:
-			"Tigre (12 anos) – Ágeis e focados, os Tigres demonstram força e disciplina em suas jornadas.",
+		description: "Ágeis e focados, os Tigres demonstram força e disciplina em suas jornadas.",
+		title: "Tigre (12 anos)" 
 	},
 	{
 		imagePath: ursoImage,
-		description:
-			"Urso (13 anos) – Resilientes e estratégicos, os Ursos sabem quando agir e como trabalhar em equipe para superar desafios.",
+		description: "Resilientes e estratégicos, os Ursos sabem quando agir e como trabalhar em equipe para superar desafios.",
+		title: "Urso (13 anos)"
 	},
 	{
 		imagePath: loboImage,
-		description:
-			"Lobo (14-15 anos) – Líderes naturais, os Lobos combinam inteligência e coragem para trilhar caminhos e guiar os mais jovens.",
+		description: "Líderes naturais, os Lobos combinam inteligência e coragem para trilhar caminhos e guiar os mais jovens.",
+		title: "Lobo (14-15 anos)"
 	},
 ];
 
@@ -86,32 +86,35 @@ const Unities = () => {
 			<div className="flex items-center gap-16">
 				<button
 					onClick={previous}
-					className="text-orange-400 hover:scale-110 transition-transform "
+					className="text-[#FCAE2D] hover:scale-110 transition-transform "
 				>
-					<FaChevronLeft size={96} />
+					<GoChevronLeft size={96} />
 				</button>
 
 				<UnityItem
 					imagePath={getItem(-1).imagePath}
 					description={getItem(-1).description}
+					title={getItem(-1).title}
 					isActive={false}
 				/>
 				<UnityItem
 					imagePath={getItem(0).imagePath}
 					description={getItem(0).description}
+					title={getItem(0).title}
 					isActive={true}
 				/>
 				<UnityItem
 					imagePath={getItem(1).imagePath}
 					description={getItem(1).description}
+					title={getItem(1).title}
 					isActive={false}
 				/>
 
 				<button
 					onClick={next}
-					className="text-orange-400 hover:scale-110 transition-transform"
+					className="text-[#FCAE2D] hover:scale-110 transition-transform"
 				>
-					<FaChevronRight size={96} />
+					<GoChevronRight size={96} />
 				</button>
 			</div>
 		</div>
