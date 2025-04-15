@@ -1,37 +1,40 @@
 import Swal from "sweetalert2";
 import { validateEmail, validatePassword, validateConfirmPassword } from '../utils/validators/registerValidator';
-
-const API_URL = "http://localhost:3001/users";
+import { api } from "../provider/api";
+import { setUser, setToken } from "../utils/authStorage";
 
 export const loginService = async (email, password) => {
+  if (!email || !password) {
+    Swal.fire({
+      title: 'Login não efetuado!',
+      text: 'Preencha todos os campos.',
+      icon: 'warning',
+      confirmButtonColor: '#FCAE2D',
+    });
+    return;
+  }
 
-	if (!email || !password) {
-		Swal.fire({
-			title: "Login não efetuado!",
-            text: "Preencha todos os campos.",
-			icon: "warning",
-			confirmButtonColor: "#FCAE2D"
-		});
+  try {
+    const response = await api.post('/login', {
+      email,
+      password,
+    });
 
-		return;
-	}
-
-	const response = await fetch(`${API_URL}?email=${email}`);
-	const users = await response.json();
-    const user = users[0];
-
-	if (users.length === 0 || user.password !== password) {
-		Swal.fire({
-			title: "Login não efetuado!",
-            text: "Email ou senha incorretos.",
-			icon: "error",
-			confirmButtonColor: "#FCAE2D"
-		});
-
-        return;
-	}
-
-	return user;
+    const { token, user } = response.data;
+    setToken(token);
+	setUser(user);
+	
+    return user;
+  } catch (error) {
+    Swal.fire({
+      title: 'Login não efetuado!',
+      text: 'Email ou senha inválidos.',
+      icon: 'error',
+      confirmButtonColor: '#FCAE2D',
+    });
+    console.error(error);
+    return;
+  }
 };
 
 export const registerService = async (name, email, password, confirmPassword) => {
