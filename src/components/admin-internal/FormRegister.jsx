@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
-const FormRegister = ({ tituloFormulario, campos, aoEnviar }) => {
+const FormRegister = ({ formTitle, fields, onSubmit }) => {
   const [formData, setFormData] = useState(() =>
-    campos.reduce((acc, campo) => ({ ...acc, [campo.id]: '' }), { nota: '' })
+    fields.reduce((acc, field) => ({ ...acc, [field.id]: '' }), { nota: '' })
   );
 
   const handleChange = (id, valor) => {
@@ -11,22 +11,22 @@ const FormRegister = ({ tituloFormulario, campos, aoEnviar }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    aoEnviar(formData);
+    onSubmit(formData);
   };
 
   return (
     <div className="bg-gray-100 rounded-lg p-6 shadow-md max-w-4xl mx-auto">
-      <h2 className="text-xl font-semibold text-gray-800">{tituloFormulario}</h2>
+      <h2 className="text-xl font-semibold text-gray-800">{formTitle}</h2>
       <div className="w-8 h-1 bg-[#FCAE2D] mt-2"></div>
 
       <form onSubmit={handleSubmit}>
         <div className="flex flex-wrap -mx-2">
-          {campos.map((campo) => (
-            <div key={campo.id} className="px-2 mb-4 w-1/3">
-              <label htmlFor={campo.id} className="block text-sm font-medium text-gray-700 mb-1">
-                {campo.rotulo}
+          {fields.map((field) => (
+            <div key={field.id} className="px-2 mb-4 w-1/3">
+              <label htmlFor={field.id} className="block text-sm font-medium text-gray-700 mb-1">
+                {field.label}
               </label>
-              {renderizarCampo(campo, formData, handleChange)}
+              {renderizarCampo(field, formData, handleChange)}
             </div>
           ))}
 
@@ -68,15 +68,15 @@ const FormRegister = ({ tituloFormulario, campos, aoEnviar }) => {
 };
 
 const renderizarCampo = (campo, formData, handleChange) => {
-  const { id, tipo, obrigatorio } = campo;
+  const { id, type, isRequired } = campo;
 
   return (
     <input
-      type={tipo === 'numero' ? 'number' : 'text'}
+      type={type}
       id={id}
       value={formData[id] || ''}
       onChange={(e) => handleChange(id, e.target.value)}
-      required={obrigatorio}
+      required={isRequired}
       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FCAE2D]"
     />
   );
