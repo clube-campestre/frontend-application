@@ -66,7 +66,7 @@ const Header = () => {
 			</a>
 			</div>
 
-			<style jsx>{`
+			<style>{`
 				.clip-path-image {
 					clip-path: polygon(0 0, 100% 0, 100% 70%, 50% 96%, 0 70%);
 				}

@@ -31,7 +31,6 @@ const Login = () => {
         <div className="absolute left-[37vw]">
           <img
             src={anelImagem1 || "/placeholder.svg"}
-            alt=""
             className="h-[10vh]"
           />
         </div>
@@ -45,7 +44,6 @@ const Login = () => {
           </h5>
           <img
             src={Logo || "/placeholder.svg"}
-            alt=""
             className="w-[75px] h-[75px] object-contain mt-20"
           />
         </div>
@@ -53,7 +51,6 @@ const Login = () => {
         <div className="absolute bottom-0 left-0 w-1/2 rotate-2">
           <img
             src={anelImagem2 || "/placeholder.svg"}
-            alt=""
             className="w-[25vw] h-[25vh]"
           />
         </div>
