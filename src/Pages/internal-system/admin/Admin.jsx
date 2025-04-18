@@ -96,10 +96,10 @@ const Admin = () => {
             }}
           >
             {locations.length > 0 ? (
-              locations.map((locations, index) => (
+              locations.map((location, index) => (
                 <div key={index} className="bg-white p-3 rounded mb-2 shadow-sm">
-                  <p className="font-medium">{locations.name}</p>
-                  <p className="text-sm text-gray-600">{locations.address}</p>
+                  <p className="font-medium">{location.name}</p>
+                  <p className="text-sm text-gray-600">{location.address}</p>
                 </div>
               ))
             ) : (
