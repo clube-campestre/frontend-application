@@ -27,10 +27,10 @@ function App() {
         >
           <Route path="/admin" element={<Teste />} />
           <Route path="/internal-home" element={<InternalHome />} />
-          <Route path="/adicionar-membro" element={<AddMembro />} />
-          <Route path="/adicionar-evento" element={<AddEvento />} />
-          <Route path="/adicionar-transporte" element={<AddTransport />} />
-          <Route path="/adicionar-localizacao" element={<AddLocate />} />
+          <Route path="/add-member" element={<AddMembro />} />
+          <Route path="/add-event" element={<AddEvento />} />
+          <Route path="/add-transport" element={<AddTransport />} />
+          <Route path="/add-locate" element={<AddLocate />} />
         </Route>
       </Routes>
     </BrowserRouter>

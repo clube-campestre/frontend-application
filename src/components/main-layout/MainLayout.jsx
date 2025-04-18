@@ -18,6 +18,14 @@ const MainLayout = () => {
                 return "Início";
             case "/admin":
                 return "Administração";
+            case "/add-member":
+                return "Adicionar Membro";
+            case "/add-event":
+                return "Adicionar Evento";
+            case "/add-transport":
+                return "Adicionar Transporte";
+            case "/add-locate":
+                return "Adicionar Local";
             case "/secretaria":
                 return "Secretaria";
             case "/tesouraria":

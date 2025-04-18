@@ -46,19 +46,19 @@ const Admin = () => {
   ]);
 
   const handleAddMembro = () => {
-    navigate('/adicionar-membro');
+    navigate('/add-member');
   };
 
   const handleAddEvento = () => {
-   navigate('/adicionar-evento')
+    navigate('/add-event')
   };
 
   const handleAddTransporte = () => {
-    navigate('/adicionar-transporte')
+    navigate('/add-transport')
   };
 
   const handleAddLocal = () => {
-    navigate('/adicionar-localizacao')
+    navigate('/add-locate')
   };
 
   return (
