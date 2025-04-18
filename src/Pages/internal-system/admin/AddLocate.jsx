@@ -1,22 +1,58 @@
-import FormularioCadastro from '../../../components/admin-internal/FormRegister';
+import FormRegister from "../../../components/admin-internal/FormRegister";
+import { api } from "../../../provider/api";
+import Swal from "sweetalert2";
 
-const camposLocal = [
-  { id: 'local', tipo: 'texto', rotulo: 'Local', obrigatorio: true },
-  { id: 'endereco', tipo: 'texto', rotulo: 'Endereço', obrigatorio: true },
-  { id: 'cotacao', tipo: 'numero', rotulo: 'Cotação', obrigatorio: true },
-  { id: 'capacidade', tipo: 'numero', rotulo: 'Capacidade', obrigatorio: true },
-  { id: 'telefone', tipo: 'texto', rotulo: 'Telefone', obrigatorio: true },
-  { id: 'whatsapp', tipo: 'texto', rotulo: 'WhatsApp', obrigatorio: false }
+const locateFields = [
+	{ id: "local", type: "text", label: "Local", isRequired: true },
+	{ id: "endereco", type: "text", label: "Endereço", isRequired: true },
+	{ id: "cotacao", type: "number", label: "Cotação", isRequired: true },
+	{ id: "capacidade", type: "number", label: "Capacidade", isRequired: true },
+	{ id: "telefone", type: "text", label: "Telefone", isRequired: true },
+	{ id: "whatsapp", type: "text", label: "WhatsApp", isRequired: false },
 ];
 
-const AdicionarLocal = ({ aoEnviar }) => {
-  return (
-    <FormularioCadastro
-      tituloFormulario="Cadastrar Local"
-      campos={camposLocal}
-      aoEnviar={aoEnviar}
-    />
-  );
+const AddLocate = () => {
+	const handleSubmit = async (formData) => {
+		try {
+			const body = {
+				enterprise: formData.local,
+				address: formData.endereco,
+				price: Number(formData.cotacao),
+				capacity: Number(formData.capacidade),
+				companyContact: formData.telefone,
+				driverContact: formData.whatsapp,
+			};
+
+			await api.post("/locates", body);
+
+			Swal.fire({
+				icon: "success",
+				toast: true,
+				title: "Local cadastrado com sucesso!",
+				showConfirmButton: false,
+				timer: 1500,
+				position: "top",
+			});
+		} catch (error) {
+			console.error("Erro ao cadastrar local:", error);
+			Swal.fire({
+				icon: "error",
+				toast: true,
+				title: "Erro ao cadastrar local!",
+				showConfirmButton: false,
+				timer: 1500,
+				position: "top",
+			});
+		}
+	};
+
+	return (
+		<FormRegister
+			formTitle="Cadastrar Local"
+			fields={locateFields}
+			onSubmit={handleSubmit}
+		/>
+	);
 };
 
-export default AdicionarLocal;
+export default AddLocate;
