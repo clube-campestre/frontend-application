@@ -114,8 +114,13 @@ const Formulario = ({ titulo, campos, textoBotao, aoEnviar, etapaAtual, totalEta
   return (
     <div className="bg-gray-100 rounded-lg p-6 shadow-md max-w-4xl mx-auto">
       <div className="mb-6">
-        <h2 className="text-xl font-semibold text-gray-800">{titulo}</h2>
-        <div className="w-8 h-1 bg-[#FCAE2D] mt-2"></div>
+      {titulo && (
+  <h2 className="col-span-2 text-lg font-semibold mb-4 flex items-center">
+    <span className="w-1 h-5 bg-[#FCAE2D] rounded-sm mr-2"></span>
+    {titulo}
+  </h2>
+)}
+
       </div>
       
       <form onSubmit={handleSubmit}>
