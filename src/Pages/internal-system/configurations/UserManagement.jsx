@@ -1,10 +1,18 @@
 import { api } from "../../../provider/api";
 import { useEffect, useState } from "react";
 import { FaPencilAlt, FaTrash, FaPlusCircle } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 export default function UserManagement() {
 	const [users, setUsers] = useState([]);
 	const [error, setError] = useState(null);
+	const Toast = Swal.mixin({
+		toast: true,
+		position: "top",
+		showConfirmButton: false,
+		timer: 2500,
+		timerProgressBar: true,
+	});
 
 	useEffect(() => {
 		const fetchUsers = async () => {
@@ -25,8 +33,37 @@ export default function UserManagement() {
 		console.log(`Edit user with ID: ${id}`);
 	};
 
-	const handleDelete = (id) => {
-		console.log(`Delete user with ID: ${id}`);
+	const handleDelete = async (id) => {
+		Swal.fire({
+			title: "Deseja deletar este usuário?",
+			text: "Essa ação não pode ser desfeita.",
+			icon: "warning",
+			iconColor: "#d33",
+			showCancelButton: true,
+			confirmButtonColor: "#5ccb5f",
+			cancelButtonColor: "#d33",
+			cancelButtonText: "Cancelar",
+			confirmButtonText: "Deletar",
+		}).then(async (result) => {
+			if (result.isConfirmed) {
+				try {
+					await api.delete(`/accounts/${id}`);
+					const response = await api.get("/accounts");
+					setUsers(response.data);
+					Toast.fire({
+						icon: "success",
+						title: "Usuário deletado com sucesso!",
+					});
+				} catch (err) {
+					setError("Ocorreu um erro ao deletar o usuário.");
+					Toast.fire({
+						icon: "error",
+						title: "Ocorreu um erro ao deletar usuário.",
+					});
+					console.error("Error deleting user:", err);
+				}
+			}
+		});
 	};
 
 	const handleAddUser = () => {
