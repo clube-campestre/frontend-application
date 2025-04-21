@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import AddButton from '../../../components/admin-internal/AddButton';
-import ListPanel from '../../../components/admin-internal/ListPanel'
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../../provider/api'
 
@@ -8,7 +7,7 @@ const Admin = () => {
   const navigate = useNavigate();
   
   const [transports, setTransports] = useState([]);
-  const [locations, setLocations] = useState([]);
+  const [places, setPlaces] = useState([]);
 
   const getTransports = async () => {
     try {
@@ -19,18 +18,18 @@ const Admin = () => {
     }
   };
 
-  const getLocations = async () => {
+  const getPlaces = async () => {
     try {
-      const response = await api.get('/loacations');
-      setLocations(response.data);
+      const response = await api.get('/places');
+      setPlaces(response.data);
     } catch (error) {
-      console.error('Error fetching locations:', error);
+      console.error('Error fetching places:', error);
     }
   };
 
   useEffect(() => {
     getTransports();
-    getLocations();
+    getPlaces();
   }, []);
 
   const handleAddMembro = () => {
@@ -45,17 +44,17 @@ const Admin = () => {
     navigate('/add-transport')
   };
 
-  const handleAddLocal = () => {
-    navigate('/add-locate')
+  const handleAddPlace = () => {
+    navigate('/add-place')
   };
 
   return (
-    <div className="p-5 max-w-7xl mx-auto">
+    <div className="p-15 w-full mx-auto">
     <div className="flex justify-center gap-6 bg-[#7C7C7C] p-4 rounded-lg mb-5">
       <AddButton label="Adicionar membro" onClick={handleAddMembro} />
       <AddButton label="Adicionar evento" onClick={handleAddEvento} />
       <AddButton label="Adicionar transporte" onClick={handleAddTransporte} />
-      <AddButton label="Adicionar local" onClick={handleAddLocal} />
+      <AddButton label="Adicionar local" onClick={handleAddPlace} />
     </div>
 
       <div className="grid grid-cols-2 gap-5">
@@ -95,11 +94,11 @@ const Admin = () => {
               scrollbarColor: "#FFCC00 #E5E7EB"
             }}
           >
-            {locations.length > 0 ? (
-              locations.map((location, index) => (
+            {places.length > 0 ? (
+              places.map((place, index) => (
                 <div key={index} className="bg-white p-3 rounded mb-2 shadow-sm">
-                  <p className="font-medium">{location.name}</p>
-                  <p className="text-sm text-gray-600">{location.address}</p>
+                  <p className="font-medium">{place.name}</p>
+                  <p className="text-sm text-gray-600">{place.address}</p>
                 </div>
               ))
             ) : (

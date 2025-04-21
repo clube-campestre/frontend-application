@@ -20,7 +20,7 @@ const menuItems = [
 	{ icon: FaUsers, label: "Unidades", path: "/unidades" },
 	{ icon: GiCampingTent, label: "Classes", path: "/classes" },
 	{ icon: FaCalendarAlt, label: "Eventos", path: "/eventos" },
-	{ icon: FaCog, label: "Configurações", path: "/configuracoes" },
+	{ icon: FaCog, label: "Configurações", path: "/configurations" },
 	{ icon: HiLogout, label: "Sair", path: "/home" },
 ];
 

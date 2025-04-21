@@ -1,7 +1,7 @@
 import React from "react";
 import Sidebar from "../side-bar/SideBar.jsx";
 import { Outlet, useLocation } from "react-router-dom";
-import logo from "../../assets/images/logo.png";
+import logo from "../../assets/images/logoDesbravadores.png";
 
 const MainLayout = () => {
 	const location = useLocation();
@@ -18,7 +18,7 @@ const MainLayout = () => {
 				return "Adicionar Evento";
 			case "/add-transport":
 				return "Adicionar Transporte";
-			case "/add-locate":
+			case "/add-place":
 				return "Adicionar Local";
 			case "/secretaria":
 				return "Secretaria";
@@ -30,8 +30,10 @@ const MainLayout = () => {
 				return "Classes";
 			case "/eventos":
 				return "Eventos";
-			case "/configuracoes":
+			case "/configurations":
 				return "Configurações";
+			case "/user-management":
+				return "Gerenciamento de Usuários";
 			default:
 				return (
 					location.pathname.slice(1).charAt(0).toUpperCase() +
