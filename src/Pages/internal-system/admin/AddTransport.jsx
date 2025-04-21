@@ -4,11 +4,11 @@ import Swal from "sweetalert2";
 
 const transportFields = [
 	{ id: "empresa", type: "text", label: "Empresa", isRequired: true },
-	{ id: "cotacao", type: "number", label: "Cotação", isRequired: true },
+	{ id: "cotacao", type: "number", label: "Cotação (R$)", isRequired: true },
 	{
 		id: "distanciaHistorica",
 		type: "number",
-		label: "Distância Histórica",
+		label: "Distância Histórica (KM)",
 		isRequired: true,
 	},
 	{ id: "capacidade", type: "number", label: "Capacidade", isRequired: true },

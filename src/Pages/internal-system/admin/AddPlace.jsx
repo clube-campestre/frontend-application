@@ -5,17 +5,26 @@ import Swal from "sweetalert2";
 const locateFields = [
 	{ id: "local", type: "text", label: "Local", isRequired: true },
 	{ id: "endereco", type: "text", label: "Endereço", isRequired: true },
-	{ id: "cotacao", type: "number", label: "Cotação", isRequired: true },
+	{ id: "cotacao", type: "number", label: "Cotação (R$)", isRequired: true },
 	{ id: "capacidade", type: "number", label: "Capacidade", isRequired: true },
 	{ id: "telefone", type: "text", label: "Telefone", isRequired: true },
 	{ id: "whatsapp", type: "text", label: "WhatsApp", isRequired: false },
 ];
 
-const AddLocate = () => {
+const AddPlace = () => {
+	const Toast = Swal.mixin({
+		toast: true,
+		position: "top",
+		popup: "swal2-show",
+		showConfirmButton: false,
+		timer: 2500,
+		timerProgressBar: true,
+	});
+
 	const handleSubmit = async (formData) => {
 		try {
 			const body = {
-				enterprise: formData.local,
+				sirname: formData.local,
 				address: formData.endereco,
 				price: Number(formData.cotacao),
 				capacity: Number(formData.capacidade),
@@ -23,25 +32,16 @@ const AddLocate = () => {
 				driverContact: formData.whatsapp,
 			};
 
-			await api.post("/locates", body);
-
-			Swal.fire({
+			await api.post("/places", body);
+			Toast.fire({
 				icon: "success",
-				toast: true,
 				title: "Local cadastrado com sucesso!",
-				showConfirmButton: false,
-				timer: 1500,
-				position: "top",
 			});
 		} catch (error) {
 			console.error("Erro ao cadastrar local:", error);
-			Swal.fire({
+			Toast.fire({
 				icon: "error",
-				toast: true,
-				title: "Erro ao cadastrar local!",
-				showConfirmButton: false,
-				timer: 1500,
-				position: "top",
+				title: "Erro ao cadastrar local.",
 			});
 		}
 	};
@@ -55,4 +55,4 @@ const AddLocate = () => {
 	);
 };
 
-export default AddLocate;
+export default AddPlace;
