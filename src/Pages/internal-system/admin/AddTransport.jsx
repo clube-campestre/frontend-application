@@ -17,6 +17,14 @@ const transportFields = [
 ];
 
 const AddTransport = () => {
+	const Toast = Swal.mixin({
+		toast: true,
+		position: "top",
+		showConfirmButton: false,
+		timer: 2500,
+		timerProgressBar: true,
+	});
+
 	const handleSubmit = async (formData) => {
 		try {
 			const body = {
@@ -31,23 +39,15 @@ const AddTransport = () => {
 
 			await api.post("/transports", body);
 
-			Swal.fire({
+			Toast.fire({
 				icon: "success",
-				toast: true,
 				title: "Transporte cadastrado com sucesso!",
-				showConfirmButton: false,
-				timer: 1500,
-				position: "top",
 			});
 		} catch (error) {
 			console.error("Erro ao cadastrar transporte:", error);
-			Swal.fire({
+			Toast.fire({
 				icon: "error",
-				toast: true,
-				title: "Erro ao cadastrar transporte!",
-				showConfirmButton: false,
-				timer: 1500,
-				position: "top",
+				title: "Erro ao cadastrar transporte.",
 			});
 		}
 	};
