@@ -10,7 +10,9 @@ import InternalHome from "./Pages/internal-system/internal-home/InternalHome";
 import AddMembro from "./pages/internal-system/admin/AddMember"
 import AddEvento from "./pages/internal-system/admin/AddEvent"
 import AddTransport from "./pages/internal-system/admin/AddTransport"
-import AddLocate from "./pages/internal-system/admin/AddLocate"
+import AddPlace from "./Pages/internal-system/admin/AddPlace"
+import Configurations from "./Pages/internal-system/configurations/Configurations";
+import UserManagement from "./Pages/internal-system/configurations/userManagement";
 
 function App() {
   return (
@@ -30,7 +32,9 @@ function App() {
           <Route path="/add-member" element={<AddMembro />} />
           <Route path="/add-event" element={<AddEvento />} />
           <Route path="/add-transport" element={<AddTransport />} />
-          <Route path="/add-locate" element={<AddLocate />} />
+          <Route path="/add-place" element={<AddPlace />} />
+          <Route path='/configurations' element={<Configurations/>} />
+          <Route path="/user-management" element={<UserManagement/>} />
         </Route>
       </Routes>
     </BrowserRouter>
