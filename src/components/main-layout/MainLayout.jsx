@@ -2,44 +2,14 @@ import React from "react";
 import Sidebar from "../side-bar/SideBar.jsx";
 import { Outlet, useLocation } from "react-router-dom";
 import logo from "../../assets/images/logoDesbravadores.png";
+import { getSectionTitle } from "../../utils/routePaths.js";
 
 const MainLayout = () => {
 	const location = useLocation();
 
 	const sectionTitle = () => {
-		switch (location.pathname) {
-			case "/init":
-				return "Início";
-			case "/admin":
-				return "Administração";
-			case "/add-member":
-				return "Adicionar Membro";
-			case "/add-event":
-				return "Adicionar Evento";
-			case "/add-transport":
-				return "Adicionar Transporte";
-			case "/add-place":
-				return "Adicionar Local";
-			case "/secretaria":
-				return "Secretaria";
-			case "/tesouraria":
-				return "Tesouraria";
-			case "/unidades":
-				return "Unidades";
-			case "/classes":
-				return "Classes";
-			case "/eventos":
-				return "Eventos";
-			case "/configurations":
-				return "Configurações";
-			case "/user-management":
-				return "Gerenciamento de Usuários";
-			default:
-				return (
-					location.pathname.slice(1).charAt(0).toUpperCase() +
-					location.pathname.slice(2)
-				);
-		}
+		const path = location.pathname;
+		return getSectionTitle(path);
 	};
 
 	return (
