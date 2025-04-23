@@ -3,12 +3,17 @@ import { api } from "../../../provider/api";
 import Swal from "sweetalert2";
 
 const locateFields = [
-	{ id: "local", type: "text", label: "Local", isRequired: true },
-	{ id: "endereco", type: "text", label: "Endereço", isRequired: true },
+	{ id: "nome", type: "text", label: "Nome", isRequired: true },
+	{ id: "rua", type: "text", label: "Rua", isRequired: true },
+	{ id: "numero", type: "text", label: "Número", isRequired: true },
+	{ id: "bairro", type: "text", label: "Bairro", isRequired: true },
+	{ id: "estado", type: "text", label: "Estado", isRequired: true },
+	{ id: "cidade", type: "text", label: "Cidade", isRequired: true },
+	{ id: "cep", type: "text", label: "CEP", isRequired: true },
+	{ id: "referencia", type: "text", label: "Referência", isRequired: true },
 	{ id: "cotacao", type: "number", label: "Cotação (R$)", isRequired: true },
 	{ id: "capacidade", type: "number", label: "Capacidade", isRequired: true },
 	{ id: "telefone", type: "text", label: "Telefone", isRequired: true },
-	{ id: "whatsapp", type: "text", label: "WhatsApp", isRequired: false },
 ];
 
 const AddPlace = () => {
@@ -23,13 +28,23 @@ const AddPlace = () => {
 	const handleSubmit = async (formData) => {
 		try {
 			const body = {
-				sirname: formData.local,
-				address: formData.endereco,
+				sirname: formData.nome,
 				price: Number(formData.cotacao),
 				capacity: Number(formData.capacidade),
-				companyContact: formData.telefone,
-				driverContact: formData.whatsapp,
+				rating: Number(formData.nota),
+				address: {
+					companyContact: formData.telefone,
+					street: formData.rua,
+					houseNumber: formData.numero,
+					district: formData.bairro,
+					state: formData.estado,
+					city: formData.cidade,
+					cep: formData.cep,
+					referenceHouse: formData.referencia,
+				}
 			};
+
+			console.log(body)
 
 			await api.post("/places", body);
 			Toast.fire({

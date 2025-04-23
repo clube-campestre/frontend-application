@@ -5,7 +5,7 @@ export default function AddUserModal({ onClose, onUserAdded, editingUser }) {
     name: "",
     email: "",
     password: "",
-    permissions: [],
+    permission: "",
   });
 
   useEffect(() => {
@@ -14,7 +14,7 @@ export default function AddUserModal({ onClose, onUserAdded, editingUser }) {
         name: editingUser.name,
         email: editingUser.email,
         password: "",
-        permissions: editingUser.access.split(", "),
+        permission: editingUser.access,
       });
     }
   }, [editingUser]);
@@ -23,33 +23,23 @@ export default function AddUserModal({ onClose, onUserAdded, editingUser }) {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handlePermissionToggle = (permission) => {
-    setForm((prev) => ({
-      ...prev,
-      permissions: prev.permissions.includes(permission)
-        ? prev.permissions.filter((p) => p !== permission)
-        : [...prev.permissions, permission],
-    }));
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     const user = {
       id: editingUser ? editingUser.id : Date.now(),
       name: form.name,
       email: form.email,
-      access: form.permissions.join(", "),
+      access: form.permission,
     };
+
     onUserAdded(user); 
   };
 
   const permissionsList = [
-    "Secretaria",
     "Tesouraria",
-    "Administração",
-    "Unidades",
-    "Classes",
-    "Calendário",
+    "Supervisor",
+    "Diretor",
+    "Executivo",
   ];
 
   return (
@@ -102,9 +92,10 @@ export default function AddUserModal({ onClose, onUserAdded, editingUser }) {
                   className="flex items-center gap-2 cursor-pointer"
                 >
                   <input
-                    type="checkbox"
-                    checked={form.permissions.includes(permission)}
-                    onChange={() => handlePermissionToggle(permission)}
+                    type="radio"
+                    name="permission"
+                    value={permission}
+                    onChange={() => form.permission = permission}
                   />
                   <span>{permission}</span>
                 </label>

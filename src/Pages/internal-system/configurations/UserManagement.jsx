@@ -2,12 +2,13 @@ import { useState, useEffect } from "react";
 import { FaPencilAlt, FaTrash, FaPlusCircle } from "react-icons/fa";
 import Swal from "sweetalert2";
 import AddUserModal from "../configurations/AddUserModal";
+import { api } from "../../../provider/api"
 
 export default function UserManagement() {
   const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true); 
-  const [error, setError] = useState(null); 
-  const [editingUser, setEditingUser] = useState(null); 
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [editingUser, setEditingUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
   const Toast = Swal.mixin({
@@ -18,18 +19,22 @@ export default function UserManagement() {
     timerProgressBar: true,
   });
 
-//Aqui meu mano roni, vc coloca o famoso axios tlgd, e faz a requisição para o backend, e depois coloca os dados no setUsers
-
-  const fetchUsers = () => {
-    
-    setTimeout(() => {
-      setUsers([
-        { id: 1, name: "Moisés Silva", email: "moisés@email.com", access: "Marido" },
-        { id: 2, name: "Ruth Fernandes", email: "ruth@email.com", access: "Esposa" },
-      ]);
+  const fetchUsers = async () => {
+    try {
+      const response = await api.get("/accounts");
+      setUsers(response.data);
+      setError(null);
       setLoading(false);
-    }, 1000); 
+    } catch (err) {
+      setError("Ocorreu um erro ao buscar os usuários.");
+      setLoading(false);
+      console.error("Error fetching users:", err);
+    }
   };
+	useEffect(() => {
+
+		fetchUsers();
+	}, []);
 
   const handleUserAdded = (user) => {
     if (editingUser) {
@@ -39,44 +44,60 @@ export default function UserManagement() {
         title: "Usuário editado com sucesso!",
       });
     } else {
-      setUsers([...users, { ...user, id: users.length + 1 }]); 
+      setUsers([...users, { ...user, id: users.length + 1 }]);
       Toast.fire({
         icon: "success",
         title: "Usuário adicionado com sucesso!",
       });
     }
-    setShowModal(false); 
+    setShowModal(false);
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     Swal.fire({
-      title: 'Você tem certeza?',
-      text: "Essa ação não poderá ser desfeita!",
-      icon: 'warning',
+      title: "Deseja deletar este usuário?",
+      text: "Essa ação não pode ser desfeita.",
+      icon: "warning",
+      iconColor: "#d33",
       showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Sim, deletar!',
-    }).then((result) => {
+      confirmButtonColor: "#5ccb5f",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "Cancelar",
+      confirmButtonText: "Deletar",
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        setUsers(users.filter((user) => user.id !== id));
-        Swal.fire('Deletado!', 'O usuário foi removido com sucesso.', 'success');
+        try {
+          await api.delete(`/accounts/${id}`);
+          const response = await api.get("/accounts");
+          setUsers(response.data);
+          Toast.fire({
+            icon: "success",
+            title: "Usuário deletado com sucesso!",
+          });
+        } catch (err) {
+          setError("Ocorreu um erro ao deletar o usuário.");
+          Toast.fire({
+            icon: "error",
+            title: "Ocorreu um erro ao deletar usuário.",
+          });
+          console.error("Error deleting user:", err);
+        }
       }
     });
   };
 
   const handleAddUser = () => {
     setEditingUser(null);
-    setShowModal(true); 
+    setShowModal(true);
   };
 
   const handleEdit = (user) => {
-    setEditingUser(user); 
+    setEditingUser(user);
     setShowModal(true);
   };
 
   useEffect(() => {
-    fetchUsers(); 
+    fetchUsers();
   }, []);
 
   return (
@@ -97,15 +118,15 @@ export default function UserManagement() {
         </div>
 
         <div className="bg-white">
-          {error && (
-            <div className="p-6 text-center text-red-500">{error}</div>
-          )}
+          {error && <div className="p-6 text-center text-red-500">{error}</div>}
           {loading ? (
             <div className="p-6 text-center text-gray-500">Carregando...</div>
           ) : (
             <ul className="flex flex-col gap-4 bg-[#EDEDED] p-4 rounded-md">
-              {users.length === 0 ? (
-                <p className="text-gray-500 italic">Nenhum usuário foi encontrado</p>
+              {users.length === 0 && !error ? (
+                <p className="text-gray-500 italic">
+                  Nenhum usuário foi encontrado
+                </p>
               ) : (
                 users.map((user) => (
                   <li
@@ -115,7 +136,9 @@ export default function UserManagement() {
                     <div>
                       <h3 className="font-medium">{user.name}</h3>
                       <p className="text-sm text-gray-600">{user.email}</p>
-                      <p className="text-xs text-gray-500">Acesso: {user.access}</p>
+                      <p className="text-xs text-gray-500">
+                        Acesso: {user.access}
+                      </p>
                     </div>
                     <div className="flex gap-5">
                       <button

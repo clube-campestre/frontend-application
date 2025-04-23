@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import AddButton from '../../../components/admin-internal/AddButton';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../../provider/api'
+import { FaRegStar, FaStar } from 'react-icons/fa';
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -74,7 +75,11 @@ const Admin = () => {
                 <div key={index} className="bg-white p-3 rounded mb-2 shadow-sm">
                   <p className="font-medium">{transport.enterprise}</p>
                   <p className="text-sm text-gray-600">Capacidade: {transport.capacity} passageiros</p>
-                  <p className="text-sm text-gray-600">Nota: {transport.rating}</p>
+                  <p className="text-sm text-gray-600 flex flex-row items-center">Nota: {
+                    Array.from({ length: 5 }, (_, i) => (
+                      i < transport.rating ? <FaStar key={i} className="text-yellow-500 ml-1" /> : <FaRegStar key={i} className="text-gray-400 ml-1" />
+                    ))
+                    }</p>
                 </div>
               ))
             ) : (

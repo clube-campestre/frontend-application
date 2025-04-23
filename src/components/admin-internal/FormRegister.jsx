@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { FaRegStar, FaStar } from 'react-icons/fa';
 
 const FormRegister = ({ formTitle, fields, onSubmit }) => {
   const [formData, setFormData] = useState(() =>
-    fields.reduce((acc, field) => ({ ...acc, [field.id]: '' }), { nota: '' })
+    fields.reduce((acc, field) => ({ ...acc, [field.id]: '' }), { nota: '' }),
   );
+  const [hoveredNota, setHoveredNota] = useState(0);
 
   const handleChange = (id, valor) => {
     setFormData((prev) => ({ ...prev, [id]: valor }));
@@ -23,7 +25,10 @@ const FormRegister = ({ formTitle, fields, onSubmit }) => {
         <div className="flex flex-wrap -mx-2">
           {fields.map((field) => (
             <div key={field.id} className="px-2 mb-4 w-1/3">
-              <label htmlFor={field.id} className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor={field.id}
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 {field.label}
               </label>
               {renderizarCampo(field, formData, handleChange)}
@@ -31,22 +36,29 @@ const FormRegister = ({ formTitle, fields, onSubmit }) => {
           ))}
 
           <div className="px-2 mb-4 w-1/3">
-            <label htmlFor="nota" className="block text-sm font-medium text-gray-700 mb-1">Nota</label>
+            <label
+              htmlFor="nota"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Nota
+            </label>
             <div className="flex space-x-1">
-              {[...Array(10).keys()].map((i) => {
+              {[...Array(5).keys()].map((i) => {
                 const valor = i + 1;
                 return (
                   <button
                     key={valor}
                     type="button"
                     onClick={() => handleChange('nota', valor)}
-                    className={`w-8 h-8 rounded-full ${
-                      formData.nota === valor ? 'border-4 border-black' : ''
-                    } ${
-                      valor <= 3 ? 'bg-red-500' : valor <= 6 ? 'bg-yellow-500' : 'bg-green-500'
-                    } cursor-pointer`}
+                    onMouseEnter={() => setHoveredNota(valor)}
+                    onMouseLeave={() => setHoveredNota(0)}
+                    className={`w-8 h-8 rounded-full cursor-pointer`}
                   >
-                    {valor}
+                    {valor <= (formData.nota || hoveredNota) ? (
+                      <FaStar color="#FCAE2D" />
+                    ) : (
+                      <FaRegStar color="#FCAE2D" />
+                    )}
                   </button>
                 );
               })}
