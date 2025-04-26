@@ -3,9 +3,10 @@ import Footer from "../sections/Footer.jsx"
 import AboutUs from "../sections/about-us/AboutUs.jsx"
 import Unities from "../sections/unities/Unities.jsx"
 import OurClassesA from "../sections/our-classses/OurClasses.jsx"
-import Sidebar from "../../components/side-bar/SideBar.jsx";
+import { clearSession } from "../../utils/authStorage.js";
 
 const Home = () => {
+    clearSession();
     return (
         <>
         <Header/>

@@ -21,7 +21,7 @@ const menuItems = [
 	{ icon: GiCampingTent, label: "Classes", path: "/classes" },
 	{ icon: FaCalendarAlt, label: "Eventos", path: "/eventos" },
 	{ icon: FaCog, label: "Configurações", path: "/configurations" },
-	{ icon: HiLogout, label: "Sair", path: "/home" },
+	{ icon: HiLogout, label: "Sair", path: "/" },
 ];
 
 function SideBar({ activePath }) {

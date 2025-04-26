@@ -1,6 +1,7 @@
 import FormRegister from "../../../components/admin-internal/FormRegister";
 import { api } from "../../../provider/api";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router";
 
 const transportFields = [
 	{ id: "empresa", type: "text", label: "Empresa", isRequired: true },
@@ -17,6 +18,7 @@ const transportFields = [
 ];
 
 const AddTransport = () => {
+	const navigate = useNavigate();
 	const Toast = Swal.mixin({
 		toast: true,
 		position: "top",
@@ -43,6 +45,10 @@ const AddTransport = () => {
 				icon: "success",
 				title: "Transporte cadastrado com sucesso!",
 			});
+
+			setTimeout(() => {
+				navigate("/admin");
+			}, 2500);
 		} catch (error) {
 			console.error("Erro ao cadastrar transporte:", error);
 			Toast.fire({
