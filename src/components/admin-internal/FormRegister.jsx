@@ -63,8 +63,10 @@ const FormRegister = ({ formTitle, fields, onSubmit }) => {
 
 	return (
 		<div className="bg-gray-100 rounded-lg p-6 shadow-md max-w-4xl mx-auto">
-			<h2 className="text-xl font-semibold text-gray-800">{formTitle}</h2>
-			<div className="w-8 h-1 bg-[#FCAE2D] mt-2"></div>
+			<div className="flex items-center mb-6">
+				<div className="w-1 h-6 bg-[#FCAE2D] mr-2 rounded"></div>
+				<h2 className="text-xl font-semibold text-gray-800">{formTitle}</h2>
+			</div>
 
 			<form onSubmit={handleSubmit}>
 				<div className="flex flex-wrap -mx-2">
@@ -99,17 +101,12 @@ const FormRegister = ({ formTitle, fields, onSubmit }) => {
 									<button
 										key={valor}
 										type="button"
-										onClick={() =>
-											handleChange("nota", valor)
-										}
-										onMouseEnter={() =>
-											setHoveredNota(valor)
-										}
+										onClick={() => handleChange("nota", valor)}
+										onMouseEnter={() => setHoveredNota(valor)}
 										onMouseLeave={() => setHoveredNota(0)}
-										className={`w-8 h-8 rounded-full cursor-pointer`}
+										className="w-8 h-8 rounded-full cursor-pointer"
 									>
-										{valor <=
-										(formData.nota || hoveredNota) ? (
+										{valor <= (formData.nota || hoveredNota) ? (
 											<FaStar color="#FCAE2D" />
 										) : (
 											<FaRegStar color="#FCAE2D" />

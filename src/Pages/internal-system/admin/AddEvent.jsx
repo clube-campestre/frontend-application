@@ -8,7 +8,6 @@ const AddEvent = () => {
 
 	const handleImagemDrop = (e) => {
 		e.preventDefault();
-
 		const arquivos = e.dataTransfer?.files || e.target.files;
 		if (arquivos && arquivos[0]) {
 			const arquivo = arquivos[0];
@@ -25,30 +24,13 @@ const AddEvent = () => {
 		}
 	};
 
-	[
-		{
-			id: "titulo",
-			tipo: "texto",
-			rotulo: "título",
-			placeholder: "",
-			obrigatorio: true,
-		},
-		{
-			id: "descricao",
-			tipo: "textarea",
-			rotulo: "descrição",
-			placeholder: "",
-			obrigatorio: false,
-		},
-	];
-
 	return (
 		<div className="bg-gray-100 rounded-lg p-6 shadow-md max-w-4xl mx-auto">
-			<div className="mb-6">
+			<div className="mb-6 flex items-center">
+				<div className="w-1 h-6 bg-[#FCAE2D] mr-2 rounded"></div> {/* Barra do lado */}
 				<h2 className="text-xl font-semibold text-gray-800">
 					Cadastrar evento
 				</h2>
-				<div className="w-8 h-1 bg-[#FCAE2D] mt-2"></div>
 			</div>
 
 			<div className="flex flex-wrap -mx-2">
