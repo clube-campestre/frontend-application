@@ -2,11 +2,11 @@ import React from "react";
 
 const CardClasse = ({ card, isFocused, onFocus }) => (
   <div
-    className={`w-85 flex-shrink-0 mx-6 bg-white rounded-xl shadow-lg p-6 text-center transition-all duration-700 ${
-      isFocused ? "scale-110 z-20" : "scale-95 opacity-70"
+    className={`w-85 flex-shrink-0 mx-6 bg-white rounded-xl shadow-lg p-4 text-center transition-all duration-700 ${
+      isFocused ? "scale-95 z-20" : "scale-90 opacity-70"
     }`}
     style={{
-      minHeight: "300px",
+      minHeight: "150px",
     }}
     onMouseEnter={onFocus}
     onMouseLeave={() => onFocus(false)}
