@@ -103,7 +103,12 @@ const Admin = () => {
               places.map((place, index) => (
                 <div key={index} className="bg-white p-3 rounded mb-2 shadow-sm">
                   <p className="font-medium">{place.name}</p>
-                  <p className="text-sm text-gray-600">{place.address}</p>
+                  <p className="text-sm text-gray-600">CEP: {place.address.cep}</p>
+                  <p className="text-sm text-gray-600 flex flex-row items-center">Nota: {
+                    Array.from({ length: 5 }, (_, i) => (
+                      i < place.rating ? <FaStar key={i} className="text-yellow-500 ml-1" /> : <FaRegStar key={i} className="text-gray-400 ml-1" />
+                    ))
+                    }</p>
                 </div>
               ))
             ) : (
