@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FaRegStar, FaStar } from "react-icons/fa";
 import Swal from "sweetalert2";
-
+//aaaaaaaaaaaaa 
 const FormRegister = ({ formTitle, fields, onSubmit }) => {
 	const [formData, setFormData] = useState(() =>
 		fields.reduce((acc, field) => ({ ...acc, [field.id]: "" }), {
@@ -117,6 +117,8 @@ const FormRegister = ({ formTitle, fields, onSubmit }) => {
 						</div>
 					</div>
 				</div>
+
+
 
 				<div className="flex justify-end mt-6">
 					<button
