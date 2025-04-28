@@ -9,9 +9,10 @@ const containerStyle = {
 };
 
 const center = {
-  lat: -23.679020,
-  lng: -46.645910,
+  lat: -23.6703751,
+  lng: -46.6529140,
 };
+
 
 const darkModeStyle = [
   { elementType: 'geometry', stylers: [{ color: '#242f3e' }] },

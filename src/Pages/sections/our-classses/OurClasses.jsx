@@ -28,7 +28,7 @@ const cards = [
     logo: logoVermelho,
     titulo: "COMPANHEIRO (11-12 anos)",
     descricao:
-      "Aqui, os desbravadores aprofundam suas habilidades, se tornando verdadeiros companheiros de excursões, explorando e aprendendo sobre o mundo ao seu redor. Classe Avançada: Companheiro de Excursionismo.",
+      "Aqui, os desbravadores aprofundam suas habilidades, se tornando verdadeiros companheiros de excursões. Classe Avançada: Companheiro de Excursionismo.",
     button: buttonVermelho,
     corTopo: "bg-red-500",
     corTexto: "bg-red-100",
@@ -103,7 +103,7 @@ const OurClassesCards = () => {
             100% { transform: translateX(-50%); }
           }
           .animate-slide {
-            animation: slide 30s linear infinite;
+            animation: slide 25s linear infinite;
           }
           .group:hover .animate-slide {
             animation-play-state: paused;
