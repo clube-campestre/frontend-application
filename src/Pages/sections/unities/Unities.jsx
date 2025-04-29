@@ -17,7 +17,7 @@ const unityData = [
 		title: "Panda (10 anos)"
 	},
 	{
-		imagePath: '',
+		imagePath: loboImage,
 		description: "Ágeis e atentas, as desbravadoras da unidade Lince estão sempre prontas para novos desafios e descobertas.",
 		title: "Lince (11 anos)"
 	},
@@ -42,7 +42,7 @@ const unityData = [
 		title: "Falcão (10 anos)"
 	},
 	{
-		imagePath: '',
+		imagePath: pandaImage,
 		description: "Corajosos e cheios de energia, os membros da unidade Leão enfrentam desafios com determinação.",
 		title: "Leão (11 anos)"
 	},

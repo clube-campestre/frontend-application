@@ -29,7 +29,7 @@ const AboutUs = () => {
           description="São constituidos por fé, liderança, disciplina, cooperação, aventura e serviço. Juntos, esses princípios moldam o caráter de cada Desbravador e tornam nossa jornada ainda mais significativa!" 
         />
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
         <img src={desbravador1} className="w-50 h-50 object-cover rounded-lg" />
         <img src={desbravador3} className="w-50 h-50 object-cover rounded-lg" />
         <img src={desbravador4} className="w-50 h-50 object-cover rounded-lg" />

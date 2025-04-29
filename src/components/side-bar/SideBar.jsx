@@ -8,7 +8,7 @@ import {
 } from "react-icons/fa";
 import { LuFolderCheck } from "react-icons/lu";
 import { FaFileInvoiceDollar } from "react-icons/fa6";
-import { GiKnightBanner } from "react-icons/gi";
+import { GiCampingTent } from "react-icons/gi";
 import { HiLogout } from "react-icons/hi";
 import { NavLink } from "react-router-dom";
 
@@ -18,10 +18,10 @@ const menuItems = [
 	{ icon: LuFolderCheck, label: "Secretaria", path: "/secretaria" },
 	{ icon: FaFileInvoiceDollar, label: "Tesouraria", path: "/tesouraria" },
 	{ icon: FaUsers, label: "Unidades", path: "/unidades" },
-	{ icon: GiKnightBanner, label: "Classes", path: "/classes" },
+	{ icon: GiCampingTent, label: "Classes", path: "/classes" },
 	{ icon: FaCalendarAlt, label: "Eventos", path: "/eventos" },
-	{ icon: FaCog, label: "Configurações", path: "/configuracoes" },
-	{ icon: HiLogout, label: "Sair", path: "/home" },
+	{ icon: FaCog, label: "Configurações", path: "/configurations" },
+	{ icon: HiLogout, label: "Sair", path: "/" },
 ];
 
 function SideBar({ activePath }) {

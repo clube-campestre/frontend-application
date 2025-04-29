@@ -57,7 +57,7 @@ const Footer = () => {
           <h4 className="text-[#FCAE2D] text-lg font-semibold mb-2">
             Endereço:
           </h4>
-          <p className="mb-2">Rua Desbravadores Campestres Unidos, 342</p>
+          <p className="mb-2">Rua Professor Felício Cintra do Prado, 219</p>
           <div className="w-full max-w-xs h-32">
             <GoogleMaps />
           </div>

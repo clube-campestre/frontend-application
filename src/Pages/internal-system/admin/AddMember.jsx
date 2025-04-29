@@ -1,8 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Formulario from '../../../components/admin-internal/FormMember';
+import Step2 from '../admin/AddMember2'; 
+import Step3 from '../admin/AddMember3';
+import Step4 from '../admin/AddMember4';
+import Step5 from "../admin/AddMember5";
+import Step6 from "../admin/AddMember6"
 
 const AddMember = () => {
-  const camposMembro = [
+  const [step, setStep] = useState(1);
+  const [memberData, setMemberData] = useState({});
+
+  const handleNext = (dados) => {
+    setMemberData((prev) => ({ ...prev, ...dados }));
+    setStep((prev) => prev + 1);
+  };
+
+  const handleBack = () => {
+    setStep((prev) => prev - 1);
+  };
+
+  const camposStep1 = [
     {
       id: 'nomeCompleto',
       tipo: 'texto',
@@ -71,19 +88,65 @@ const AddMember = () => {
     }
   ];
 
-  const handleEnvioMembro = (dados) => {
-    console.log('Dados do membro:', dados);
-  };
-
   return (
-    <Formulario
-      titulo="Cadastrar Membro"
-      campos={camposMembro}
-      textoBotao="Próximo"
-      aoEnviar={handleEnvioMembro}
-      etapaAtual={1}
-      totalEtapas={5}
-    />
+    <>
+      {step === 1 && (
+        <Formulario
+          titulo="Cadastrar Membro"
+          campos={camposStep1}
+          textoBotao="Próximo"
+          aoEnviar={handleNext}
+          etapaAtual={1}
+          totalEtapas={5}
+        />
+      )}
+
+      {step === 2 && (
+        <Step2
+          data={memberData}
+          onNext={handleNext}
+          onBack={handleBack}
+          onChange={(data) => setMemberData((prev) => ({ ...prev, ...data }))}
+        />
+      )}
+
+{step === 3 && (
+        <Step3
+          data={memberData}
+          onNext={handleNext}
+          onBack={handleBack}
+          onChange={(data) => setMemberData((prev) => ({ ...prev, ...data }))}
+        />
+      )}
+{step === 4 && (
+        <Step4
+          data={memberData}
+          onNext={handleNext}
+          onBack={handleBack}
+          onChange={(data) => setMemberData((prev) => ({ ...prev, ...data }))}
+        />
+      )}
+
+{step === 5 && (
+        <Step5
+          data={memberData}
+          onNext={handleNext}
+          onBack={handleBack}
+          onChange={(data) => setMemberData((prev) => ({ ...prev, ...data }))}
+        />
+      )}
+
+{step === 6 && (
+        <Step6
+          data={memberData}
+          onNext={handleNext}
+          onBack={handleBack}
+          onChange={(data) => setMemberData((prev) => ({ ...prev, ...data }))}
+        />
+      )}
+
+      
+    </>
   );
 };
 

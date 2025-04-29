@@ -9,7 +9,7 @@ const UnityItem = ({ imagePath, title, description, isActive }) => {
 					: "bg-white text-black"
 			}`}
 		>
-			<img 
+			<img
 				src={imagePath}
 				alt="Logo da unidade"
 				className={`mb-2 ${isActive ? "w-36 h-36" : "w-22 h-22"}`}

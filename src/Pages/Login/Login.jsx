@@ -6,22 +6,33 @@ import anelImagem2 from "../../assets/images/anel2-login-cadastro.png";
 import { loginService } from "../../services/userService";
 import Swal from "sweetalert2";
 import FloatingInput from "../../components/floating-input/FloatingInput";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+	const navigate = useNavigate();
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const Toast = Swal.mixin({
+		toast: true,
+		position: "top",
+		showConfirmButton: false,
+		timer: 2500,
+		timerProgressBar: true,
+	});
 
 	const handleLogin = async (e) => {
 		e.preventDefault();
 
 		const user = await loginService(email, password);
 		if (user) {
-			Swal.fire({
-				title: "Login efetuado com sucesso!",
-				text: `Seja bem-vindo, ${user.name}!`,
-				icon: "success",
-				confirmButtonColor: "#FCAE2D",
-			});
+			Toast.fire({
+        icon: "success",
+        title: "Login realizado com sucesso!",
+      });
+
+			setTimeout(() => {
+				navigate("/internal-home");
+			}, 2500);
 		}
 	};
 
@@ -31,7 +42,6 @@ const Login = () => {
 				<div className="absolute left-[37vw]">
 					<img
 						src={anelImagem1 || "/placeholder.svg"}
-						alt=""
 						className="h-[10vh]"
 					/>
 				</div>
@@ -46,7 +56,6 @@ const Login = () => {
 					</h5>
 					<img
 						src={Logo || "/placeholder.svg"}
-						alt=""
 						className="w-[75px] h-[75px] object-contain mt-20"
 					/>
 				</div>
@@ -54,7 +63,6 @@ const Login = () => {
 				<div className="absolute bottom-0 left-0 w-1/2 rotate-2">
 					<img
 						src={anelImagem2 || "/placeholder.svg"}
-						alt=""
 						className="w-[25vw] h-[25vh]"
 					/>
 				</div>
@@ -65,7 +73,7 @@ const Login = () => {
 				onSubmit={handleLogin}
 			>
 				<h1 className="text-[#021C4F] mb-8 font-semibold text-3xl">
-					Bem-Vindo!
+					Realize o seu login!
 				</h1>
 
 				<div className="mb-7 w-[23vw]">
@@ -96,9 +104,6 @@ const Login = () => {
 				>
 					Entrar
 				</button>
-
-				<p className="mt-8 ">Não tem uma conta?</p>
-				<a href="/cadastro" className="text-[#022977] font-semibold hover:underline">Cadastre-se</a>
 			</form>
 		</div>
 	);
