@@ -1,5 +1,5 @@
-import React from 'react';
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import React, { useState } from 'react';
+import { GoogleMap, LoadScript, Marker, InfoWindow } from '@react-google-maps/api';
 
 const containerStyle = {
   width: '100%',
@@ -12,7 +12,6 @@ const center = {
   lat: -23.6703751,
   lng: -46.6529140,
 };
-
 
 const darkModeStyle = [
   { elementType: 'geometry', stylers: [{ color: '#242f3e' }] },
@@ -72,6 +71,7 @@ const darkModeStyle = [
 
 const MapsApi = () => {
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+  const [selected, setSelected] = useState(null);
 
   return (
     <LoadScript googleMapsApiKey={apiKey}>
@@ -84,7 +84,23 @@ const MapsApi = () => {
           styles: darkModeStyle,
         }}
       >
-        <Marker position={center} title="R. Prof. Felício Cintra do Prado, 219" />
+        <Marker
+          position={center}
+          title="R. Prof. Felício Cintra do Prado, 219"
+          onClick={() => setSelected(center)} 
+        />
+
+        {selected && (
+          <InfoWindow
+            position={selected}
+            onCloseClick={() => setSelected(null)} 
+          >
+            <div>
+              <h4>R. Prof. Felício Cintra do Prado, 219</h4>
+              <p>Informações sobre o local</p>
+            </div>
+          </InfoWindow>
+        )}
       </GoogleMap>
     </LoadScript>
   );
