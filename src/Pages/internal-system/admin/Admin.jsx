@@ -9,6 +9,17 @@ const Admin = () => {
 
   const [transports, setTransports] = useState([]);
   const [places, setPlaces] = useState([]);
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [formData, setFormData] = useState({});
+
+  const transportFields = [
+    { name: "empresa", label: "Empresa", placeholder: "Digite o nome da empresa", type: "text", isRequired: true },
+    { name: "cotacao", label: "Cotação (R$)", placeholder: "Digite o valor da cotação", type: "number", isRequired: true },
+    { name: "distanciaHistorica", label: "Distância Histórica (KM)", placeholder: "Digite a distância histórica", type: "number", isRequired: true },
+    { name: "capacidade", label: "Capacidade", placeholder: "Digite a capacidade", type: "number", isRequired: true },
+    { name: "telefone", label: "Telefone", placeholder: "Digite o telefone", type: "text", isRequired: true },
+    { name: "whatsapp", label: "WhatsApp", placeholder: "Digite o WhatsApp", type: "text", isRequired: false },
+  ];
 
   const getTransports = async () => {
     try {
@@ -49,9 +60,7 @@ const Admin = () => {
     navigate("/add-place");
   };
 
-  const handleEditTransport = (id) => {
-    // colocar modal de editar dps
-  };
+  const handleEditTransport = (id) => {};
 
   const handleDeleteTransport = async (id) => {
     try {
