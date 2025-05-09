@@ -4,9 +4,17 @@ import { useNavigate } from "react-router-dom";
 import { api } from "../../../provider/api";
 import { FaRegStar, FaStar, FaPencilAlt, FaTrash } from "react-icons/fa";
 import EditModal from "../../../components/edit-modal/EditModal";
+import Swal from "sweetalert2";
 
 const Admin = () => {
 	const navigate = useNavigate();
+	const Toast = Swal.mixin({
+		toast: true,
+		position: "top",
+		showConfirmButton: false,
+		timer: 2500,
+		timerProgressBar: true,
+	});
 
 	const [transports, setTransports] = useState([]);
 	const [places, setPlaces] = useState([]);
@@ -146,6 +154,10 @@ const Admin = () => {
 			const response = await api.get("/transports");
 			setTransports(response.data);
 		} catch (error) {
+			Toast.fire({
+				icon: "error",
+				title: "Erro ao buscar transportes!",
+			});
 			console.error("Error fetching transports:", error);
 		}
 	};
@@ -176,6 +188,10 @@ const Admin = () => {
 
 			setPlaces(places);
 		} catch (error) {
+			Toast.fire({
+				icon: "error",
+				title: "Erro ao buscar locais!",
+			});
 			console.error("Error fetching places:", error);
 		}
 	};
@@ -206,7 +222,22 @@ const Admin = () => {
 			await api.put(`/transports/${data.id}`, data);
 			getTransports();
 			setShowTransportModal(false);
+			Toast.fire({
+				icon: "success",
+				title: "Transporte editado com sucesso!",
+			});
 		} catch (error) {
+			if (error.response.status === 500) {
+				Toast.fire({
+					icon: "error",
+					title: "Ocorreu um erro interno. Tente novamente mais tarde.",
+				});
+			} else {
+				Toast.fire({
+					icon: "error",
+					title: "Erro aao editar transporte!",
+				});
+			}
 			console.error("Error updating transport:", error);
 		}
 	};
@@ -239,10 +270,28 @@ const Admin = () => {
 			},
 		};
 		try {
-			await api.put(`/places/${placeWithAddressObject.id}`, placeWithAddressObject);
+			await api.put(
+				`/places/${placeWithAddressObject.id}`,
+				placeWithAddressObject
+			);
 			getPlaces();
 			setShowEditModal(false);
+			Toast.fire({
+				icon: "success",
+				title: "Local editado com sucesso!",
+			});
 		} catch (error) {
+			if (error.response.status === 500) {
+				Toast.fire({
+					icon: "error",
+					title: "Ocorreu um erro interno. Tente novamente mais tarde.",
+				});
+			} else {
+				Toast.fire({
+					icon: "error",
+					title: "Erro ao editar local!",
+				});
+			}
 			console.error("Error editing place:", error);
 		}
 	};
