@@ -1,58 +1,156 @@
-import React from "react";
+import { useState, useEffect } from "react";
+import { FaRegStar, FaStar } from "react-icons/fa";
 
 export default function EditModal({
-  isOpen,
-  onClose,
-  onSave,
-  fields,
-  title,
-  formData,
-  setFormData,
+	onClose,
+	onSubmit,
+	editingItem,
+	fields,
+	title,
 }) {
-  if (!isOpen) return null;
+	const [form, setForm] = useState({});
+	const [hoveredNota, setHoveredNota] = useState(0);
+	useEffect(() => {
+		if (editingItem) {
+			setForm(editingItem);
+		}
+	}, [editingItem]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+		setForm({ ...form, [name]: value });
+	};
 
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 relative">
-        <h2 className="text-xl font-semibold mb-4">{title || "Editar"}</h2>
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		onSubmit(form);
+		console.log("Form submitted:", form);
+	};
 
-        <form className="space-y-4">
-          {fields.map((field) => (
-            <div key={field.name} className="flex flex-col">
-              <label className="mb-1 font-medium text-sm">{field.label}</label>
-              <input
-                type={field.type || "text"}
-                name={field.name}
-                value={formData[field.name] || ""}
-                onChange={handleChange}
-                placeholder={field.placeholder || ""}
-                required={field.isRequired || false}
-                className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-          ))}
-        </form>
+	return (
+		<div className="fixed inset-0 z-50 flex items-center justify-center bg-[#000000da]">
+			<div className="bg-[#f3f3f3] p-10 rounded-xl shadow-lg min-w-[500px] relative">
+				<button
+					onClick={onClose}
+					className="absolute top-1 right-3 text-3xl"
+				>
+					×
+				</button>
+				<h2 className="text-xl font-semibold mb-4">
+					<span className="border-l-4 border-[#FCAE2D] mr-3"></span>
+					{title}
+				</h2>
 
-        <div className="flex justify-end gap-2 mt-6">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-sm"
-          >
-            Cancelar
-          </button>
-          <button
-            onClick={onSave}
-            className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm"
-          >
-            Salvar
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+				<form onSubmit={handleSubmit} className="space-y-5">
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+						{fields.map((field) => {
+							if (field.type === "radio") {
+								return (
+									<div key={field.name}>
+										<p className="font-semibold">
+											{field.label}
+										</p>
+										<div className="grid grid-cols-2 gap-2 mt-2">
+											{field.options.map((option) => (
+												<label
+													key={option}
+													className="flex items-center gap-2 cursor-pointer"
+												>
+													<input
+														type="radio"
+														name={field.name}
+														value={option}
+														checked={
+															form[
+																field.name
+															]?.toLowerCase?.() ===
+															option.toLowerCase()
+														}
+														onChange={() =>
+															setForm({
+																...form,
+																[field.name]:
+																	option,
+															})
+														}
+													/>
+													<span>{option}</span>
+												</label>
+											))}
+										</div>
+									</div>
+								);
+							} else if (field.name === "rating") {
+								return (
+									<div key={field.name}>
+										<label className="block mb-1 font-medium">
+											Nota
+										</label>
+										<div className="flex space-x-1">
+											{[1, 2, 3, 4, 5].map((valor) => (
+												<button
+													key={valor}
+													type="button"
+													onClick={() =>
+														setForm({
+															...form,
+															rating: valor,
+														})
+													}
+													onMouseEnter={() =>
+														setHoveredNota(valor)
+													}
+													onMouseLeave={() =>
+														setHoveredNota(0)
+													}
+													className="w-8 h-8 rounded-full cursor-pointer"
+												>
+													{valor <=
+													(hoveredNota ||
+														form.rating ||
+														0) ? (
+														<FaStar color="#FCAE2D" />
+													) : (
+														<FaRegStar color="#FCAE2D" />
+													)}
+												</button>
+											))}
+										</div>
+									</div>
+								);
+							} else {
+								return (
+									<div key={field.name}>
+										<label htmlFor={field.name}>
+											{field.label}
+										</label>
+										<input
+											className="w-full px-3 py-2 rounded border"
+											type={field.type}
+											name={field.name}
+											value={form[field.name] || ""}
+											onChange={handleChange}
+											placeholder={
+												field.placeholder || ""
+											}
+											required={field.required}
+										/>
+									</div>
+								);
+							}
+						})}
+					</div>
+
+					<div className="flex justify-end">
+						<button
+							type="submit"
+							className="bg-[#FCAE2D] text-white px-6 py-2 rounded font-semibold hover:bg-[#e29d23]"
+						>
+							Salvar Alterações
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	);
 }
