@@ -3,7 +3,7 @@ import { api } from "../../../provider/api";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 
-const locateFields = [
+const placeFields = [
   { id: "nome", type: "text", label: "Nome do Local", isRequired: true },
   { id: "cep", type: "text", label: "CEP", isRequired: true },
   { id: "rua", type: "text", label: "Rua", isRequired: true },
@@ -88,7 +88,7 @@ const AddPlace = () => {
   return (
     <FormRegister
       formTitle="Cadastrar Local"
-      fields={locateFields}
+      fields={placeFields}
       onSubmit={handleSubmit}
     />
   );
