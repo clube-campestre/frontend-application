@@ -4,7 +4,7 @@ import Login from "./Pages/Login/Login";
 import Register from "./pages/register/Register";
 import Home from "./Pages/home/Home";
 import MainLayout from "./components/main-layout/MainLayout";
-import Admin from "./Pages/internal-system/admin/Admin";
+import Admin from "./pages/internal-system/admin/Admin"
 import ProtectedRoute from "./utils/ProtectedRoute";
 import InternalHome from "./Pages/internal-system/internal-home/InternalHome";
 import AddMembro from "./pages/internal-system/admin/AddMember"
@@ -13,6 +13,7 @@ import AddTransport from "./Pages/internal-system/admin/AddTransport"
 import AddPlace from "./Pages/internal-system/admin/AddPlace"
 import Configurations from "./Pages/internal-system/configurations/Configurations";
 import UserManagement from "./pages/internal-system/configurations/UserManagement";
+import Calendar from "./pages/internal-system/admin/Calendar";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
           <Route path="/add-place" element={<AddPlace />} />
           <Route path='/configurations' element={<Configurations/>} />
           <Route path="/user-management" element={<UserManagement/>} />
+          <Route path="/eventos" element={<Calendar />} />
         </Route>
       </Routes>
     </BrowserRouter>
