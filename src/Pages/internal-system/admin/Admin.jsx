@@ -179,6 +179,7 @@ const Admin = () => {
 					houseNumber: place.address.houseNumber,
 					district: place.address.district,
 					city: place.address.city,
+					street: place.address.street,
 					state: place.address.state,
 					cep: place.address.cep,
 					referenceHouse: place.address.referenceHouse,
