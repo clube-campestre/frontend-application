@@ -15,6 +15,7 @@ import Statement from "./Pages/internal-system/statement/statement";
 
 import Configurations from "./Pages/internal-system/configurations/Configurations";
 import UserManagement from "./pages/internal-system/configurations/UserManagement";
+import Unities from "./Pages/internal-system/unities/Unities";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
           <Route path="/add-event" element={<AddEvento />} />
           <Route path="/add-transport" element={<AddTransport />} />
           <Route path="/add-place" element={<AddPlace />} />
+          <Route path="/unities" element={<Unities />} />
           <Route path="/statement" element={<Statement />} />
           <Route path='/configurations' element={<Configurations/>} />
           <Route path="/user-management" element={<UserManagement/>} />
