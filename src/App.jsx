@@ -12,7 +12,7 @@ import AddEvento from "./pages/internal-system/admin/AddEvent"
 import AddTransport from "./Pages/internal-system/admin/AddTransport"
 import AddPlace from "./Pages/internal-system/admin/AddPlace"
 import Statement from "./Pages/internal-system/statement/statement";
-
+import Classes from "./Pages/internal-system/classe/Classes";
 import Configurations from "./Pages/internal-system/configurations/Configurations";
 import UserManagement from "./pages/internal-system/configurations/UserManagement";
 import Unities from "./Pages/internal-system/unities/Unities";
@@ -37,6 +37,7 @@ function App() {
           <Route path="/add-transport" element={<AddTransport />} />
           <Route path="/add-place" element={<AddPlace />} />
           <Route path="/unities" element={<Unities />} />
+          <Route path="/classes" element={<Classes />} />
           <Route path="/statement" element={<Statement />} />
           <Route path='/configurations' element={<Configurations/>} />
           <Route path="/user-management" element={<UserManagement/>} />
