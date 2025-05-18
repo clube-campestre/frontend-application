@@ -17,7 +17,7 @@ const menuItems = [
 	{ icon: FaUserPlus, label: "Administração", path: "/admin" },
 	{ icon: LuFolderCheck, label: "Secretaria", path: "/secretaria" },
 	{ icon: FaFileInvoiceDollar, label: "Tesouraria", path: "/tesouraria" },
-	{ icon: FaUsers, label: "Unidades", path: "/unidades" },
+	{ icon: FaUsers, label: "Unidades", path: "/unities" },
 	{ icon: GiCampingTent, label: "Classes", path: "/classes" },
 	{ icon: FaCalendarAlt, label: "Eventos", path: "/eventos" },
 	{ icon: FaCog, label: "Configurações", path: "/configurations" },
