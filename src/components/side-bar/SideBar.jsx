@@ -17,7 +17,7 @@ const menuItems = [
 	{ icon: FaUserPlus, label: "Administração", path: "/admin" },
 	{ icon: LuFolderCheck, label: "Secretaria", path: "/secretaria" },
 	{ icon: FaFileInvoiceDollar, label: "Tesouraria", path: "/tesouraria" },
-	{ icon: FaUsers, label: "Unidades", path: "/unidades" },
+	{ icon: FaUsers, label: "Unidades", path: "/unities" },
 	{ icon: GiCampingTent, label: "Classes", path: "/classes" },
 	{ icon: FaCalendarAlt, label: "Eventos", path: "/eventos" },
 	{ icon: FaCog, label: "Configurações", path: "/configurations" },
@@ -26,7 +26,7 @@ const menuItems = [
 
 function SideBar({ activePath }) {
 	return (
-		<aside className="h-[90vh] w-16 bg-black flex flex-col items-center py-7 space-y-8 ml-6 mt-5 rounded-xl">
+		<aside className="h-[90vh] w-16 bg-black flex flex-col items-center py-7 space-y-8 ml-6 mt-5 rounded-xl justify-between">
 			{menuItems.map((item, index) => {
 				const isActive = activePath === item.path;
 				const Icon = item.icon;
@@ -36,7 +36,7 @@ function SideBar({ activePath }) {
 						key={index}
 						to={item.path}
 						title={item.label}
-						className="w-13 flex items-center justify-center rounded-full transition hover:bg-gray-600"
+						className="w-12 flex items-center justify-center rounded-full transition hover:bg-gray-600"
 					>
 						{() => {
 							const fill = isActive ? "#FCAE2D" : "#CCC";
