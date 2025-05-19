@@ -1,7 +1,6 @@
 import "./index.css";
 import { BrowserRouter, Routes, Route, Link } from "react-router";
 import Login from "./Pages/Login/Login";
-import Register from "./pages/register/Register";
 import Home from "./Pages/home/Home";
 import MainLayout from "./components/main-layout/MainLayout";
 import Admin from "./pages/internal-system/admin/Admin"
@@ -42,7 +41,7 @@ function App() {
           <Route path="/statement" element={<Statement />} />
           <Route path='/configurations' element={<Configurations/>} />
           <Route path="/user-management" element={<UserManagement/>} />
-          <Route path="/eventos" element={<Calendar />} />
+          <Route path="/events" element={<Calendar />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -16,10 +16,10 @@ const menuItems = [
 	{ icon: FaHome, label: "Início", path: "/internal-home" },
 	{ icon: FaUserPlus, label: "Administração", path: "/admin" },
 	{ icon: LuFolderCheck, label: "Secretaria", path: "/secretaria" },
-	{ icon: FaFileInvoiceDollar, label: "Tesouraria", path: "/tesouraria" },
+	{ icon: FaFileInvoiceDollar, label: "Tesouraria", path: "/statement" },
 	{ icon: FaUsers, label: "Unidades", path: "/unities" },
 	{ icon: GiCampingTent, label: "Classes", path: "/classes" },
-	{ icon: FaCalendarAlt, label: "Eventos", path: "/eventos" },
+	{ icon: FaCalendarAlt, label: "Eventos", path: "/events" },
 	{ icon: FaCog, label: "Configurações", path: "/configurations" },
 	{ icon: HiLogout, label: "Sair", path: "/" },
 ];
