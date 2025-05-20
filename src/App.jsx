@@ -10,12 +10,13 @@ import AddMembro from "./pages/internal-system/admin/AddMember"
 import AddEvento from "./pages/internal-system/admin/AddEvent"
 import AddTransport from "./Pages/internal-system/admin/AddTransport"
 import AddPlace from "./Pages/internal-system/admin/AddPlace"
-import Statement from "./Pages/internal-system/statement/statement";
+import Statement from "./Pages/internal-system/statement/Statement";
 import Classes from "./Pages/internal-system/classe/Classes";
 import Configurations from "./Pages/internal-system/configurations/Configurations";
 import UserManagement from "./pages/internal-system/configurations/UserManagement";
 import Calendar from "./pages/internal-system/admin/Calendar";
 import Unities from "./Pages/internal-system/unities/Unities";
+import SecretaryPage from "./pages/internal-system/secretary/SecretaryPage";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
           <Route path="/add-transport" element={<AddTransport />} />
           <Route path="/add-place" element={<AddPlace />} />
           <Route path="/unities" element={<Unities />} />
+           <Route path="/secretaria" element={<SecretaryPage />} />
           <Route path="/classes" element={<Classes />} />
           <Route path="/statement" element={<Statement />} />
           <Route path='/configurations' element={<Configurations/>} />
