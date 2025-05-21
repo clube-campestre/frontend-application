@@ -9,9 +9,66 @@ import aguiaRealImage from "../../../assets/images/aguia-real.png";
 import { LuCirclePlus } from "react-icons/lu";
 import { MemberCard } from "../../../components/member-card/MemberCard";
 import { useState } from "react";
+import EditModal from "../../../components/edit-modal/EditModal";
 
 const Unities = () => {
 	const [selectedUnity, setSelectedUnity] = useState(null);
+	const [showEditMemberModal, setShowEditMemberModal] = useState(false);
+	const [selectedMember, setSelectedMember] = useState(null);
+
+	const handleShowEditMemberModal = () => {
+		setShowEditMemberModal(!showEditMemberModal);
+	}
+
+	const handleSelectMember = (member) => {
+		setSelectedMember(member);
+	}
+
+	const membersFields = [
+		{
+     		name: "name",
+     		label: "Nome do Membro",
+     		placeholder: "Digite o nome do membro",
+     		type: "text",
+     		isRequired: true,
+		},
+		{
+			name: "cpf",
+			label: "CPF",
+			placeholder: "XXX.XXX.XXX-XX",
+			type: "text",
+			isRequired: true,
+		},
+		{
+			name: "birthday",
+			label: "Data de Nascimento",
+			placeholder: "DD/M	M/AAAA",
+			type: "date",
+			isRequired: true,
+		},
+		{
+			name: "contact",
+			label: "Contato",
+			placeholder: "(XX) XXXXX-XXXX",
+			type: "text",
+			isRequired: true,
+		},
+		{
+			name: "responsibleName",
+			label: "Nome do Responsável",
+			placeholder: "Digite o nome do responsável",
+			type: "text",
+			isRequired: true,
+		},
+		{
+			name: "responsibleContact",
+			label: "Contato do Responsável",
+			placeholder: "(XX) XXXXX-XXXX",
+			type: "text",
+			isRequired: true,
+		},
+	]
+	
 	const unities = [
 		{ id: 1, name: "Panda", logo: pandaImage, points: 250 },
 		{ id: 2, name: "Falcão", logo: falcaoImage, points: 115 },
@@ -142,13 +199,27 @@ const Unities = () => {
 									member.unityId === selectedUnity
 							)
 							.map((member) => (
-								<MemberCard key={member.id} item={member} />
+								<MemberCard key={member.id} item={member} showModal={handleShowEditMemberModal} handleSelectMember={handleSelectMember} />
 							))
 					) : (
 						<p className="text-gray-500 text-center">
 							Nenhum membro encontrado.
 						</p>
 					)}
+					{
+						showEditMemberModal && (
+							<EditModal
+								title="Editar Membro"
+								fields={membersFields}
+								editingItem={selectedMember}
+								onClose={handleShowEditMemberModal}
+								onSubmit={(data) => {
+									console.log("Data submitted:", data);
+									handleShowEditMemberModal();
+								}}
+							/>
+						)
+					}
 				</div>
 			</div>
 		</div>
