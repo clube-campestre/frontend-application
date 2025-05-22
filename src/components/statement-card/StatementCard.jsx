@@ -3,9 +3,7 @@ import { FaPencilAlt, FaTrash } from "react-icons/fa";
 
 export const StatementCard = ({ item, showModal }) => {
 	const isSaida = item.type === "SAIDA";
-	// const borderColor = isSaida ? "#FF0000" : "#86D946";
-	const borderColor = isSaida ? "#6D6E6E" : "#6D6E6E";
-
+	const borderColor = isSaida ? "#FF0000" : "#86D946";
 	const iconColor = isSaida ? "#FF0000" : "#86D946";
 
 	return (

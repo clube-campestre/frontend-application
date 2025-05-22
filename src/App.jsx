@@ -38,7 +38,7 @@ function App() {
           <Route path="/add-transport" element={<AddTransport />} />
           <Route path="/add-place" element={<AddPlace />} />
           <Route path="/unities" element={<Unities />} />
-          <Route path="/secretaria" element={<SecretaryPage />} />
+           <Route path="/secretaria" element={<SecretaryPage />} />
           <Route path="/classes" element={<Classes />} />
           <Route path="/statement" element={<Statement />} />
           <Route path='/configurations' element={<Configurations/>} />
