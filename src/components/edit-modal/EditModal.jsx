@@ -59,19 +59,19 @@ export default function EditModal({
 		if (newData.contact) {
 			newData.contact = newData.contact.replace(/\D/g, "");
 		}
-    if (newData.driverContact) {
-      newData.driverContact = newData.driverContact.replace(/\D/g, "");
-    }
-    if (newData.companyContact) {
-      newData.companyContact = newData.companyContact.replace(/\D/g, "");
-    }
+		if (newData.driverContact) {
+			newData.driverContact = newData.driverContact.replace(/\D/g, "");
+		}
+		if (newData.companyContact) {
+			newData.companyContact = newData.companyContact.replace(/\D/g, "");
+		}
 		if (newData.cep) {
 			newData.cep = newData.cep.replace(/\D/g, "");
 		}
 		return newData;
 	};
 
-	function aplicarMascaraCampo(name, valor) {
+	function applyFieldsMasks(name, valor) {
 		if (valor === undefined || valor === null) return "";
 
 		valor = String(valor); // Converte para string
@@ -248,7 +248,7 @@ export default function EditModal({
 											className="w-full px-3 py-2 rounded border"
 											type={field.type}
 											name={field.name}
-											value={aplicarMascaraCampo(
+											value={applyFieldsMasks(
 												field.name,
 												form[field.name] || ""
 											)}

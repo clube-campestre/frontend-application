@@ -13,6 +13,7 @@ import EditModal from "../../../components/edit-modal/EditModal";
 import { useEffect } from "react";
 import { api } from "../../../provider/api";
 import { getUser } from "../../../utils/authStorage";
+import Swal from "sweetalert2";
 
 const Unities = () => {
 	const [selectedUnity, setSelectedUnity] = useState(null);
@@ -21,6 +22,13 @@ const Unities = () => {
 	const [members, setMembers] = useState([]);
 	const [unityPoints, setUnityPoints] = useState(null);
 	const user = getUser();
+	const Toast = Swal.mixin({
+		toast: true,
+		position: "top",
+		showConfirmButton: false,
+		timer: 2500,
+		timerProgressBar: true,
+	});
 
 	const handleShowEditMemberModal = () => {
 		setShowEditMemberModal(!showEditMemberModal);
@@ -160,6 +168,26 @@ const Unities = () => {
 		},
 	];
 
+	const handleEditMember = async (member) => {
+		try {
+			const response = await api.put(`/members/${member.id}`, member);
+			if (response.status === 200) {
+				Toast.fire({
+					icon: "success",
+					title: "Membro editado com sucesso!",
+				});
+				setSelectedUnity(null);
+				handleShowEditMemberModal();
+			}
+		} catch (error) {
+			Toast.fire({
+				icon: "error",
+				title: "Erro ao editar membro.",
+			});
+			console.error("Error editing member:", error);
+		}
+	};
+
 	return (
 		<div className="flex flex-col items-center justify-self-center justify-around h-[82vh] w-[80vw]">
 			{/* Header Section */}
@@ -258,7 +286,7 @@ const Unities = () => {
 							editingItem={selectedMember}
 							onClose={handleShowEditMemberModal}
 							onSubmit={(data) => {
-								console.log("Data submitted:", data);
+								handleEditMember(data);
 								handleShowEditMemberModal();
 							}}
 						/>
