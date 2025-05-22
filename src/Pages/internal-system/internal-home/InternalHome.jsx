@@ -55,7 +55,7 @@ const InternalHome = () => {
 	];
 
 	return (
-		<div className="grid md:grid-cols-2 gap-6 p-15">
+		<div className="grid md:grid-cols-2 gap-6 ">
 			<div className="bg-gray-100 rounded-lg p-6 flex flex-col items-center justify-center">
 				<h2 className="text-xl font-semibold text-gray-800 mb-6">
 					Meta das Barracas
