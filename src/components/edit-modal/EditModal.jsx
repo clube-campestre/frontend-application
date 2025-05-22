@@ -10,21 +10,119 @@ export default function EditModal({
 }) {
 	const [form, setForm] = useState({});
 	const [hoveredNota, setHoveredNota] = useState(0);
+
 	useEffect(() => {
 		if (editingItem) {
 			setForm(editingItem);
 		}
 	}, [editingItem]);
 
+	const formatBRL = (value) => {
+		const numericValue = value.replace(/\D/g, "");
+		const floatValue = parseFloat(numericValue) / 100;
+		if (isNaN(floatValue)) return "";
+		return floatValue.toLocaleString("pt-BR", {
+			style: "currency",
+			currency: "BRL",
+		});
+	};
+
+	const formatPhone = (value) => {
+		const cleaned = value.replace(/\D/g, "").slice(0, 11);
+		const match = cleaned.match(/^(\d{0,2})(\d{0,5})(\d{0,4})$/);
+		if (!match) return "";
+
+		const [, ddd, first, second] = match;
+		let result = "";
+		if (ddd) result += `(${ddd}`;
+		if (ddd.length === 2) result += `) `;
+		if (first) result += first;
+		if (second) result += `-${second}`;
+		return result;
+	};
+
+	const formatCEP = (value) => {
+		let cep = value.replace(/\D/g, "");
+		if (cep.length > 5) {
+			cep = cep.slice(0, 5) + "-" + cep.slice(5, 8);
+		}
+		return cep.slice(0, 9);
+	};
+
+	const removeMasks = (data) => {
+		const newData = { ...data };
+		if (newData.price) {
+			newData.price = newData.price
+				.replace(/[^\d,]/g, "")
+				.replace(",", ".");
+		}
+		if (newData.contact) {
+			newData.contact = newData.contact.replace(/\D/g, "");
+		}
+		if (newData.driverContact) {
+			newData.driverContact = newData.driverContact.replace(/\D/g, "");
+		}
+		if (newData.companyContact) {
+			newData.companyContact = newData.companyContact.replace(/\D/g, "");
+		}
+		if (newData.cep) {
+			newData.cep = newData.cep.replace(/\D/g, "");
+		}
+		return newData;
+	};
+
+	function applyFieldsMasks(name, valor) {
+		if (valor === undefined || valor === null) return "";
+
+		valor = String(valor); // Converte para string
+
+		if (name === "cep") {
+			const onlyNums = valor.replace(/\D/g, "").slice(0, 8);
+			if (onlyNums.length <= 5) return onlyNums;
+			return onlyNums.slice(0, 5) + "-" + onlyNums.slice(5);
+		}
+
+		if (name === "cotacao") {
+			const numeric = valor.replace(/\D/g, "");
+			const cents = (parseInt(numeric, 10) / 100).toFixed(2);
+			return "R$ " + cents.replace(".", ",");
+		}
+
+		if (name === "telefone") {
+			const nums = valor.replace(/\D/g, "").slice(0, 11);
+			if (nums.length <= 10) {
+				return nums.replace(/(\d{2})(\d{4})(\d{0,4})/, "($1) $2-$3");
+			}
+			return nums.replace(/(\d{2})(\d{5})(\d{0,4})/, "($1) $2-$3");
+		}
+
+		return valor;
+	}
+
 	const handleChange = (e) => {
 		const { name, value } = e.target;
-		setForm({ ...form, [name]: value });
+		let newValue = value;
+
+		if (name === "cep") {
+			newValue = formatCEP(value);
+		} else if (name === "price") {
+			newValue = formatBRL(value);
+		} else if (
+			name === "driverContact" ||
+			name === "companyContact" ||
+			name === "contact"
+		) {
+			newValue = formatPhone(value);
+		}
+
+		setForm({ ...form, [name]: newValue });
 	};
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		onSubmit(form);
-		console.log("Form submitted:", form);
+		const cleanedForm = removeMasks(form);
+		onSubmit(cleanedForm);
+		console.log("Form submitted:", cleanedForm);
 	};
 
 	return (
@@ -80,6 +178,28 @@ export default function EditModal({
 										</div>
 									</div>
 								);
+							} else if (field.type === "date") {
+								return (
+									<div key={field.name}>
+										<label htmlFor={field.name}>
+											{field.label}
+										</label>
+										<input
+											className="w-full px-3 py-2 rounded border"
+											type={field.type}
+											name={field.name}
+											value={
+												form[field.name]
+													? new Date(form[field.name])
+															.toISOString()
+															.slice(0, 10)
+													: ""
+											}
+											onChange={handleChange}
+											required={field.required}
+										/>
+									</div>
+								);
 							} else if (field.name === "rating") {
 								return (
 									<div key={field.name}>
@@ -128,7 +248,10 @@ export default function EditModal({
 											className="w-full px-3 py-2 rounded border"
 											type={field.type}
 											name={field.name}
-											value={form[field.name] || ""}
+											value={applyFieldsMasks(
+												field.name,
+												form[field.name] || ""
+											)}
 											onChange={handleChange}
 											placeholder={
 												field.placeholder || ""

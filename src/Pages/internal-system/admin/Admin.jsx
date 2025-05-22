@@ -33,7 +33,7 @@ const Admin = () => {
 			name: "price",
 			label: "Cotação (R$)",
 			placeholder: "Digite o valor da cotação",
-			type: "number",
+			type: "text",
 			isRequired: true,
 		},
 		{
@@ -80,7 +80,7 @@ const Admin = () => {
 			name: "price",
 			label: "Cotação (R$)",
 			placeholder: "Digite a cotação",
-			type: "number",
+			type: "text",
 			isRequired: true,
 		},
 		{
@@ -189,11 +189,13 @@ const Admin = () => {
 
 			setPlaces(places);
 		} catch (error) {
-			Toast.fire({
-				icon: "error",
-				title: "Erro ao buscar locais!",
-			});
-			console.error("Error fetching places:", error);
+			if (error.response.status === 500) {
+				Toast.fire({
+					icon: "error",
+					title: "Erro ao buscar locais!",
+				});
+				console.error("Error fetching places:", error);
+			}
 		}
 	};
 
@@ -233,10 +235,15 @@ const Admin = () => {
 					icon: "error",
 					title: "Ocorreu um erro interno. Tente novamente mais tarde.",
 				});
+			} else if (error.response.status == 400) {
+				Toast.fire({
+					icon: "error",
+					title: "Erro ao editar transporte! Preencha todos os campos corretamente.",
+				});
 			} else {
 				Toast.fire({
 					icon: "error",
-					title: "Erro aao editar transporte!",
+					title: "Erro ao editar transporte.",
 				});
 			}
 			console.error("Error updating transport:", error);
@@ -244,12 +251,35 @@ const Admin = () => {
 	};
 
 	const handleDeleteTransport = async (id) => {
-		try {
-			await api.delete(`/transports/${id}`);
-			getTransports();
-		} catch (error) {
-			console.error("Error deleting transport:", error);
-		}
+		Swal.fire({
+			title: "Deseja deletar este transporte?",
+			text: "Essa ação não pode ser desfeita.",
+			icon: "warning",
+			iconColor: "#d33",
+			showCancelButton: true,
+			confirmButtonColor: "#5ccb5f",
+			cancelButtonColor: "#d33",
+			cancelButtonText: "Cancelar",
+			confirmButtonText: "Deletar",
+		}).then(async (result) => {
+			if (result.isConfirmed) {
+				try {
+					await api.delete(`/transports/${id}`);
+					getTransports();
+					Toast.fire({
+						icon: "success",
+						title: "Membro deletado com sucesso!",
+					});
+				} catch (err) {
+					setError("Ocorreu um erro ao deletar o transporte.");
+					Toast.fire({
+						icon: "error",
+						title: "Ocorreu um erro ao deletar transporte.",
+					});
+					console.error("Error deleting transport:", err);
+				}
+			}
+		});
 	};
 
 	const handleEditPlace = async (data) => {
@@ -275,12 +305,12 @@ const Admin = () => {
 				`/places/${placeWithAddressObject.id}`,
 				placeWithAddressObject
 			);
-			getPlaces();
-			setShowEditModal(false);
 			Toast.fire({
 				icon: "success",
 				title: "Local editado com sucesso!",
 			});
+			setShowPlaceModal(false);
+			getPlaces();
 		} catch (error) {
 			if (error.response.status === 500) {
 				Toast.fire({
@@ -298,19 +328,42 @@ const Admin = () => {
 	};
 
 	const handleDeletePlace = async (id) => {
-		try {
-			await api.delete(`/places/${id}`);
-			getPlaces();
-		} catch (error) {
-			console.error("Error deleting place:", error);
-		}
+		Swal.fire({
+			title: "Deseja deletar este local?",
+			text: "Essa ação não pode ser desfeita.",
+			icon: "warning",
+			iconColor: "#d33",
+			showCancelButton: true,
+			confirmButtonColor: "#5ccb5f",
+			cancelButtonColor: "#d33",
+			cancelButtonText: "Cancelar",
+			confirmButtonText: "Deletar",
+		}).then(async (result) => {
+			if (result.isConfirmed) {
+				try {
+					await api.delete(`/places/${id}`);
+					getPlaces();
+					Toast.fire({
+						icon: "success",
+						title: "Local deletado com sucesso!",
+					});
+				} catch (err) {
+					setError("Ocorreu um erro ao deletar o local.");
+					Toast.fire({
+						icon: "error",
+						title: "Ocorreu um erro ao deletar local.",
+					});
+					console.error("Error deleting local:", err);
+				}
+			}
+		});
 	};
 
 	return (
 		<div className="p-15 w-full mx-auto">
 			<div className="flex justify-center gap-6 bg-[#7C7C7C] p-4 rounded-lg mb-5">
 				<AddButton label="Adicionar membro" onClick={handleAddMembro} />
-				<AddButton label="Adicionar evento" onClick={handleAddEvento} />
+				{/* <AddButton label="Adicionar evento" onClick={handleAddEvento} /> */}
 				<AddButton
 					label="Adicionar transporte"
 					onClick={handleAddTransporte}

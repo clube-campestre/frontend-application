@@ -5,7 +5,7 @@ import { useNavigate } from "react-router";
 
 const transportFields = [
   { id: "empresa", type: "text", label: "Empresa", isRequired: true },
-  { id: "cotacao", type: "number", label: "Cotação (R$)", isRequired: true },
+  { id: "cotacao", type: "text", label: "Cotação (R$)", isRequired: true },
   {
     id: "distanciaHistorica",
     type: "number",
