@@ -1,7 +1,8 @@
 import React, { useState } from "react"; 
 import { FaSearch } from "react-icons/fa"; 
 import { MemberCard } from "../../../components/member-card/MemberCard";
-import { EditModal } from "../../../components/edit-modal/EditModal"; 
+import EditModal from "../../../components/edit-modal/EditModal";
+
 const SecretaryPage = () => {
   const initialMemberData = [
     {
