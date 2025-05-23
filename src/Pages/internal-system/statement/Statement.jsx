@@ -3,69 +3,121 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router";
 import { LuCirclePlus } from "react-icons/lu";
 import { StatementCard } from "../../../components/statement-card/StatementCard";
-import { useState } from "react";
+import { use, useState } from "react";
 import EditModal from "../../../components/edit-modal/EditModal";
 import { IoIosSearch } from "react-icons/io";
 import { LuSearchX } from "react-icons/lu";
-
-
+import { useEffect } from "react";
 
 const Statement = () => {
+	const Toast = Swal.mixin({
+		toast: true,
+		position: "top",
+		showConfirmButton: false,
+		timer: 2500,
+		timerProgressBar: true,
+	});
 	const statementFields = [
 		{
-			id: "information",
-			type: "text",
+			name: "information",
 			label: "Descrição",
-			isRequired: true,
-		},
-		{ id: "price", type: "number", label: "Valor", isRequired: true },
-		{
-			id: "transactionDate",
-			type: "date",
-			label: "Data",
-			isRequired: true,
-		},
-		{
-			id: "transactionType",
+			placeholder: "Descrição",
 			type: "text",
-			label: "Tipo da Receita",
 			isRequired: true,
 		},
-		{ id: "tag", type: "radio", label: "Tag", isRequired: true },
+		{
+			name: "price",
+			label: "Valor",
+			placeholder: "Valor",
+			type: "text",
+			isRequired: true,
+		},
+		{
+			name: "transactionDate",
+			label: "Data",
+			placeholder: "Data",
+			type: "date",
+			isRequired: true,
+		},
+		{
+			name: "transactionType",
+			label: "Tipo da Receita",
+			placeholder: "Tipo da Receita",
+			type: "select",
+			isRequired: true,
+			options: [
+				{ value: "ENTRADA", label: "Entrada" },
+				{ value: "SAIDA", label: "Saída" },
+			],
+		},
+		{
+			name: "tagName",
+			placeholder: "Tag",
+			type: "select",
+			label: "Tag",
+			isRequired: true,
+			options: [
+				{ value: "RECEITA", label: "Receita" },
+				{ value: "DESPESA", label: "Despesa" },
+			],
+		},
 	];
 
-	const [showEditModal, setShowEditModal] = useState(false);
 	const [showAddModal, setShowAddModal] = useState(false);
-	const [editingItem, setEditingItem] = useState(null);
-
-	const handleShowEditModal = () => {
-		setShowEditModal(!showEditModal);
-	};
-
-	const transactions = [
-		{
-			id: 1,
-			type: "ENTRADA",
-			amount: 1500,
-			date: "2023-10-01",
-			description: "Salário",
-			category: "Receita",
-		},
-		{
-			id: 2,
-			type: "SAIDA",
-			amount: 200,
-			date: "2023-10-02",
-			description: "Supermercado",
-			category: "Despesa",
-		},
-	];
-
 	const [isFiltering, setIsFiltering] = useState(false);
+	const [tags, setTags] = useState([]);
+	const [transactions, setTransactions] = useState([]);
+	const [pageNumber, setPageNumber] = useState(1);
+	const [pageSize, setPageSize] = useState(10);
 
 	const handleFilterTransactions = () => {
 		setIsFiltering(!isFiltering);
-		// Aqui você pode adicionar a lógica para filtrar os estratos
+	};
+
+	useEffect(() => {
+		const fetchTransactions = async () => {
+			try {
+				const response = await api.get("/statements", {
+					params: {
+						page: pageNumber,
+						size: pageSize,
+					},
+				});
+				setTransactions(response.data);
+			} catch (error) {
+				console.error("Error fetching transactions:", error);
+			}
+		};
+
+		const getTags = async () => {
+			try {
+				const response = await api.get("/tags");
+				setTags(response.data);
+			} catch (error) {
+				console.error("Error fetching tags:", error);
+			}
+		};
+
+		fetchTransactions();
+		getTags();
+	}, [pageNumber, pageSize]);
+
+	const handleCreateTransaction = async (data) => {
+		try {
+			const response = await api.post("/statements", data);
+			if (response.status === 201) {
+				Toast.fire({
+					icon: "success",
+					title: "Transação criada com sucesso!",
+				});
+				setShowAddModal(false);
+			}
+		} catch (error) {
+			Toast.fire({
+				icon: "error",
+				title: "Erro ao criar transação.",
+			});
+		}
 	};
 
 	return (
@@ -77,9 +129,21 @@ const Statement = () => {
 						<div className="h-8 w-2 bg-yellow-400 rounded"></div>
 						<h2 className="text-xl font-normal">Lançar Receita</h2>
 					</div>
-					<button className="flex items-center gap-2 px-4 py-2 bg-[#D9D9D9] text-[#021C4F] rounded hover:bg-gray-400">
+					<button
+						className="flex items-center gap-2 px-4 py-2 bg-[#D9D9D9] text-[#021C4F] rounded hover:bg-gray-400"
+						onClick={() => setShowAddModal(true)}
+					>
 						Adicionar Transação <LuCirclePlus />
 					</button>
+					{showAddModal && (
+						<EditModal
+							onClose={() => setShowAddModal(false)}
+							onSubmit={handleCreateTransaction}
+							editingItem={null}
+							title="Adicionar Transação"
+							fields={statementFields}
+						/>
+					)}
 				</header>
 
 				{/* Filter Section */}
@@ -139,15 +203,11 @@ const Statement = () => {
 										: "border-[#FCAE2D]"
 								}`}
 							>
-								{isFiltering ?
-								<LuSearchX 
-								size={30}
-								color="#FFFFFF"/>
-
-								 : <IoIosSearch
-								size={30}
-								color= "#FCAE2D"/>}
-
+								{isFiltering ? (
+									<LuSearchX size={30} color="#FFFFFF" />
+								) : (
+									<IoIosSearch size={30} color="#FCAE2D" />
+								)}
 							</button>
 						</div>
 					</div>
@@ -156,7 +216,9 @@ const Statement = () => {
 							<span className="flex">Valor Total (R$)</span>
 						</div>
 						<div className="flex items-start h-full justify-center">
-							<span className="text-5xl font-bold ml-1">1500,00</span>
+							<span className="text-5xl font-bold ml-1">
+								1500,00
+							</span>
 						</div>
 					</div>
 				</section>
@@ -169,19 +231,19 @@ const Statement = () => {
 									<StatementCard
 										key={transaction.id}
 										item={transaction}
-										showModal={handleShowEditModal}
+										showModal={"handleShowEditModal"}
 									/>
-									{showEditModal && (
+									{/* {showEditModal && (
 										<EditModal
 											onClose={() =>
 												setShowEditModal(false)
 											}
 											editingItem={editingItem}
-											onSubmit={handleEditPlace}
-											title="Editar Local"
+											onSubmit={handleEditTransaction}
+											title="Editar Transação"
 											fields={statementFields}
 										/>
-									)}
+									)} */}
 								</div>
 							))
 						) : (
@@ -190,6 +252,24 @@ const Statement = () => {
 							</p>
 						)}
 					</div>
+				</section>
+				<section className="flex items-center justify-between w-full mt-4">
+					<button
+						onClick={() =>
+							setPageNumber((prev) => Math.max(prev - 1, 1))
+						}
+						disabled={pageNumber === 1}
+						className="px-4 py-2 bg-[#D9D9D9] rounded disabled:opacity-50"
+					>
+						Anterior
+					</button>
+					<span className="text-gray-700">Página {pageNumber}</span>
+					<button
+						onClick={() => setPageNumber((prev) => prev + 1)}
+						className="px-4 py-2 bg-[#D9D9D9] rounded"
+					>
+						Próxima
+					</button>
 				</section>
 			</div>
 		</div>

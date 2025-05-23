@@ -13,7 +13,7 @@ import { api } from "../../../provider/api";
 import Swal from "sweetalert2";
 
 const Classes = () => {
-	const [selectedClassId, setselectedClassId] = useState(null);
+	const [selectedClassId, setSelectedClassId] = useState(null);
 	const [selectedClassName, setSelectedClassName] = useState(null);
 	const [showEditMemberModal, setShowEditMemberModal] = useState(false);
 	const [selectedMember, setSelectedMember] = useState(null);
@@ -106,7 +106,7 @@ const Classes = () => {
 		{
 			name: "birthday",
 			label: "Data de Nascimento",
-			placeholder: "DD/M	M/AAAA",
+			placeholder: "DD/MM/AAAA",
 			type: "date",
 			isRequired: true,
 		},
@@ -171,7 +171,7 @@ const Classes = () => {
 					icon: "success",
 					title: "Membro editado com sucesso!",
 				});
-				setselectedClassId(null);
+				setSelectedClassId(null);
 				setSelectedClassName(null);
 				handleShowEditMemberModal();
 			}
@@ -205,7 +205,7 @@ const Classes = () => {
 										? null
 										: unity.name
 								);
-								setselectedClassId(
+								setSelectedClassId(
 									selectedClassId === unity.id
 										? null
 										: unity.id
