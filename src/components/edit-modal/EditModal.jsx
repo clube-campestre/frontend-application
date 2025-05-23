@@ -121,6 +121,11 @@ export default function EditModal({
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		const cleanedForm = removeMasks(form);
+		if (cleanedForm.transactionDate) {
+			cleanedForm.transactionDate = new Date(
+				cleanedForm.transactionDate
+			);
+		}
 		onSubmit(cleanedForm);
 		console.log("Form submitted:", cleanedForm);
 	};
@@ -176,6 +181,33 @@ export default function EditModal({
 												</label>
 											))}
 										</div>
+									</div>
+								);
+							} else if (field.type === "select") {
+								return (
+									<div key={field.name}>
+										<label htmlFor={field.name}>
+											{field.label}
+										</label>
+										<select
+											className="w-full px-3 py-2 rounded border"
+											name={field.name}
+											value={form[field.name] || ""}
+											onChange={handleChange}
+											required={field.required}
+										>
+											<option value="">
+												Selecione uma opção
+											</option>
+											{field.options.map((option) => (
+												<option
+													key={option.value}
+													value={option.value}
+												>
+													{option.label}
+												</option>
+											))}
+										</select>
 									</div>
 								);
 							} else if (field.type === "date") {
