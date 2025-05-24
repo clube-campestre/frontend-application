@@ -1,7 +1,8 @@
-import React, { useState } from "react"; 
-import { FaSearch } from "react-icons/fa"; 
+import React, { useState } from "react";
+import { FaSearch } from "react-icons/fa";
 import { MemberCard } from "../../../components/member-card/MemberCard";
 import EditModal from "../../../components/edit-modal/EditModal";
+import MemberDetailsModal from "../../internal-system/secretary/ModalSecretary";
 
 const SecretaryPage = () => {
   const initialMemberData = [
@@ -32,12 +33,16 @@ const SecretaryPage = () => {
   };
 
   const handleDelete = (memberToDelete) => {
-    setMembers(members.filter(member => member.id !== memberToDelete.id));
+    setMembers(members.filter((member) => member.id !== memberToDelete.id));
     console.log("Deleting member:", memberToDelete);
   };
 
   const handleSave = (updatedMember) => {
-    setMembers(members.map(member => member.id === updatedMember.id ? updatedMember : member));
+    setMembers(
+      members.map((member) =>
+        member.id === updatedMember.id ? updatedMember : member
+      )
+    );
     console.log("Saving member:", updatedMember);
     setIsModalOpen(false);
   };
@@ -66,7 +71,13 @@ const SecretaryPage = () => {
             <div className="bg-white rounded-md shadow border">
               {members.map((item) => (
                 <div key={item.id} className="mb-4">
-                  <MemberCard item={item} onEdit={handleEdit} onDelete={handleDelete} />
+                  <MemberCard
+                    item={item}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                    showModal={() => setIsModalOpen(true)}
+                    handleSelectMember={(member) => setSelectedMember(member)}
+                  />
                 </div>
               ))}
             </div>
@@ -74,10 +85,10 @@ const SecretaryPage = () => {
         </div>
       </div>
       {isModalOpen && selectedMember && (
-        <EditModal 
-          member={selectedMember} 
-          onClose={() => setIsModalOpen(false)} 
-          onSave={handleSave} 
+        <MemberDetailsModal
+          member={selectedMember}
+          onClose={() => setIsModalOpen(false)}
+          onSave={handleSave}
         />
       )}
     </div>
