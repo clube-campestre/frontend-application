@@ -1,10 +1,10 @@
 import { MdOutlineTransitEnterexit } from "react-icons/md";
 import { FaPencilAlt, FaTrash } from "react-icons/fa";
 
-export const StatementCard = ({ item, showModal }) => {
-	const isSaida = item.type === "SAIDA";
-	// const borderColor = isSaida ? "#FF0000" : "#86D946";
-	const borderColor = isSaida ? "#6D6E6E" : "#6D6E6E";
+export const StatementCard = ({ item, showModal, handleDeleteTransaction }) => {
+	const isSaida = item.transactionType === "SAIDA";
+	const borderColor = isSaida ? "#FF0000" : "#86D946";
+	// const borderColor = isSaida ? "#6D6E6E" : "#6D6E6E";
 
 	const iconColor = isSaida ? "#FF0000" : "#86D946";
 
@@ -21,7 +21,7 @@ export const StatementCard = ({ item, showModal }) => {
 				/>
 				<div>
 					<span className="text-[11px] text-[#8D8D8D]">R$</span>
-					<span className="text-[20px]">{item.amount}</span>
+					<span className="text-[20px]">{item.price}</span>
 				</div>
 			</div>
 
@@ -29,10 +29,10 @@ export const StatementCard = ({ item, showModal }) => {
 
 			<div className="flex flex-col items-start w-[35%] h-full pl-3 pr-3">
 				<div className="flex flex-row items-start justify-start w-full text-[#8D8D8D] text-[11px]">
-					<span>{item.date}</span>
+					<span>{new Date(item.transactionDate).toLocaleDateString()}</span>
 				</div>
-				<div className="text-[16px]">
-					<span>{item.description}</span>
+				<div className="text-[18px]">
+					<span>{item.information}</span>
 				</div>
 			</div>
 
@@ -43,7 +43,8 @@ export const StatementCard = ({ item, showModal }) => {
 					className="border-2 rounded p-1 px-2 text-[#022C81]"
 					style={{ borderColor: "#022C81" }}
 				>
-					{item.category}
+					{item.tag?.surname?.toUpperCase().charAt(0) +
+						item.tag?.surname.toLowerCase().slice(1)}
 				</div>
 			</div>
 
@@ -64,7 +65,7 @@ export const StatementCard = ({ item, showModal }) => {
 
 			<div className="flex items-center justify-center w-[10%]">
 				<button
-					onClick={() => handleDeletePlace(place.id)}
+					onClick={() => handleDeleteTransaction(item.id)}
 					className="text-gray-400 hover:text-gray-600"
 				>
 					<FaTrash size={18} />

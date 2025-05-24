@@ -51,8 +51,10 @@ export default function EditModal({
 
 	const removeMasks = (data) => {
 		const newData = { ...data };
+		
 		if (newData.price) {
-			newData.price = newData.price
+			const priceStr = String(newData.price);
+			newData.price = priceStr
 				.replace(/[^\d,]/g, "")
 				.replace(",", ".");
 		}
