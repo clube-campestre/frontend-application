@@ -4,10 +4,8 @@ import { FaPencilAlt, FaTrash } from "react-icons/fa";
 export const StatementCard = ({ item, showModal, handleDeleteTransaction }) => {
 	const isSaida = item.transactionType === "SAIDA";
 	const borderColor = isSaida ? "#FF0000" : "#86D946";
-	// const borderColor = isSaida ? "#6D6E6E" : "#6D6E6E";
-
 	const iconColor = isSaida ? "#FF0000" : "#86D946";
-	console.log("item", item);
+	
 	return (
 		<div
 			className={`flex flex-row items-center justify-between w-full h-15 bg-[#FAFAFA] rounded border-2`}

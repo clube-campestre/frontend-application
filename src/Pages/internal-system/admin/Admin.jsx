@@ -482,7 +482,10 @@ const Admin = () => {
 											{place.name}
 										</p>
 										<p className="text-sm text-gray-600">
-											CEP: {place.cep}
+											CEP: {place.cep.replace(
+												/^(\d{5})(\d{3})$/,
+												"$1-$2"
+											)}
 										</p>
 										<p className="text-sm text-gray-600 flex flex-row items-center">
 											Nota:{" "}
