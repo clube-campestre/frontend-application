@@ -10,6 +10,7 @@ import { LuCirclePlus } from "react-icons/lu";
 import { MemberCard } from "../../../components/member-card/MemberCard";
 import { useState } from "react";
 import EditModal from "../../../components/edit-modal/EditModal";
+import MemberModal from "../../../components/member-manage/MemberModal";
 import { useEffect } from "react";
 import { api } from "../../../provider/api";
 import { getUser } from "../../../utils/authStorage";
@@ -18,6 +19,7 @@ import Swal from "sweetalert2";
 const Unities = () => {
 	const [selectedUnity, setSelectedUnity] = useState(null);
 	const [showEditMemberModal, setShowEditMemberModal] = useState(false);
+	const [showAddMemberModal, setShowAddMemberModal] = useState(false);
 	const [selectedMember, setSelectedMember] = useState(null);
 	const [members, setMembers] = useState([]);
 	const [unityPoints, setUnityPoints] = useState(null);
@@ -37,6 +39,12 @@ const Unities = () => {
 	const handleSelectMember = (member) => {
 		setSelectedMember(member);
 	};
+
+	// NOVO: Função para abrir/fechar modal adicionar membro
+	const handleShowAddMemberModal = () => {
+		setShowAddMemberModal((prev) => !prev);
+	};
+	
 
 	const membersFields = [
 		{
@@ -125,6 +133,9 @@ const Unities = () => {
 			responsibleContact: "(11) 99876-5432",
 			unity: "Panda",
 			unityId: 1,
+			unityRole: "Membro",
+			classCategory: "Amigo",
+			classRole: "Instrutor"
 		},
 		{
 			id: 2,
@@ -135,6 +146,9 @@ const Unities = () => {
 			responsibleContact: "(21) 98765-4321",
 			unity: "Falcão",
 			unityId: 2,
+			unityRole: "Conselheiro",
+			classCategory: "Amigo",
+			classRole: "Instrutor Associado"
 		},
 		{
 			id: 3,
@@ -145,6 +159,9 @@ const Unities = () => {
 			responsibleContact: "(31) 98888-7777",
 			unity: "Tigre",
 			unityId: 4,
+			unityRole: "Conselheiro Associado",
+			classCategory: "Amigo",
+			classRole: "Membro"
 		},
 		{
 			id: 4,
@@ -155,6 +172,9 @@ const Unities = () => {
 			responsibleContact: "(71) 97777-6666",
 			unity: "Lobo",
 			unityId: 8,
+			unityRole: "Conselheiro",
+			classCategory: "Amigo",
+			classRole: "Instrutor"
 		},
 		{
 			id: 5,
@@ -165,6 +185,48 @@ const Unities = () => {
 			responsibleContact: "(85) 96666-5555",
 			unity: "Águia Real",
 			unityId: 3,
+			unityRole: "Conselheiro",
+			classCategory: "Amigo",
+			classRole: "Instrutor"
+		},
+		{
+			id: 6,
+			name: "Eduarda Santos",
+			birthday: "12/08/2010",
+			contact: "(85) 93333-4444",
+			cpf: "789.123.456-00",
+			responsibleContact: "(85) 96666-5555",
+			unity: "Águia Real",
+			unityId: 3,
+			unityRole: "Conselheiro",
+			classCategory: "Amigo",
+			classRole: "Instrutor"
+		},
+		{
+			id: 7,
+			name: "Eduarda Santos",
+			birthday: "12/08/2010",
+			contact: "(85) 93333-4444",
+			cpf: "789.123.456-00",
+			responsibleContact: "(85) 96666-5555",
+			unity: "Águia Real",
+			unityId: 3,
+			unityRole: "Conselheiro",
+			classCategory: "Amigo",
+			classRole: "Instrutor"
+		},
+		{
+			id: 8,
+			name: "Eduarda Santos",
+			birthday: "12/08/2010",
+			contact: "(85) 93333-4444",
+			cpf: "789.123.456-00",
+			responsibleContact: "(85) 96666-5555",
+			unity: "Águia Real",
+			unityId: 3,
+			unityRole: "Conselheiro",
+			classCategory: "Amigo",
+			classRole: "Instrutor"
 		},
 	];
 
@@ -198,7 +260,7 @@ const Unities = () => {
 							key={unity.id}
 							src={unity.logo || "/placeholder.svg"}
 							alt={`Unity ${unity.name}`}
-							className={`h-15 cursor-pointer transition-all ${
+							className={`h-16 cursor-pointer transition-all ${
 								selectedUnity === unity.id
 									? "h-20 grayscale-0"
 									: "h-12 grayscale"
@@ -232,7 +294,7 @@ const Unities = () => {
 			</div>
 
 			{/* Main Content Section */}
-			<div className="flex flex-col items-center h-[65vh] w-full bg-[#EDEDED] rounded-[7px] shadow-md overflow-y-auto">
+			<div className="flex flex-col items-center h-[65vh] w-full bg-[#EDEDED] rounded-[7px] shadow-md ">
 				{/* Counselor Section */}
 				<div className="flex items-center justify-between w-full p-4 h-[10vh]">
 					<div className="flex items-center gap-2">
@@ -242,13 +304,18 @@ const Unities = () => {
 							Oque vai aqui? nome do usuário??
 						</span>
 					</div>
-					<button className="flex items-center gap-2 px-4 py-2 bg-[#D9D9D9] text-[#021c4f] shadow-md rounded hover:bg-gray-400">
-						Adicionar Membros <LuCirclePlus />
+					{selectedUnity && ( // Verifica se uma unidade foi selecionada
+					<button
+					className="flex items-center gap-2 px-4 py-2 bg-[#D9D9D9] text-[#021c4f] shadow-md rounded hover:bg-gray-400"
+					onClick={handleShowAddMemberModal}
+					>
+					Adicionar Membros <LuCirclePlus />
 					</button>
+					)}
 				</div>
 
 				{/* Members Section */}
-				<div className="flex flex-col gap-2 w-full h-[70vh] p-4 overflow-y-auto">
+				<div className="flex flex-col gap-2 w-[98%] h-[53vh] p-4 overflow-y-auto">
 					{/* members.length > 0 ? (
 						members.map((member) => (
 							<MemberCard
@@ -289,6 +356,16 @@ const Unities = () => {
 								handleEditMember(data);
 								handleShowEditMemberModal();
 							}}
+						/>
+					)}
+					{/* Add Member Modal */}
+					{showAddMemberModal && (
+						<MemberModal
+							members={mockMembers}
+							unityId={selectedUnity}
+							isOpen={showAddMemberModal}
+							onClose={handleShowAddMemberModal}
+							// Sem callback pois modal é independente e não retorna dados
 						/>
 					)}
 				</div>

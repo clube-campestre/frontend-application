@@ -16,7 +16,7 @@ import Configurations from "./Pages/internal-system/configurations/Configuration
 import UserManagement from "./pages/internal-system/configurations/UserManagement";
 import Calendar from "./pages/internal-system/admin/Calendar";
 import Unities from "./Pages/internal-system/unities/Unities";
-import SecretaryPage from "./pages/internal-system/secretary/SecretaryPage";
+import SecretaryPage from "./Pages/internal-system/secretary/SecretaryPage";
 
 function App() {
   return (

@@ -48,11 +48,14 @@ export const MemberCard = ({ item, showModal, handleSelectMember }) => {
 
   return (
     <div
-      className="flex flex-row items-center justify-between w-full h-15 bg-[#FAFAFA] rounded border-2"
-      style={{ borderColor: "#86D946" }}
+      className="flex flex-row items-center justify-between w-full min-h-[10vh] max-h-[10vh] bg-[#FAFAFA] rounded hover:bg-[#D9D9D9] cursor-pointer shadow-md transition-all duration-200 ease-in-out"
+      onClick={() => {
+        showModal();
+        handleSelectMember(item);
+      }}
     >
       {/* Nome e Data de Aniversário */}
-      <div className="flex flex-col items-start w-[25%] h-full pl-3 pr-3">
+      <div className="flex flex-col items-start justify-center w-[25%] h-full pl-3 pr-3">
         <div className="text-[16px] font-bold">
           <span>{item.name}</span>
         </div>
@@ -64,7 +67,7 @@ export const MemberCard = ({ item, showModal, handleSelectMember }) => {
       <div className="h-[90%] w-0.5 bg-[#EDEDED]"></div>
 
       {/* Contato e CPF */}
-      <div className="flex flex-col items-start w-[25%] h-full pl-3 pr-3">
+      <div className="flex flex-col items-start justify-center w-[25%] h-full pl-3 pr-3">
         <div className="text-[16px]">
           <span>{item.contact}</span>
         </div>
@@ -76,7 +79,7 @@ export const MemberCard = ({ item, showModal, handleSelectMember }) => {
       <div className="h-[90%] w-0.5 bg-[#EDEDED]"></div>
 
       {/* Contato do Responsável */}
-      <div className="flex flex-col items-start w-[25%] h-full pl-3 pr-3">
+      <div className="flex flex-col items-start justify-center w-[25%] h-full pl-3 pr-3">
         <div className="text-[16px]">
           <span>{item.responsibleContact}</span>
         </div>
@@ -87,10 +90,36 @@ export const MemberCard = ({ item, showModal, handleSelectMember }) => {
 
       <div className="h-[90%] w-0.5 bg-[#EDEDED]"></div>
 
+      {/* Unidade */}
+      <div className="flex flex-col items-start justify-center w-[25%] h-full pl-3 pr-3">
+        <div className="text-[16px]">
+          <span>{item.unity}</span>
+        </div>
+        <div className="text-[11px] text-[#8D8D8D]">
+          <span>{item.unityRole}</span>
+        </div>
+      </div>
+
+      <div className="h-[90%] w-0.5 bg-[#EDEDED]"></div>
+
+      {/* Classe */}
+      <div className="flex flex-col items-start justify-center w-[25%] h-full pl-3 pr-3">
+        <div className="text-[16px]">
+          <span>{item.classCategory}</span>
+        </div>
+        <div className="text-[11px] text-[#8D8D8D]">
+          <span>{item.classRole}</span>
+        </div>
+      </div>
+
+      <div className="h-[90%] w-0.5 bg-[#EDEDED]"></div>
+
       {/* Botão Editar */}
-      <div className="flex items-center justify-center w-[10%]">
+      <div className="flex items-center justify-center w-[10%]"
+        onClick={(e) =>{ e.stopPropagation()}}
+        >
         <button
-          onClick={() => {
+          onClick={(e) => {
             showModal();
             handleSelectMember(item);
           }}
@@ -105,20 +134,25 @@ export const MemberCard = ({ item, showModal, handleSelectMember }) => {
       {/* Botão Apagar */}
       {isUserAbbleToDelete && (
         <>
-          <div className="flex items-center justify-center w-[10%]">
+          <div className="flex items-center justify-center w-[10%]"
+            onClick={(e) => {
+              e.stopPropagation(); // Impede a propagação do clique para a div do card
+            }}>
             <button
-              onClick={() => handleDeleteMember(item.cpf)}
+              onClick={() => {
+                handleDeleteMember(item.cpf);
+              }}
               className="text-gray-400 hover:text-gray-600"
             >
-              <FaTrash size={18} />
+              <FaTrash color="#FF0000" size={18} />
             </button>
           </div>
-          <div className="h-[90%] w-0.5 bg-[#EDEDED]"></div>
+          {/* <div className="h-[90%] w-0.5 bg-[#EDEDED]"></div> */}
         </>
       )}
 
       {/* Botão Detalhes */}
-      <div className="flex items-center justify-center w-[10%]">
+      {/* <div className="flex items-center justify-center w-[10%]">
         <button
           onClick={() => {
             showModal();
@@ -128,7 +162,7 @@ export const MemberCard = ({ item, showModal, handleSelectMember }) => {
         >
           <FaEye size={18} />
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };
