@@ -7,7 +7,7 @@ export const StatementCard = ({ item, showModal, handleDeleteTransaction }) => {
 	// const borderColor = isSaida ? "#6D6E6E" : "#6D6E6E";
 
 	const iconColor = isSaida ? "#FF0000" : "#86D946";
-
+	console.log("item", item);
 	return (
 		<div
 			className={`flex flex-row items-center justify-between w-full h-15 bg-[#FAFAFA] rounded border-2`}
@@ -40,8 +40,8 @@ export const StatementCard = ({ item, showModal, handleDeleteTransaction }) => {
 
 			<div className="flex items-center justify-center w-[20%]">
 				<div
-					className="border-2 rounded p-1 px-2 text-[#022C81]"
-					style={{ borderColor: "#022C81" }}
+					className="border-2 rounded p-1 px-2 text-[#000000]"
+					style={{ borderColor: item.tag?.color || "#000000" }}
 				>
 					{item.tag?.surname?.toUpperCase().charAt(0) +
 						item.tag?.surname.toLowerCase().slice(1)}

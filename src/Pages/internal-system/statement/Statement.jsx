@@ -19,8 +19,10 @@ const Statement = () => {
 
 	const [showAddModal, setShowAddModal] = useState(false);
 	const [showEditModal, setShowEditModal] = useState(false);
+	const [showTagModal, setShowTagModal] = useState(false);
 	const [editingItem, setEditingItem] = useState(null);
 	const [tags, setTags] = useState([]);
+	const [totalAmount, setTotalAmount] = useState(0);
 	const [transactions, setTransactions] = useState([]);
 	const [pageNumber, setPageNumber] = useState(0);
 	const [pageSize, setPageSize] = useState(5);
@@ -87,6 +89,23 @@ const Statement = () => {
 		},
 	];
 
+	const tagFields = [
+		{
+			name: "surname",
+			label: "Nome da Tag",
+			placeholder: "Nome da Tag",
+			type: "text",
+			isRequired: true,
+		},
+		{
+			name: "color",
+			label: "Cor da Tag",
+			placeholder: "Cor da Tag",
+			type: "color",
+			isRequired: true,
+		},
+	];
+
 	const handleFilterTransactions = async () => {
 		const params = {
 			...filters,
@@ -123,6 +142,7 @@ const Statement = () => {
 			});
 
 			setTransactions(response.data.items);
+			setTotalAmount(response.data.totalPrice);
 			setPageSize(response.data.pageSize);
 			setTotalItems(response.data.totalItems);
 			setTotalPages(response.data.totalPages);
@@ -157,9 +177,10 @@ const Statement = () => {
 			},
 		});
 		setTransactions(response.data.items);
+		setTotalAmount(response.data.totalPrice);
 		setPageSize(response.data.pageSize);
-		setTotalPages(response.data.totalPages);
 		setTotalItems(response.data.totalItems);
+		setTotalPages(response.data.totalPages);
 		Toast.fire({
 			icon: "info",
 			title: "Todos os filtros foram limpos!",
@@ -187,9 +208,10 @@ const Statement = () => {
 				},
 			});
 			setTransactions(response.data.items);
+			setTotalAmount(response.data.totalPrice);
 			setPageSize(response.data.pageSize);
-			setTotalPages(response.data.totalPages);
 			setTotalItems(response.data.totalItems);
+			setTotalPages(response.data.totalPages);
 		} catch (error) {
 			console.error("Error fetching transactions:", error);
 		}
@@ -201,6 +223,34 @@ const Statement = () => {
 			setTags(response.data);
 		} catch (error) {
 			console.error("Error fetching tags:", error);
+		}
+	};
+
+	const handleCreateTag = async (data) => {
+		if (!data.surname || !data.color) {
+			Toast.fire({
+				icon: "warning",
+				title: "Por favor, preencha todos os campos.",
+			});
+			return;
+		}
+
+		try {
+			const response = await api.post("/tags", data);
+			if (response.status === 200) {
+				Toast.fire({
+					icon: "success",
+					title: "Tag criada com sucesso!",
+				});
+				setShowTagModal(false);
+				getTags();
+			}
+		} catch (error) {
+			Toast.fire({
+				icon: "error",
+				title: "Erro ao criar tag.",
+			});
+			console.error("Error creating tag:", error);
 		}
 	};
 
@@ -294,21 +344,38 @@ const Statement = () => {
 						<div className="h-8 w-2 bg-yellow-400 rounded"></div>
 						<h2 className="text-xl font-normal">Lançar Receita</h2>
 					</div>
-					<button
-						className="flex items-center gap-2 px-4 py-2 bg-[#D9D9D9] text-[#021C4F] rounded hover:bg-gray-400"
-						onClick={() => setShowAddModal(true)}
-					>
-						Adicionar Transação <LuCirclePlus />
-					</button>
-					{showAddModal && (
-						<EditModal
-							onClose={() => setShowAddModal(false)}
-							onSubmit={handleCreateTransaction}
-							editingItem={null}
-							title="Adicionar Transação"
-							fields={statementFields}
-						/>
-					)}
+					<div className="flex items-center gap-2">
+						<button
+							className="flex items-center gap-2 px-4 py-2 bg-[#D9D9D9] text-[#021C4F] rounded hover:bg-gray-400"
+							onClick={() => setShowTagModal(true)}
+						>
+							Adicionar Nova Tag <LuCirclePlus />
+						</button>
+						{showTagModal && (
+							<EditModal
+								onClose={() => setShowTagModal(false)}
+								onSubmit={handleCreateTag}
+								editingItem={null}
+								title="Adicionar Tag"
+								fields={tagFields}
+							/>
+						)}
+						<button
+							className="flex items-center gap-2 px-4 py-2 bg-[#D9D9D9] text-[#021C4F] rounded hover:bg-gray-400"
+							onClick={() => setShowAddModal(true)}
+						>
+							Adicionar Transação <LuCirclePlus />
+						</button>
+						{showAddModal && (
+							<EditModal
+								onClose={() => setShowAddModal(false)}
+								onSubmit={handleCreateTransaction}
+								editingItem={null}
+								title="Adicionar Transação"
+								fields={statementFields}
+							/>
+						)}
+					</div>
 				</header>
 
 				{/* Filter Section */}
@@ -431,7 +498,7 @@ const Statement = () => {
 						</div>
 						<div className="flex items-center justify-center w-full h-full">
 							<span className="text-4xl lg:text-5xl font-bold">
-								R$1500,00
+								R$ {totalAmount.toFixed(2)}
 							</span>
 						</div>
 					</div>
@@ -451,6 +518,7 @@ const Statement = () => {
 												...transaction,
 												tagName:
 													transaction.tag?.surname,
+												tagColor: transaction.tag?.color,
 											});
 										}}
 										handleDeleteTransaction={

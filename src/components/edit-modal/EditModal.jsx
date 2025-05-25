@@ -51,12 +51,10 @@ export default function EditModal({
 
 	const removeMasks = (data) => {
 		const newData = { ...data };
-		
+
 		if (newData.price) {
 			const priceStr = String(newData.price);
-			newData.price = priceStr
-				.replace(/[^\d,]/g, "")
-				.replace(",", ".");
+			newData.price = priceStr.replace(/[^\d,]/g, "").replace(",", ".");
 		}
 		if (newData.contact) {
 			newData.contact = newData.contact.replace(/\D/g, "");
@@ -124,9 +122,7 @@ export default function EditModal({
 		e.preventDefault();
 		const cleanedForm = removeMasks(form);
 		if (cleanedForm.transactionDate) {
-			cleanedForm.transactionDate = new Date(
-				cleanedForm.transactionDate
-			);
+			cleanedForm.transactionDate = new Date(cleanedForm.transactionDate);
 		}
 		onSubmit(cleanedForm);
 		console.log("Form submitted:", cleanedForm);
@@ -182,6 +178,34 @@ export default function EditModal({
 													<span>{option}</span>
 												</label>
 											))}
+										</div>
+									</div>
+								);
+							} else if (field.type === "color") {
+								return (
+									<div key={field.name}>
+										<label>
+											{field.label}
+										</label>
+										<div className="flex items-center gap-4">
+											<input
+												type="color"
+												name={field.name}
+												value={
+													form[field.name] ||
+													"#000000"
+												}
+												onChange={handleChange}
+												required={field.required}
+												className="w-24 h-11 rounded cursor-pointer"
+												style={{
+													backgroundColor:
+														form[field.name],
+												}}
+											/>
+											<span className="text-sm">
+												{form[field.name]}
+											</span>
 										</div>
 									</div>
 								);
