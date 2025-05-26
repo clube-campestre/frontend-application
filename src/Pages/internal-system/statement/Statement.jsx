@@ -498,7 +498,7 @@ const Statement = () => {
 						</div>
 						<div className="flex items-center justify-center w-full h-full">
 							<span className="text-4xl lg:text-5xl font-bold">
-								R$ {totalAmount.toFixed(2)}
+								R$ {totalAmount  ? totalAmount.toFixed(2) : "0.00"}
 							</span>
 						</div>
 					</div>
