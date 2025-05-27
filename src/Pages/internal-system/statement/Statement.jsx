@@ -222,7 +222,7 @@ const Statement = () => {
 			const response = await api.get("/tags");
 			setTags(response.data);
 		} catch (error) {
-			console.error("Error fetching tags:", error);
+			console.error("Error fetcFhing tags:", error);
 		}
 	};
 
@@ -497,8 +497,8 @@ const Statement = () => {
 							<span>Valor Total:</span>
 						</div>
 						<div className="flex items-center justify-center w-full h-full">
-							<span className="text-4xl lg:text-5xl font-bold">
-								R$ {totalAmount  ? totalAmount.toFixed(2) : "0.00"}
+							<span className={`text-4xl lg:text-5xl font-bold` + (totalAmount < 0 ? " text-red-500" : "")}>
+								<span className="text-2xl">R$</span> {totalAmount  ? totalAmount.toFixed(2) : "0.00"}
 							</span>
 						</div>
 					</div>

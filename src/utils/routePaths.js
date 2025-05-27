@@ -9,11 +9,11 @@ const paths = {
     "/add-event": "Adicionar Evento",
     "/add-transport": "Adicionar Transporte",
     "/add-place": "Adicionar Local",
-    "/secretaria": "Secretaria",
+    "/secretary": "Secretaria",
     "/statement": "Tesouraria",
     "/unities": "Unidades",
     "/classes": "Classes",
-    "/eventos": "Eventos",
+    "/events": "Eventos",
     "/configurations": "Configurações",
     "/user-management": "Gerenciamento de Usuários",
 }
