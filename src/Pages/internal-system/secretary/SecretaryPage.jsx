@@ -3,7 +3,8 @@ import { FaSearch } from "react-icons/fa";
 import { MemberCard } from "../../../components/member-card/MemberCard";
 import EditModal from "../../../components/edit-modal/EditModal";
 import MemberModalController from "../../../components/member-modal-controller/MemberModalController";
-
+import { GiBroom } from "react-icons/gi";
+import { IoIosSearch } from "react-icons/io";
 
 const SecretaryPage = () => {
   const initialMemberData = [
@@ -27,6 +28,25 @@ const SecretaryPage = () => {
   const [members, setMembers] = useState(initialMemberData);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState(null);
+  const classes = [
+    { id: 1, name: "Amigo" },
+    { id: 2, name: "Companheiro" },
+    { id: 3, name: "Pesquisador" },
+    { id: 4, name: "Pioneiro" },
+    { id: 5, name: "Excurionista" },
+    { id: 6, name: "Guia" },
+  ];
+
+  const unities = [
+    { id: 1, name: "Panda" },
+    { id: 2, name: "Falcão" },
+    { id: 3, name: "Águia Real" },
+    { id: 4, name: "Tigre" },
+    { id: 5, name: "Raposa" },
+    { id: 6, name: "Urso" },
+    { id: 7, name: "Pantera" },
+    { id: 8, name: "Lobo" },
+  ];
 
   const handleEdit = (member) => {
     setSelectedMember(member);
@@ -53,18 +73,36 @@ const SecretaryPage = () => {
       <div className="flex justify-center">
         <div className="w-full max-w-10xl">
           <div className="flex space-x-4 bg-[#7C7C7C] p-4 rounded-md mb-6 h-24 items-center">
-            <Dropdown label="Unidade" />
-            <Dropdown label="Classe" />
-            <div className="flex-1 relative flex items-center">
-              <FaSearch
-                size={20}
-                className="absolute left-3 text-gray-400 pointer-events-none"
-              />
-              <input
-                type="text"
-                className="w-full rounded shadow-inner border border-gray-200 bg-white h-12 pl-10 pr-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                placeholder="Pesquisar..."
-              />
+            <Dropdown label="Unidade" options={unities} />
+            <Dropdown label="Classe" options={classes} />
+            <div>
+              <label className="text-white font-semibold">Nome</label>
+              <div className="flex-1 relative flex items-center">
+                <FaSearch
+                  size={20}
+                  className="absolute left-3 text-gray-400 pointer-events-none"
+                />
+                <input
+                  type="text"
+                  className="w-full rounded shadow-inner bg-white h-12 pl-10 pr-4 text-gray-700 outline-none"
+                  placeholder="Pesquisar..."
+                />
+            </div>
+
+            </div>
+            <div className="flex gap-2 mt-2 md:mt-6">
+              <button
+                onClick={"handleFilterTransactions"}
+                className="flex items-center justify-center h-10 px-2 border-2 rounded border-[#FCAE2D]"
+              >
+                <IoIosSearch size={24} color="#FCAE2D" />
+              </button>
+              <button
+                onClick={"handleClearFilters"}
+                className="flex items-center justify-center h-10 px-2 border-2 rounded border-[#f85858]"
+              >
+                <GiBroom size={24} color="#f85858" />
+              </button>
             </div>
           </div>
 
@@ -96,13 +134,19 @@ const SecretaryPage = () => {
   );
 };
 
-const Dropdown = ({ label }) => (
+const Dropdown = ({ label, options }) => (
   <div className="flex-1 relative">
+    <label className="text-white font-semibold">{label}</label>
     <div className="bg-white w-full px-4 py-2 rounded shadow-inner flex justify-between items-center cursor-pointer h-12">
-      <span className="text-gray-900 font-semibold">{label}</span>
-      <span className="w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center text-yellow-600 font-bold text-xs">
-        v
-      </span>
+      <select className="outline-none w-full bg-white text-gray-700 rounded h-full">
+        <option value="">Selecione uma {label}</option>
+        {options &&
+          options.map((option, index) => (
+            <option key={index} value={option.id}>
+              {option.name}
+            </option>
+          ))}
+      </select>
     </div>
   </div>
 );

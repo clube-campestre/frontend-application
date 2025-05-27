@@ -484,9 +484,9 @@ const Statement = () => {
 								</button>
 								<button
 									onClick={handleClearFilters}
-									className="flex items-center justify-center h-10 px-2 border-2 rounded border-[#be2c2c]"
+									className="flex items-center justify-center h-10 px-2 border-2 rounded border-[#f85858]"
 								>
-									<GiBroom size={24} color="#be2c2c" />
+									<GiBroom size={24} color="#f85858"/>
 								</button>
 							</div>
 						</div>

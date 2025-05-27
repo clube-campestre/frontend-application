@@ -144,7 +144,7 @@ export const MemberCard = ({ item, showModal, handleSelectMember }) => {
               }}
               className="text-gray-400 hover:text-gray-600"
             >
-              <FaTrash color="#FF0000" size={18} />
+              <FaTrash size={18} />
             </button>
           </div>
           {/* <div className="h-[90%] w-0.5 bg-[#EDEDED]"></div> */}

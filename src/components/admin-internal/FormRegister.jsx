@@ -51,7 +51,7 @@ const FormRegister = ({ formTitle, fields, onSubmit }) => {
 	};
 
 	const unmaskPhone = (value) => {
-		return value.replace(/\D/g, "");
+		return value ? value.replace(/\D/g, "") : "";
 	};
 
 	const handleChange = (id, valor) => {
