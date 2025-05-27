@@ -15,7 +15,7 @@ import { NavLink } from "react-router-dom";
 const menuItems = [
 	{ icon: FaHome, label: "Início", path: "/internal-home" },
 	{ icon: FaUserPlus, label: "Administração", path: "/admin" },
-	{ icon: LuFolderCheck, label: "Secretaria", path: "/secretaria" },
+	{ icon: LuFolderCheck, label: "Secretaria", path: "/secretary" },
 	{ icon: FaFileInvoiceDollar, label: "Tesouraria", path: "/statement" },
 	{ icon: FaUsers, label: "Unidades", path: "/unities" },
 	{ icon: GiCampingTent, label: "Classes", path: "/classes" },
