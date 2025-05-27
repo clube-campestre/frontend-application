@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { MemberCard } from "../../../components/member-card/MemberCard";
 import EditModal from "../../../components/edit-modal/EditModal";
-import MemberDetailsModal from "../../internal-system/secretary/ModalSecretary";
+import MemberModalController from "../../../components/member-modal-controller/MemberModalController";
+
 
 const SecretaryPage = () => {
   const initialMemberData = [
@@ -85,7 +86,7 @@ const SecretaryPage = () => {
         </div>
       </div>
       {isModalOpen && selectedMember && (
-        <MemberDetailsModal
+        <MemberModalController
           member={selectedMember}
           onClose={() => setIsModalOpen(false)}
           onSave={handleSave}
