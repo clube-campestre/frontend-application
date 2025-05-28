@@ -11,7 +11,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import EditModal from "../../../components/edit-modal/EditModal";
 import { api } from "../../../provider/api";
-import Swal from "sweetalert2";
+import Toast from "../../../utils/Toast";
 
 const Classes = () => {
   const [selectedClassName, setSelectedClassName] = useState(null);
@@ -20,13 +20,6 @@ const Classes = () => {
   const [selectedMember, setSelectedMember] = useState(null);
   const [members, setMembers] = useState([]);
   const [classInstructor, setClassInstructor] = useState(null);
-  const Toast = Swal.mixin({
-    toast: true,
-    position: "top",
-    showConfirmButton: false,
-    timer: 2500,
-    timerProgressBar: true,
-  });
 
   const classes = [
     { id: 1, name: "Amigo", logo: amigoImage },

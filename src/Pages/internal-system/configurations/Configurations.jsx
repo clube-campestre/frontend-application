@@ -7,20 +7,13 @@ import exitIcon from "../../../assets/icons/exit.svg";
 import logo from "../../../assets/images/logoDesbravadores.png";
 import AddUserModal from "./AddUserModal";
 import { getUser } from "../../../utils/authStorage";
-import Swal from "sweetalert2";
+import Toast from "../../../utils/Toast";
 import { api } from "../../../provider/api";
 
 const Configurations = () => {
 	const [editingUser, setEditingUser] = useState(null);
 	const [showModal, setShowModal] = useState(false);
 	const navigate = useNavigate();
-	const Toast = Swal.mixin({
-		toast: true,
-		position: "top",
-		showConfirmButton: false,
-		timer: 2500,
-		timerProgressBar: true,
-	});
 
 	useEffect(() => {
 		setEditingUser(getUser());

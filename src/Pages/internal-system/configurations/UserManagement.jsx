@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { FaPencilAlt, FaTrash, FaPlusCircle } from "react-icons/fa";
-import Swal from "sweetalert2";
+import Toast from "../../../utils/Toast";
 import AddUserModal from "./AddUserModal";
 import { api } from "../../../provider/api";
+import Swal from "sweetalert2";
 
 export default function UserManagement() {
 	const [users, setUsers] = useState([]);
@@ -10,14 +11,6 @@ export default function UserManagement() {
 	const [error, setError] = useState(null);
 	const [editingUser, setEditingUser] = useState(null);
 	const [showModal, setShowModal] = useState(false);
-
-	const Toast = Swal.mixin({
-		toast: true,
-		position: "top",
-		showConfirmButton: false,
-		timer: 2500,
-		timerProgressBar: true,
-	});
 
 	const fetchUsers = async () => {
 		try {

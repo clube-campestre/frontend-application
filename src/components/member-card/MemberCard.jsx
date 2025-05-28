@@ -2,18 +2,13 @@ import { FaPencilAlt, FaTrash, FaEye } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { getUser } from "../../utils/authStorage";
 import { api } from "../../provider/api";
+import Toast from "../../utils/Toast";
 import Swal from "sweetalert2";
+
 
 export const MemberCard = ({ item, showModal, handleSelectMember }) => {
   const navigate = useNavigate();
   const isUserAbbleToDelete = getUser().access !== "SUPERVISOR";
-  const Toast = Swal.mixin({
-    toast: true,
-    position: "top",
-    showConfirmButton: false,
-    timer: 2500,
-    timerProgressBar: true,
-  });
 
   const handleDeleteMember = (id) => {
     Swal.fire({

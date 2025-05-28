@@ -7,16 +7,9 @@ import EditModal from "../../../components/edit-modal/EditModal";
 import { IoIosSearch } from "react-icons/io";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import { GiBroom } from "react-icons/gi";
+import Toast from "../../../utils/Toast";
 
 const Statement = () => {
-	const Toast = Swal.mixin({
-		toast: true,
-		position: "top",
-		showConfirmButton: false,
-		timer: 2500,
-		timerProgressBar: true,
-	});
-
 	const [showAddModal, setShowAddModal] = useState(false);
 	const [showEditModal, setShowEditModal] = useState(false);
 	const [showTagModal, setShowTagModal] = useState(false);

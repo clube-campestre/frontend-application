@@ -13,9 +13,7 @@ import EditModal from "../../../components/edit-modal/EditModal";
 import MemberModal from "../../../components/member-manage/MemberModal";
 import { useEffect } from "react";
 import { api } from "../../../provider/api";
-import { getUser } from "../../../utils/authStorage";
-import Swal from "sweetalert2";
-import { SiAmazonsimpleemailservice } from "react-icons/si";
+import Toast from "../../../utils/Toast";
 
 const Unities = () => {
   const [selectedUnity, setSelectedUnity] = useState(null);
@@ -25,13 +23,6 @@ const Unities = () => {
   const [members, setMembers] = useState([]);
   const [unityPoints, setUnityPoints] = useState(null);
   const [unityCounselor, setUnityCounselor] = useState(null);
-  const Toast = Swal.mixin({
-    toast: true,
-    position: "top",
-    showConfirmButton: false,
-    timer: 2500,
-    timerProgressBar: true,
-  });
 
   const handleShowEditMemberModal = () => {
     setShowEditMemberModal(!showEditMemberModal);
