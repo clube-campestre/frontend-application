@@ -71,11 +71,11 @@ const SecretaryPage = () => {
   const handleFilterMembers = async () => {
     const params = {
       name: filters.name || "",
-      class: filters.classe || "",
+      classCategory: filters.classe || "",
       unity: filters.unidade || "",
     };
 
-    if (!params.name && !params.class && !params.unity) {
+    if (!params.name && !params.classCategory && !params.unity) {
       Toast.fire({
         icon: "info",
         title: "Por favor, insira pelo menos um filtro.",
@@ -145,7 +145,7 @@ const SecretaryPage = () => {
         },
       });
       setMembers(response.data.items || initialMemberData);
-      // setMembers(response.data.items);;
+      // setMembers(response.data.items);
       setPageSize(response.data.pageSize);
       setTotalItems(response.data.totalItems);
       setTotalPages(response.data.totalPages || 1);
@@ -342,7 +342,7 @@ const Dropdown = ({ label, options, handleFilters, filters }) => {
                 value={
                   key === "unidade"
                     ? option.name == "Águia Real"
-                      ? "AguiaReal"
+                      ? "aguia_real"
                       : option.name
                     : option.name.toUpperCase()
                 }

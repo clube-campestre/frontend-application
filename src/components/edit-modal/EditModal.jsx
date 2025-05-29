@@ -27,6 +27,8 @@ export default function EditModal({
 		});
 	};
 
+	console.log("Form data:", form);
+
 	const formatPhone = (value) => {
 		const cleaned = value.replace(/\D/g, "").slice(0, 11);
 		const match = cleaned.match(/^(\d{0,2})(\d{0,5})(\d{0,4})$/);
@@ -223,7 +225,7 @@ export default function EditModal({
 											required={field.required}
 										>
 											<option value="">
-												Selecione uma opção
+												{field.selectedOption || "Selecione uma opção"}
 											</option>
 											{field.options.map((option) => (
 												<option

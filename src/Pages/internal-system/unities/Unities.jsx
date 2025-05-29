@@ -19,6 +19,7 @@ const Unities = () => {
   const [selectedUnity, setSelectedUnity] = useState(null);
   const [showEditMemberModal, setShowEditMemberModal] = useState(false);
   const [showAddMemberModal, setShowAddMemberModal] = useState(false);
+  const [showAddUnityPointModal, setShowAddUnityPointModal] = useState(false);
   const [selectedMember, setSelectedMember] = useState(null);
   const [members, setMembers] = useState([]);
   const [unityPoints, setUnityPoints] = useState(null);
@@ -32,10 +33,42 @@ const Unities = () => {
     setSelectedMember(member);
   };
 
-  // NOVO: Função para abrir/fechar modal adicionar membro
   const handleShowAddMemberModal = () => {
     setShowAddMemberModal((prev) => !prev);
   };
+
+  const unities = [
+    { id: 1, name: "Panda", logo: pandaImage, points: 250 },
+    { id: 2, name: "Falcão", logo: falcaoImage, points: 115 },
+    { id: 3, name: "Águia Real", logo: aguiaRealImage, points: 42 },
+    { id: 4, name: "Tigre", logo: tigreImage, points: 65 },
+    { id: 5, name: "Raposa", logo: raposaImage, points: 76 },
+    { id: 6, name: "Urso", logo: ursoImage, points: 54 },
+    { id: 7, name: "Pantera", logo: panteraImage, points: 87 },
+    { id: 8, name: "Lobo", logo: loboImage, points: 120 },
+  ];
+
+  const unityPointsFields = [
+    {
+      name: "unity",
+      label: "Unidade",
+      placeholder: "Selecione a unidade",
+      type: "select",
+      options: unities.map((unity) => ({
+        value: unity.name,
+        label: unity.name,
+      })),
+      selectedOption: "Selecione uma unidade",
+      isRequired: true,
+    },
+    {
+      name: "points",
+      label: "Pontos da Unidade",
+      placeholder: "Digite os pontos da unidade",
+      type: "number",
+      isRequired: true,
+    },
+  ];
 
   const membersFields = [
     {
@@ -81,37 +114,6 @@ const Unities = () => {
       isRequired: true,
     },
   ];
-
-  const unities = [
-    { id: 1, name: "Panda", logo: pandaImage, points: 250 },
-    { id: 2, name: "Falcão", logo: falcaoImage, points: 115 },
-    { id: 3, name: "Águia Real", logo: aguiaRealImage, points: 42 },
-    { id: 4, name: "Tigre", logo: tigreImage, points: 65 },
-    { id: 5, name: "Raposa", logo: raposaImage, points: 76 },
-    { id: 6, name: "Urso", logo: ursoImage, points: 54 },
-    { id: 7, name: "Pantera", logo: panteraImage, points: 87 },
-    { id: 8, name: "Lobo", logo: loboImage, points: 120 },
-  ];
-
-  useEffect(() => {
-    const fetchMembers = async () => {
-      try {
-        if (selectedUnity === null) {
-          const response = await api.get(`/members`);
-          setMembers(response.data);
-        } else {
-          const response = await api.get(`/members/unit/${selectedUnity}`);
-          setMembers(response.data.members);
-          setUnityPoints(response.data.score);
-          setUnityCounselor(response.data.counselorName);
-        }
-      } catch (error) {
-        console.error("Error fetching members:", error);
-      }
-    };
-
-    fetchMembers();
-  }, [selectedUnity]);
 
   const mockMembers = [
     {
@@ -220,6 +222,26 @@ const Unities = () => {
     },
   ];
 
+  useEffect(() => {
+    const fetchMembers = async () => {
+      try {
+        if (selectedUnity === null) {
+          const response = await api.get(`/members`);
+          setMembers(response.data);
+        } else {
+          const response = await api.get(`/members/unit/${selectedUnity}`);
+          setMembers(response.data.members);
+          setUnityPoints(response.data.score);
+          setUnityCounselor(response.data.counselorName);
+        }
+      } catch (error) {
+        console.error("Error fetching members:", error);
+      }
+    };
+
+    fetchMembers();
+  }, [selectedUnity]);
+
   const handleEditMember = async (member) => {
     try {
       const response = await api.put(`/members/${member.id}`, member);
@@ -237,6 +259,59 @@ const Unities = () => {
         title: "Erro ao editar membro.",
       });
       console.error("Error editing member:", error);
+    }
+  };
+
+  const handleAddUnityPoint = async (data) => {
+    if (!data.unity || !data.points) {
+      Toast.fire({
+        icon: "error",
+        title: "Dados inválidos para adicionar pontuação.",
+      });
+      return;
+    }
+
+    if (data.points < 0) {
+      Toast.fire({
+        icon: "error",
+        title: "A pontuação não pode ser negativa.",
+      });
+      return;
+    }
+    
+    let unityName = data.unity.toLowerCase();
+
+    if (unityName === "águia real"){
+      unityName = "aguia_real";
+    } else if (unityName === "falcão") {
+      unityName = "falcao";
+    } else if (unityName === "leão") {
+      unityName = "leao";
+    }
+
+    try {
+      const response = await api.put(
+        "/units/score",
+        {},
+        {
+          params: {
+            unitName: unityName,
+            newScore: data.points,
+          },
+        }
+      );
+      if (response.status === 200) {
+        Toast.fire({
+          icon: "success",
+          title: "Pontuação adicionada com sucesso!",
+        });
+      }
+    } catch (error) {
+      Toast.fire({
+        icon: "error",
+        title: "Erro ao adicionar pontuação.",
+      });
+      console.error("Error adding unity point:", error);
     }
   };
 
@@ -281,10 +356,10 @@ const Unities = () => {
       <div className="flex flex-col items-center h-[65vh] w-full bg-[#EDEDED] rounded-[7px] shadow-md ">
         {/* Counselor Section */}
         <div className="flex items-center justify-between w-full p-4">
-			<div className="flex items-center gap-2">
+          <div className="flex items-center gap-2">
             {selectedUnity && (
-				<>
-				<div className="h-[5vh] w-2 bg-[#FCAE2D] rounded-full"></div>
+              <>
+                <div className="h-[5vh] w-2 bg-[#FCAE2D] rounded-full"></div>
                 <span className="text-2xl">Conselheiro(a):</span>
                 <span className="font-bold text-2xl">
                   {unityCounselor || "Indefinido"}
@@ -292,13 +367,23 @@ const Unities = () => {
               </>
             )}
           </div>
-          {selectedUnity && ( // Verifica se uma unidade foi selecionada
-            <button
-              className="flex items-center gap-2 px-4 py-2 bg-[#D9D9D9] text-[#021c4f] shadow-md rounded hover:bg-gray-400"
-              onClick={handleShowAddMemberModal}
-            >
-              Adicionar Membros <LuCirclePlus />
-            </button>
+          {selectedUnity && (
+            <>
+              <div className="flex gap-4">
+                <button
+                  className="flex items-center gap-2 px-2 py-2 bg-[#D9D9D9] text-[#021c4f] shadow-md rounded hover:bg-gray-400"
+                  onClick={handleShowAddMemberModal}
+                >
+                  Adicionar Membros <LuCirclePlus />
+                </button>
+                <button
+                  className="flex items-center gap-2 px-2 py-2 bg-[#D9D9D9] text-[#021c4f] shadow-md rounded hover:bg-gray-400"
+                  onClick={() => setShowAddUnityPointModal(true)}
+                >
+                  Adicionar Pontuação <LuCirclePlus />
+                </button>
+              </div>
+            </>
           )}
         </div>
 
@@ -344,14 +429,23 @@ const Unities = () => {
               }}
             />
           )}
-          {/* Add Member Modal */}
+          {showAddUnityPointModal && (
+            <EditModal
+              title="Adicionar Pontuação"
+              fields={unityPointsFields}
+              onClose={() => setShowAddUnityPointModal(false)}
+              onSubmit={(data) => {
+                handleAddUnityPoint(data);
+                setShowAddUnityPointModal(false);
+              }}
+            />
+          )}
           {showAddMemberModal && (
             <MemberModal
               members={mockMembers}
               unityId={selectedUnity}
               isOpen={showAddMemberModal}
               onClose={handleShowAddMemberModal}
-              // Sem callback pois modal é independente e não retorna dados
             />
           )}
         </div>

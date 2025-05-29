@@ -21,7 +21,7 @@ const goalAmount = 9000;
 const collectedAmount = 8325.6;
 const remainingAmount = goalAmount - collectedAmount;
 
-const normalizeSurname = (name) =>
+const normalizeSurname = (name) => 
   name
     ?.trim()
     .toLowerCase()
@@ -131,7 +131,7 @@ const InternalHome = () => {
             console.log(
               `Unidade: ${point.surname} | Normalizada: ${normalizedName} | Imagem: ${imageSrc}`
             );
-
+            
             return (
               <div
                 key={point.id ?? index}
