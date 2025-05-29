@@ -7,7 +7,6 @@ import Swal from "sweetalert2";
 
 
 export const MemberCard = ({ item, showModal, handleSelectMember }) => {
-  const navigate = useNavigate();
   const isUserAbbleToDelete = getUser().access !== "SUPERVISOR";
 
   const handleDeleteMember = (id) => {
@@ -131,7 +130,7 @@ export const MemberCard = ({ item, showModal, handleSelectMember }) => {
         <>
           <div className="flex items-center justify-center w-[10%]"
             onClick={(e) => {
-              e.stopPropagation(); // Impede a propagação do clique para a div do card
+              e.stopPropagation();
             }}>
             <button
               onClick={() => {

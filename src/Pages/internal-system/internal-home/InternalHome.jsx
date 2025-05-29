@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
+import { api } from "../../../provider/api";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -19,6 +20,7 @@ const InternalHome = () => {
 	const collectedAmount = 8325.6;
 	const remainingAmount = goalAmount - collectedAmount;
 	const percentage = ((collectedAmount / goalAmount) * 100).toFixed(1);
+	const [unities, setUnities] = useState([]);
 
 	const chartData = {
 		labels: ["Arrecadado", "Restante"],
@@ -53,6 +55,19 @@ const InternalHome = () => {
 		{ id: 7, name: "Urso", logo: ursoImage, points: 54 },
 		{ id: 8, name: "Águia Real", logo: aguiaRealImage, points: 42 },
 	];
+
+	const fetchUnities = async () => {
+		try {
+			const response = await api.get("/units/ranking");
+			setUnities(response.data);
+		} catch (error) {
+			console.error("Error fetching unities:", error);
+		}
+	}
+
+	useEffect(() => {
+		fetchUnities();
+	}, [])
 
 	return (
 		<div className="grid md:grid-cols-2 gap-6 ">
