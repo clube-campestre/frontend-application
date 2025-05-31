@@ -146,7 +146,10 @@ export const MemberCard = ({ item, showModal, handleSelectMember }) => {
       )}
 
       {/* Botão Detalhes */}
-      {/* <div className="flex items-center justify-center w-[10%]">
+      {/* <div className="flex items-center justify-center w-[10%]"
+       onClick={(e) => {
+              e.stopPropagation();
+            }}>
         <button
           onClick={() => {
             showModal();

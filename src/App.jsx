@@ -3,10 +3,11 @@ import { BrowserRouter, Routes, Route, Link } from "react-router";
 import Login from "./Pages/Login/Login";
 import Home from "./Pages/home/Home";
 import MainLayout from "./components/main-layout/MainLayout";
-import Admin from "./pages/internal-system/admin/Admin"
+import Admin from "./pages/internal-system/admin/Admin";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import InternalHome from "./Pages/internal-system/internal-home/InternalHome";
-import AddMembro from "./pages/internal-system/admin/AddMember"
+// import AddMembro from "./pages/internal-system/admin/AddMember"
+import AddMembro from "./pages/internal-system/admin/AddMemberPage"
 import AddEvento from "./pages/internal-system/admin/AddEvent"
 import AddTransport from "./Pages/internal-system/admin/AddTransport"
 import AddPlace from "./Pages/internal-system/admin/AddPlace"
