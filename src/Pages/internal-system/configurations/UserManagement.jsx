@@ -4,6 +4,7 @@ import Toast from "../../../utils/Toast";
 import AddUserModal from "./AddUserModal";
 import { api } from "../../../provider/api";
 import Swal from "sweetalert2";
+import { getUser } from "../../../utils/authStorage";
 
 export default function UserManagement() {
 	const [users, setUsers] = useState([]);
@@ -11,6 +12,14 @@ export default function UserManagement() {
 	const [error, setError] = useState(null);
 	const [editingUser, setEditingUser] = useState(null);
 	const [showModal, setShowModal] = useState(false);
+	const [isOwnUser, setIsOwnUser] = useState(false);
+
+	useEffect(() => {
+		const currentUser = getUser();
+		console.log("Current User:", currentUser);
+		console.log("Editing User:", editingUser);
+		setIsOwnUser(currentUser.userId === editingUser?.id);
+	}, [editingUser]);
 
 	const fetchUsers = async () => {
 		try {
@@ -191,6 +200,7 @@ export default function UserManagement() {
 					onClose={() => setShowModal(false)}
 					onUserAdded={handleAddUser}
 					editingUser={editingUser}
+					isOwnUser={isOwnUser}
 				/>
 			)}
 		</div>
