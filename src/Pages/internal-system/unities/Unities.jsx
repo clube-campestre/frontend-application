@@ -16,14 +16,15 @@ import { api } from "../../../provider/api";
 import Toast from "../../../utils/Toast";
 
 const Unities = () => {
-  const [selectedUnity, setSelectedUnity] = useState(null);
+  const [selectedUnit, setSelectedUnit] = useState(null);
+  const [selectedUnitName, setSelectedUnitName] = useState(null);
   const [showEditMemberModal, setShowEditMemberModal] = useState(false);
   const [showAddMemberModal, setShowAddMemberModal] = useState(false);
-  const [showAddUnityPointModal, setShowAddUnityPointModal] = useState(false);
+  const [showAddUnitPointModal, setShowAddUnitPointModal] = useState(false);
   const [selectedMember, setSelectedMember] = useState(null);
   const [members, setMembers] = useState([]);
-  const [unityPoints, setUnityPoints] = useState(null);
-  const [unityCounselor, setUnityCounselor] = useState(null);
+  const [unitPoints, setUnitPoints] = useState(null);
+  const [unitCounselor, setUnitCounselor] = useState(null);
 
   const handleShowEditMemberModal = () => {
     setShowEditMemberModal(!showEditMemberModal);
@@ -48,15 +49,15 @@ const Unities = () => {
     { id: 8, name: "Lobo", logo: loboImage, points: 120 },
   ];
 
-  const unityPointsFields = [
+  const unitPointsFields = [
     {
-      name: "unity",
+      name: "unit",
       label: "Unidade",
       placeholder: "Selecione a unidade",
       type: "select",
-      options: unities.map((unity) => ({
-        value: unity.name,
-        label: unity.name,
+      options: unities.map((unit) => ({
+        value: unit.name,
+        label: unit.name,
       })),
       selectedOption: "Selecione uma unidade",
       isRequired: true,
@@ -123,9 +124,9 @@ const Unities = () => {
       contact: "(11) 91234-5678",
       cpf: "123.456.789-00",
       responsibleContact: "(11) 99876-5432",
-      unity: "Panda",
-      unityId: 1,
-      unityRole: "Membro",
+      unit: "Panda",
+      unitId: 1,
+      unitRole: "Membro",
       classCategory: "Amigo",
       classRole: "Instrutor",
     },
@@ -136,9 +137,9 @@ const Unities = () => {
       contact: "(21) 93456-7890",
       cpf: "987.654.321-00",
       responsibleContact: "(21) 98765-4321",
-      unity: "Falcão",
-      unityId: 2,
-      unityRole: "Conselheiro",
+      unit: "Falcão",
+      unitId: 2,
+      unitRole: "Conselheiro",
       classCategory: "Amigo",
       classRole: "Instrutor Associado",
     },
@@ -149,9 +150,9 @@ const Unities = () => {
       contact: "(31) 90012-3456",
       cpf: "456.789.123-00",
       responsibleContact: "(31) 98888-7777",
-      unity: "Tigre",
-      unityId: 4,
-      unityRole: "Conselheiro Associado",
+      unit: "Tigre",
+      unitId: 4,
+      unitRole: "Conselheiro Associado",
       classCategory: "Amigo",
       classRole: "Membro",
     },
@@ -162,9 +163,9 @@ const Unities = () => {
       contact: "(71) 91111-2222",
       cpf: "321.654.987-00",
       responsibleContact: "(71) 97777-6666",
-      unity: "Lobo",
-      unityId: 8,
-      unityRole: "Conselheiro",
+      unit: "Lobo",
+      unitId: 8,
+      unitRole: "Conselheiro",
       classCategory: "Amigo",
       classRole: "Instrutor",
     },
@@ -175,9 +176,9 @@ const Unities = () => {
       contact: "(85) 93333-4444",
       cpf: "789.123.456-00",
       responsibleContact: "(85) 96666-5555",
-      unity: "Águia Real",
-      unityId: 3,
-      unityRole: "Conselheiro",
+      unit: "Águia Real",
+      unitId: 3,
+      unitRole: "Conselheiro",
       classCategory: "Amigo",
       classRole: "Instrutor",
     },
@@ -188,9 +189,9 @@ const Unities = () => {
       contact: "(85) 93333-4444",
       cpf: "789.123.456-00",
       responsibleContact: "(85) 96666-5555",
-      unity: "Águia Real",
-      unityId: 3,
-      unityRole: "Conselheiro",
+      unit: "Águia Real",
+      unitId: 3,
+      unitRole: "Conselheiro",
       classCategory: "Amigo",
       classRole: "Instrutor",
     },
@@ -201,9 +202,9 @@ const Unities = () => {
       contact: "(85) 93333-4444",
       cpf: "789.123.456-00",
       responsibleContact: "(85) 96666-5555",
-      unity: "Águia Real",
-      unityId: 3,
-      unityRole: "Conselheiro",
+      unit: "Águia Real",
+      unitId: 3,
+      unitRole: "Conselheiro",
       classCategory: "Amigo",
       classRole: "Instrutor",
     },
@@ -214,9 +215,9 @@ const Unities = () => {
       contact: "(85) 93333-4444",
       cpf: "789.123.456-00",
       responsibleContact: "(85) 96666-5555",
-      unity: "Águia Real",
-      unityId: 3,
-      unityRole: "Conselheiro",
+      unit: "Águia Real",
+      unitId: 3,
+      unitRole: "Conselheiro",
       classCategory: "Amigo",
       classRole: "Instrutor",
     },
@@ -225,14 +226,14 @@ const Unities = () => {
   useEffect(() => {
     const fetchMembers = async () => {
       try {
-        if (selectedUnity === null) {
+        if (selectedUnit === null) {
           const response = await api.get(`/members`);
           setMembers(response.data);
         } else {
-          const response = await api.get(`/members/unit/${selectedUnity}`);
+          const response = await api.get(`/members/unit/${selectedUnit}`);
           setMembers(response.data.members);
-          setUnityPoints(response.data.score);
-          setUnityCounselor(response.data.counselorName);
+          setUnitPoints(response.data.score);
+          setUnitCounselor(response.data.counselorName);
         }
       } catch (error) {
         console.error("Error fetching members:", error);
@@ -240,7 +241,7 @@ const Unities = () => {
     };
 
     fetchMembers();
-  }, [selectedUnity]);
+  }, [selectedUnit]);
 
   const handleEditMember = async (member) => {
     try {
@@ -250,7 +251,7 @@ const Unities = () => {
           icon: "success",
           title: "Membro editado com sucesso!",
         });
-        setSelectedUnity(null);
+        setSelectedUnit(null);
         handleShowEditMemberModal();
       }
     } catch (error) {
@@ -262,8 +263,31 @@ const Unities = () => {
     }
   };
 
-  const handleAddUnityPoint = async (data) => {
-    if (!data.unity || !data.points) {
+  const handleUpdateMemberUnit = async (members) => {
+    try {
+      await Promise.all(
+        members.map(async (member) => {
+          const response = await api.put(`/members/${member.id}`, member);
+          if (response.status === 200) {
+            Toast.fire({
+              icon: "success",
+              title: "Membro editado com sucesso!",
+            });
+          }
+          handleShowAddMemberModal();
+        })
+      );
+    } catch (error) {
+      Toast.fire({
+        icon: "error",
+        title: "Erro ao editar membro.",
+      });
+      console.error("Error editing member:", error);
+    }
+  };
+
+  const handleAddUnitPoint = async (data) => {
+    if (!data.unit || !data.points) {
       Toast.fire({
         icon: "error",
         title: "Dados inválidos para adicionar pontuação.",
@@ -279,14 +303,14 @@ const Unities = () => {
       return;
     }
     
-    let unityName = data.unity.toLowerCase();
+    let unitName = data.unit.toLowerCase();
 
-    if (unityName === "águia real"){
-      unityName = "aguia_real";
-    } else if (unityName === "falcão") {
-      unityName = "falcao";
-    } else if (unityName === "leão") {
-      unityName = "leao";
+    if (unitName === "águia real"){
+      unitName = "aguia_real";
+    } else if (unitName === "falcão") {
+      unitName = "falcao";
+    } else if (unitName === "leão") {
+      unitName = "leao";
     }
 
     try {
@@ -295,7 +319,7 @@ const Unities = () => {
         {},
         {
           params: {
-            unitName: unityName,
+            unitName: unitName,
             newScore: data.points,
           },
         }
@@ -311,7 +335,7 @@ const Unities = () => {
         icon: "error",
         title: "Erro ao adicionar pontuação.",
       });
-      console.error("Error adding unity point:", error);
+      console.error("Error adding unit point:", error);
     }
   };
 
@@ -320,28 +344,29 @@ const Unities = () => {
       {/* Header Section */}
       <div className="flex items-center justify-between w-full h-16 rounded-t-lg">
         <div className="flex items-center gap-2">
-          {unities.map((unity) => (
+          {unities.map((unit) => (
             <img
-              key={unity.id}
-              src={unity.logo || "/placeholder.svg"}
-              alt={`Unity ${unity.name}`}
+              key={unit.id}
+              src={unit.logo || "/placeholder.svg"}
+              alt={`Unit ${unit.name}`}
               className={`h-16 cursor-pointer transition-all ${
-                selectedUnity === unity.id
+                selectedUnit === unit.id
                   ? "h-20 grayscale-0"
                   : "h-12 grayscale"
               }`}
               onClick={() =>
-                setSelectedUnity(selectedUnity === unity.id ? null : unity.id)
+                setSelectedUnit(selectedUnit === unit.id ? null : unit.id) &&
+                setSelectedUnitName(selectedUnitName === unit.name ? null : unit.name)
               }
             />
           ))}
         </div>
         <div className="flex items-center gap-2 px-2 py-2 text-[#021c4f] bg-[#EDEDED] rounded">
-          {selectedUnity ? (
+          {selectedUnit ? (
             <>
               <span className="text-[20px] font-medium">PONTUAÇÃO</span>
               <span className="text-4xl font-extrabold">
-                {unityPoints || 0}
+                {unitPoints || 0}
               </span>
             </>
           ) : (
@@ -357,17 +382,17 @@ const Unities = () => {
         {/* Counselor Section */}
         <div className="flex items-center justify-between w-full p-4">
           <div className="flex items-center gap-2">
-            {selectedUnity && (
+            {selectedUnit && (
               <>
                 <div className="h-[5vh] w-2 bg-[#FCAE2D] rounded-full"></div>
                 <span className="text-2xl">Conselheiro(a):</span>
                 <span className="font-bold text-2xl">
-                  {unityCounselor || "Indefinido"}
+                  {unitCounselor || "Indefinido"}
                 </span>
               </>
             )}
           </div>
-          {selectedUnity && (
+          {selectedUnit && (
             <>
               <div className="flex gap-4">
                 <button
@@ -378,7 +403,7 @@ const Unities = () => {
                 </button>
                 <button
                   className="flex items-center gap-2 px-2 py-2 bg-[#D9D9D9] text-[#021c4f] shadow-md rounded hover:bg-gray-400"
-                  onClick={() => setShowAddUnityPointModal(true)}
+                  onClick={() => setShowAddUnitPointModal(true)}
                 >
                   Adicionar Pontuação <LuCirclePlus />
                 </button>
@@ -402,7 +427,7 @@ const Unities = () => {
           {mockMembers.length > 0 ? (
             mockMembers
               .filter(
-                (member) => !selectedUnity || member.unityId === selectedUnity
+                (member) => !selectedUnit || member.unitId === selectedUnit
               )
               .map((member) => (
                 <MemberCard
@@ -429,23 +454,28 @@ const Unities = () => {
               }}
             />
           )}
-          {showAddUnityPointModal && (
+          {showAddUnitPointModal && (
             <EditModal
               title="Adicionar Pontuação"
-              fields={unityPointsFields}
-              onClose={() => setShowAddUnityPointModal(false)}
+              fields={unitPointsFields}
+              onClose={() => setShowAddUnitPointModal(false)}
               onSubmit={(data) => {
-                handleAddUnityPoint(data);
-                setShowAddUnityPointModal(false);
+                handleAddUnitPoint(data);
+                setShowAddUnitPointModal(false);
               }}
             />
           )}
           {showAddMemberModal && (
             <MemberModal
               members={mockMembers}
-              unityId={selectedUnity}
+              unitId={selectedUnit}
+              unitName={selectedUnitName}
               isOpen={showAddMemberModal}
               onClose={handleShowAddMemberModal}
+              onConfirm={(selectedMembers) => {
+                console.log("Membros selecionados:", selectedMembers);
+                handleUpdateMemberUnit(selectedMembers)
+              }}
             />
           )}
         </div>
