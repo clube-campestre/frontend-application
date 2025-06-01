@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { api } from "../../../provider/api";
+import Toast from "../../../utils/Toast";
 import PersonalData from "./add-member-steps/PersonalData";
 import Address from "./add-member-steps/Address";
 import Sickness from "./add-member-steps/Sickness";
@@ -27,11 +29,116 @@ export default function CadastroMembro() {
     setEtapaAtual((prev) => Math.max(prev - 1, 1));
   };
 
-  const handleEnviar = () => {
-    alert("Dados enviados:\n" + JSON.stringify(formDados, null, 2));
-    console.log("Dados enviados:", formDados);
-    // Aqui você pode fazer o envio para sua API
+const handleEnviar = async () => {
+  // Ajuste CPF e CNS: só números
+  const cleanCpf = (formDados.cpf || "").replace(/\D/g, "");
+  const cleanContact = (formDados.contact || "").replace(/\D/g, "");
+  const cleanBirthCertificate = (formDados.birthCertificate || "").slice(0, 32);
+
+  // Monta o objeto address conforme SaveAddressRequestDto
+  const address = {
+    houseNumber: formDados.houseNumber,
+    district: formDados.district,
+    city: formDados.city,
+    state: formDados.state,
+    street: formDados.street,
+    cep: (formDados.cep || "").replace(/\D/g, ""),
+    referenceHouse: formDados.referenceHouse || ""
   };
+
+  // Monta o objeto medicalData conforme SaveMedicalDataRequestDto
+  const medicalData = {
+    cpf: cleanCpf,
+    cns: formDados.cns || "000000000000000", // valor default se não preenchido
+    agreement: formDados.agreement || "Publico", // valor default se não preenchido
+    bloodType: (formDados.blood_type || "").toUpperCase(),
+    catapora: formDados.catapora ?? false,
+    meningite: formDados.meningite ?? false,
+    hepatite: formDados.hepatite ?? false,
+    dengue: formDados.dengue ?? false,
+    pneumonia: formDados.pneumonia ?? false,
+    malaria: formDados.malaria ?? false,
+    febreAmarela: formDados.febreAmarela ?? false,
+    sarampo: formDados.sarampo ?? false,
+    tetano: formDados.tetano ?? false,
+    variola: formDados.variola ?? false,
+    coqueluche: formDados.coqueluche ?? false,
+    difteria: formDados.difteria ?? false,
+    rinite: formDados.rinite ?? false,
+    bronquite: formDados.bronquite ?? false,
+    asma: formDados.asma ?? false,
+    rubeola: formDados.rubeola ?? false,
+    colera: formDados.colera ?? false,
+    covid19: formDados.covid19 ?? false,
+    h1n1: formDados.h1n1 ?? false,
+    caxumba: formDados.caxumba ?? false,
+    others: formDados.others || "",
+    heartProblems: formDados.heartProblems || "",
+    drugAllergy: formDados.drugAllergy || "",
+    lactoseAllergy: formDados.lactoseAllergy ?? false,
+    deficiency: formDados.deficiency || "",
+    bloodTransfusion: formDados.bloodTransfusion ?? false,
+    skinAllergy: formDados.skinAllergy ?? false,
+    skinAllergyMedications: formDados.skinAllergyMedications || "",
+    faintingOrConvulsion: formDados.faintingOrConvulsion ?? false,
+    faintingOrSeizuresMedications: formDados.faintingOrSeizuresMedications || "",
+    psychologicalDisorder: formDados.psychologicalDisorder || "",
+    allergy: formDados.allergy ?? false,
+    allergyMedications: formDados.allergyMedications || "",
+    diabetic: formDados.diabetic ?? false,
+    diabeticMedications: formDados.diabeticMedications || "",
+    recentSeriousInjury: formDados.recentSeriousInjury ?? false,
+    recentFracture: formDados.recentFracture || "",
+    surgeries: formDados.surgeries || "",
+    hospitalizationReasonLast5Years: formDados.hospitalizationReasonLast5Years || ""
+  };
+
+  // Monta o objeto unit conforme esperado (id e surname)
+  // const unit = {
+  //   id: Number(formDados.unit),
+  //   surname: formDados.unitSurname || "" // ajuste conforme sua lógica
+  // };
+
+  // Monta o payload principal conforme MemberDataDtoRequest
+  const payload = {
+    idImage: formDados.idImage || "",
+    imagePath: formDados.imagePath || "",
+    username: formDados.username,
+    birthCertificate: cleanBirthCertificate,
+    cpf: cleanCpf,
+    issuingAuthority: formDados.issuingAuthority,
+    contact: cleanContact,
+    birthDate: formDados.birthDate,
+    sex: (formDados.sex || "").toUpperCase(),
+    tshirtSize: (formDados.tshirtSize || "").toUpperCase(),
+    // isBaptized: typeof formDados.isBaptized === "boolean" ? formDados.isBaptized : formDados.isBaptized === "true" ? true : false,
+    isBaptized: formDados.isBaptized || false,
+    address,
+    medicalData,
+    fatherName: formDados.fatherName || "",
+    fatherContact: formDados.fatherContact || "",
+    fatherEmail: formDados.fatherEmail || "",
+    motherName: formDados.motherName || "",
+    motherContact: formDados.motherContact || "",
+    motherEmail: formDados.motherEmail || "",
+    responsibleName: formDados.responsibleName || "",
+    responsibleContact: formDados.responsibleContact || "",
+    responsibleEmail: formDados.responsibleEmail || "",
+    unitRole: (formDados.unitRole || "").toUpperCase(),
+    unitId: Number(formDados.unit),
+    classCategory: (formDados.classCategory || "").toUpperCase(),
+    classRole: (formDados.classRole || "").toUpperCase()
+  };
+  alert('isBaptized', formDados.isBaptized || false)
+
+  await api.post("/members", payload);
+  Toast.fire({
+    icon: "success",
+    title: "Membro cadastrado com sucesso!",
+  });
+
+  
+};
 
 
   // // Exemplo de como enviar para a API a parte de salvar a imagem no google drive

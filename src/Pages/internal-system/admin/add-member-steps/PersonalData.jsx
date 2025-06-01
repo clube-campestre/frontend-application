@@ -15,19 +15,19 @@ function PersonalData({ dados, setDados }) {
         <div className="flex flex-col align-center justify-center items-center h-[90%] gap-3">
             <div className="flex flex-row justify-between items-center w-[85%] ">
                 <AddMemberInput
-                    id="nome"
+                    id="username"
                     type="text"
                     label="Nome"
-                    value={dados.nome || ""}
-                    onChange={(e) => setDados({ ...dados, nome: e.target.value })}
+                    value={dados.username || ""}
+                    onChange={(e) => setDados({ ...dados, username: e.target.value })}
                     className="h-[8vh] w-[30vw]"
                 />
                 <AddMemberInput
-                    id="certidaoDeNascimento"
+                    id="birthCertificate"
                     type="text"
                     label="Certidão de Nascimento"
-                    value={dados.certidaoDeNascimento || ""}
-                    onChange={(e) => setDados({ ...dados, certidaoDeNascimento: e.target.value })}
+                    value={dados.birthCertificate || ""}
+                    onChange={(e) => setDados({ ...dados, birthCertificate: e.target.value })}
                     className="h-[8vh] w-[22vw] "
                 />
             </div>
@@ -41,71 +41,72 @@ function PersonalData({ dados, setDados }) {
                     className="h-[8vh] w-[30vw]"
                 />
                 <AddMemberInput
-                    id="orgaoExpedidor"
+                    id="issuingAuthority"
                     type="text"
                     label="Órgão Expedidor"
-                    value={dados.orgaoExpedidor || ""}
-                    onChange={(e) => setDados({ ...dados, orgaoExpedidor: e.target.value })}
+                    value={dados.issuingAuthority || ""}
+                    onChange={(e) => setDados({ ...dados, issuingAuthority: e.target.value })}
                     className="h-[8vh] w-[22vw]"
                 />
             </div>
             <div className="flex flex-row justify-between items-center w-[85%]">
                 <AddMemberInput
-                    id="dataNascimento"
+                    id="birthDate"
                     type="date"
                     label="Data de Nascimento"
-                    value={dados.dataNascimento || ""}
-                    onChange={(e) => setDados({ ...dados, dataNascimento: e.target.value })}
+                    value={dados.birthDate || ""}
+                    onChange={(e) => setDados({ ...dados, birthDate: e.target.value })}
                     className="h-[8vh] w-[22vw]"
                 />
                 <AddMemberInput
-                    id="contato"
+                    id="contact"
                     type="text"
                     label="Contato"
-                    value={dados.contato || ""}
-                    onChange={(e) => setDados({ ...dados, contato: e.target.value })}
+                    value={dados.contact || ""}
+                    onChange={(e) => setDados({ ...dados, contact: e.target.value })}
                     className="h-[8vh] w-[30vw]"
                 />
             </div>
             <div className="flex flex-row justify-between items-center w-[85%]">
                 <AddMemberInput
-                    id="sexo"
+                    id="sex"
                     type="select"
                     options={[
-                        { value: "masculino", label: "Masculino" },
-                        { value: "feminino", label: "Feminino" },
+                        { value: "MASCULINO", label: "Masculino" },
+                        { value: "FEMININO", label: "Feminino" },
+                        { value: "OUTRO", label: "Outro" }
                     ]}
                     label="Sexo"
-                    value={dados.sexo || ""}
-                    onChange={(e) => setDados({ ...dados, sexo: e.target.value })}
+                    value={dados.sex || ""}
+                    onChange={(e) => setDados({ ...dados, sex: e.target.value })}
                     className="h-[8vh] w-[15vw]"
                 />
                 <AddMemberInput
-                    id="tamanhoCamiseta"
+                    id="tshirtSize"
                     type="select"
                     options={[
-                        { value: "pp", label: "PP" },
-                        { value: "p", label: "P" },
-                        { value: "m", label: "M" },
-                        { value: "g", label: "G" },
-                        { value: "gg", label: "GG" },
-                        { value: "xg", label: "XG" }
+                        { value: "PP", label: "PP" },
+                        { value: "P", label: "P" },
+                        { value: "M", label: "M" },
+                        { value: "G", label: "G" },
+                        { value: "GG", label: "GG" },
+                        { value: "XG", label: "XG" }
                     ]}
                     label="Tamanho da Camiseta"
-                    value={dados.tamanhoCamiseta || ""}
-                    onChange={(e) => setDados({ ...dados, tamanhoCamiseta: e.target.value })}
+                    value={dados.tshirtSize || ""}
+                    onChange={(e) => setDados({ ...dados, tshirtSize: e.target.value })}
                     className="h-[8vh] w-[15vw]"
                 />
                 <AddMemberInput
-                    id="batizado"
+                    id="isBaptized"
                     type="select"
                     options={[
                         { value: "true", label: "Sim" },
                         { value: "false", label: "Não" }
                     ]}
                     label="Batizado"
-                    value={dados.batizado || ""}
-                    onChange={(e) => setDados({ ...dados, batizado: e.target.value })}
+                    value={string(dados.isBaptized)}
+                    onChange={e => setDados({ ...dados, isBaptized: e.target.value === "true" })}
                     className="h-[8vh] w-[15vw]"
                 />
             </div>

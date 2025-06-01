@@ -17,57 +17,57 @@ function MemberGuardian({ dados, setDados }) {
           <>
             <div className="flex flex-row justify-between items-center w-[85%] ">
               <AddMemberInput
-                id="nomePai"
+                id="fatherName"
                 type="text"
                 label="Nome do Pai"
-                value={dados.nomePai || ""}
-                onChange={(e) => setDados({ ...dados, nomePai: e.target.value })}
+                value={dados.fatherName || ""}
+                onChange={(e) => setDados({ ...dados, fatherName: e.target.value })}
                 className="h-[8vh] w-full"
               />
             </div>
             <div className="flex flex-row justify-between items-center w-[85%]">
               <AddMemberInput
-                id="emailPai"
+                id="fatherEmail"
                 type="text"
                 label="Email do Pai"
-                value={dados.emailPai || ""}
-                onChange={(e) => setDados({ ...dados, emailPai: e.target.value })}
+                value={dados.fatherEmail || ""}
+                onChange={(e) => setDados({ ...dados, fatherEmail: e.target.value })}
                 className="h-[8vh] w-[30vw]"
               />
               <AddMemberInput
-                id="contatoPai"
+                id="fatherContact"
                 type="text"
                 label="Contato do Pai"
-                value={dados.contatoPai || ""}
-                onChange={(e) => setDados({ ...dados, contatoPai: e.target.value })}
+                value={dados.fatherContact || ""}
+                onChange={(e) => setDados({ ...dados, fatherContact: e.target.value })}
                 className="h-[8vh] w-[22vw]"
               />
             </div>
             <div className="flex flex-row justify-between items-center w-[85%] ">
               <AddMemberInput
-                id="nomeMae"
+                id="motherName"
                 type="text"
                 label="Nome da Mãe"
-                value={dados.nomeMae || ""}
-                onChange={(e) => setDados({ ...dados, nomeMae: e.target.value })}
+                value={dados.motherName || ""}
+                onChange={(e) => setDados({ ...dados, motherName: e.target.value })}
                 className="h-[8vh] w-full"
               />
             </div>
             <div className="flex flex-row justify-between items-center w-[85%]">
               <AddMemberInput
-                id="emailMae"
+                id="motherEmail"
                 type="text"
                 label="Email da Mãe"
-                value={dados.emailMae || ""}
-                onChange={(e) => setDados({ ...dados, emailMae: e.target.value })}
+                value={dados.motherEmail || ""}
+                onChange={(e) => setDados({ ...dados, motherEmail: e.target.value })}
                 className="h-[8vh] w-[30vw]"
               />
               <AddMemberInput
-                id="contatoMae"
+                id="motherContact"
                 type="text"
                 label="Contato da Mãe"
-                value={dados.contatoMae || ""}
-                onChange={(e) => setDados({ ...dados, contatoMae: e.target.value })}
+                value={dados.motherContact || ""}
+                onChange={(e) => setDados({ ...dados, motherContact: e.target.value })}
                 className="h-[8vh] w-[22vw]"
               />
             </div>
@@ -85,29 +85,29 @@ function MemberGuardian({ dados, setDados }) {
           <>
             <div className="flex flex-row justify-between items-center w-[85%] ">
               <AddMemberInput
-                id="nomeResponsavel"
+                id="responsibleName"
                 type="text"
                 label="Nome do Responsável"
-                value={dados.nomeResponsavel || ""}
-                onChange={(e) => setDados({ ...dados, nomeResponsavel: e.target.value })}
+                value={dados.responsibleName || ""}
+                onChange={(e) => setDados({ ...dados, responsibleName: e.target.value })}
                 className="h-[8vh] w-full"
               />
             </div>
             <div className="flex flex-row justify-between items-center w-[85%]">
               <AddMemberInput
-                id="emailResponsavel"
+                id="responsibleEmail"
                 type="text"
                 label="Email do Responsável"
-                value={dados.emailResponsavel || ""}
-                onChange={(e) => setDados({ ...dados, emailResponsavel: e.target.value })}
+                value={dados.responsibleEmail || ""}
+                onChange={(e) => setDados({ ...dados, responsibleEmail: e.target.value })}
                 className="h-[8vh] w-[30vw]"
               />
               <AddMemberInput
-                id="contatoResponsavel"
+                id="responsibleContact"
                 type="text"
                 label="Contato do Responsável"
-                value={dados.contatoResponsavel || ""}
-                onChange={(e) => setDados({ ...dados, contatoResponsavel: e.target.value })}
+                value={dados.responsibleContact || ""}
+                onChange={(e) => setDados({ ...dados, responsibleContact: e.target.value })}
                 className="h-[8vh] w-[22vw]"
               />
             </div>

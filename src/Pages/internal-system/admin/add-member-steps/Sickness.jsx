@@ -1,6 +1,30 @@
 import React, { useEffect } from "react";
 import SicknessCard from "../../../../components/sickness-card/SicknessCard";
 
+// Mapeamento: chave do JSON -> nome exibido
+const sicknessLabels = {
+  catapora: "Catapora",
+  meningite: "Meningite",
+  hepatite: "Hepatite",
+  dengue: "Dengue",
+  pneumonia: "Pneumonia",
+  malaria: "Malária",
+  febreAmarela: "Febre Amarela",
+  sarampo: "Sarampo",
+  tetano: "Tétano",
+  variola: "Varíola",
+  coqueluche: "Coqueluche",
+  difteria: "Difteria",
+  rinite: "Rinite",
+  bronquite: "Bronquite",
+  asma: "Asma",
+  rubeola: "Rubéola",
+  colera: "Cólera",
+  covid19: "Covid-19",
+  h1n1: "H1N1",
+  caxumba: "Caxumba",
+};
+
 const sicknessGroups = [
   [
     "catapora",
@@ -9,7 +33,7 @@ const sicknessGroups = [
     "dengue",
     "pneumonia",
     "malaria",
-    "febre amarela",
+    "febreAmarela",
   ],
   [
     "sarampo",
@@ -22,11 +46,11 @@ const sicknessGroups = [
   [
     "bronquite",
     "asma",
-    "rubéola",
+    "rubeola",
     "colera",
-    "covid-19",
-    "H1N1",
-    "caxumbba",
+    "covid19",
+    "h1n1",
+    "caxumba",
   ],
 ];
 
@@ -63,7 +87,10 @@ function Sickness({ dados, setDados }) {
           {sicknessGroups.map((group, idx) => (
             <SicknessCard
               key={idx}
-              sicknessList={group}
+              sicknessList={group.map((key) => ({
+                key,
+                label: sicknessLabels[key] || key,
+              }))}
               values={dados.sickness || {}}
               onChange={handleSicknessChange}
             />
