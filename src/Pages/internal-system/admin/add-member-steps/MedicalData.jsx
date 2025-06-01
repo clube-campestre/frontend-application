@@ -72,44 +72,32 @@ function MedicalData({ dados, setDados }) {
 							"Motivo de internação nos últimos 5 anos:",
 						]}
 						onChange={(respostas) => {
-							setDados({
+							const novosDados = {
 								...dados,
-								heartProblems: respostas[0]?.value
-									? respostas[0]?.extra || "Sim"
-									: "",
-								drugAllergy: respostas[1]?.value
-									? respostas[1]?.extra || "Sim"
-									: "",
+								heartProblems: respostas[0]?.value ? respostas[0]?.extra || "Sim" : "",
+								drugAllergy: respostas[1]?.value ? respostas[1]?.extra || "Sim" : "",
 								lactoseAllergy: respostas[2]?.value ?? false,
-								deficiency: respostas[3]?.value
-									? respostas[3]?.extra || "Sim"
-									: "",
+								deficiency: respostas[3]?.value ? respostas[3]?.extra || "Sim" : "",
 								bloodTransfusion: respostas[4]?.value ?? false,
 								skinAllergy: respostas[5]?.value ?? false,
-								skinAllergyMedications:
-									respostas[5]?.extra || "",
-								faintingOrConvulsion:
-									respostas[6]?.value ?? false,
-								faintingOrSeizuresMedications:
-									respostas[6]?.extra || "",
-								psychologicalDisorder: respostas[7]?.value
-									? respostas[7]?.extra || "Sim"
-									: "",
+								skinAllergyMedications: respostas[5]?.extra || "",
+								faintingOrConvulsion: respostas[6]?.value ?? false,
+								faintingOrSeizuresMedications: respostas[6]?.extra || "",
+								psychologicalDisorder: respostas[7]?.value ? respostas[7]?.extra || "Sim" : "",
 								allergy: respostas[8]?.value ?? false,
 								allergyMedications: respostas[8]?.extra || "",
 								diabetic: respostas[9]?.value ?? false,
 								diabeticMedications: respostas[9]?.extra || "",
-								recentSeriousInjury:
-									respostas[10]?.value ?? false,
-								recentFracture: respostas[11]?.value
-									? respostas[11]?.extra || "Sim"
-									: "",
-								surgeries: respostas[12]?.value
-									? respostas[12]?.extra || "Sim"
-									: "",
-								hospitalizationReasonLast5Years:
-									respostas[13]?.extra || "",
-							});
+								recentSeriousInjury: respostas[10]?.value ?? false,
+								recentFracture: respostas[11]?.value ? respostas[11]?.extra || "Sim" : "",
+								surgeries: respostas[12]?.value ? respostas[12]?.extra || "Sim" : "",
+								hospitalizationReasonLast5Years: respostas[13]?.extra || "",
+								};
+
+								// Só atualiza se mudou de verdade
+								if (JSON.stringify(novosDados) !== JSON.stringify(dados)) {
+								setDados(novosDados);
+								}
 						}}
 					/>
 				</div>
