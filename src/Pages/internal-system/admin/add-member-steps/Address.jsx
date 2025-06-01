@@ -34,11 +34,11 @@ function Address({ dados, setDados }) {
             
             // Depois de receber data da API:
             const novosDados = {
-            logradouro: data.logradouro,
-            complemento: data.complemento,
-            bairro: data.bairro,
-            cidade: data.localidade,
-            estado: data.uf,
+            street: data.logradouro,
+            complement: data.bairro,
+            district: data.district,
+            city: data.localidade,
+            state: data.uf,
             cep: formatCep(cepNumerico),
             };
             console.log("Atualizando dados com:", novosDados);
@@ -90,70 +90,70 @@ function Address({ dados, setDados }) {
                         className="h-[8vh] w-[17vw]"
                     />
                     <AddMemberInput
-                        id="house_number"
+                        id="houseNumber"
                         type="text"
                         label="Número"
-                        value={dados.house_number || ""}
-                        onChange={(e) => handleChange("house_number", e.target.value)}
-                        onBlur={(e) => handleBlur("house_number", e.target.value)}
+                        value={dados.houseNumber || ""}
+                        onChange={(e) => handleChange("houseNumber", e.target.value)}
+                        onBlur={(e) => handleBlur("houseNumber", e.target.value)}
                         className="h-[8vh] w-[12vw]"
                     />
                     <AddMemberInput
-                        id="complemento"
+                        id="complement"
                         type="text"
                         label="Complemento"
-                        value={dados.complemento || ""}
-                        onChange={(e) => handleChange("complemento", e.target.value)}
+                        value={dados.complement || ""}
+                        onChange={(e) => handleChange("complement", e.target.value)}
                         className="h-[8vh] w-[22vw] "
                     />
                 </div>
                 <div className="flex flex-row justify-between items-center w-[85%]">
                     <AddMemberInput
-                        id="bairro"
+                        id="district"
                         type="text"
                         label="Bairro"
-                        value={dados.bairro || ""}
-                        onChange={(e) => handleChange("bairro", e.target.value)}
+                        value={dados.district || ""}
+                        onChange={(e) => handleChange("district", e.target.value)}
                         className="h-[8vh] w-[30vw]"
-                        disabled={isEndereco("bairro") && isLoadingCep}
+                        disabled={isEndereco("district") && isLoadingCep}
                     />
                     <AddMemberInput
-                        id="estado"
+                        id="state"
                         type="text"
                         label="Estado"
-                        value={dados.estado || ""}
-                        onChange={(e) => handleChange("estado", e.target.value)}
+                        value={dados.state || ""}
+                        onChange={(e) => handleChange("state", e.target.value)}
                         className="h-[8vh] w-[22vw]"
-                        disabled={isEndereco("estado") && isLoadingCep}
+                        disabled={isEndereco("state") && isLoadingCep}
                     />
                 </div>
                 <div className="flex flex-row justify-between items-center w-[85%]">
                     <AddMemberInput
-                        id="cidade"
+                        id="city"
                         type="text"
                         label="Cidade"
-                        value={dados.cidade || ""}
-                        onChange={(e) => handleChange("cidade", e.target.value)}
+                        value={dados.city || ""}
+                        onChange={(e) => handleChange("city", e.target.value)}
                         className="h-[8vh] w-[22vw]"
-                        disabled={isEndereco("cidade") && isLoadingCep}
+                        disabled={isEndereco("city") && isLoadingCep}
                     />
                     <AddMemberInput
-                        id="logradouro"
+                        id="street"
                         type="text"
                         label="Logradouro"
-                        value={dados.logradouro || ""}
-                        onChange={(e) => handleChange("logradouro", e.target.value)}
+                        value={dados.street || ""}
+                        onChange={(e) => handleChange("street", e.target.value)}
                         className="h-[8vh] w-[30vw]"
-                        disabled={isEndereco("logradouro") && isLoadingCep}
+                        disabled={isEndereco("street") && isLoadingCep}
                     />
                 </div>
                 <div className="flex flex-row justify-between items-center w-[85%]">
                     <AddMemberInput
-                        id="referencia"
+                        id="referenceHouse"
                         type="text"
                         label="Referência"
-                        value={dados.referencia || ""}
-                        onChange={(e) => handleChange("referencia", e.target.value)}
+                        value={dados.referenceHouse || ""}  
+                        onChange={(e) => handleChange("referenceHouse", e.target.value)}
                         className="h-[8vh] w-full"
                     />
                 </div>

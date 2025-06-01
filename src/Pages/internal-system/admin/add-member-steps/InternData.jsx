@@ -16,78 +16,78 @@ function InternData({ dados, setDados }) {
             <div className="flex flex-col justify-between items-center gap-5">
                 {/* ...existing AddMemberInput components... */}
                 <AddMemberInput
-                    id="unidade"
+                    id="unit"
                     type="select"
                     options={[
-                        { value: "panda", label: "Panda" },
-                        { value: "falcao", label: "Falção" },
-                        { value: "lince", label: "Lince" },
-                        { value: "leao", label: "Leão" },
-                        { value: "aguia_real", label: "Águia Real" },
-                        { value: "tigre", label: "Tigre" },
-                        { value: "raposa", label: "Raposa" },
-                        { value: "urso", label: "Urso" },
-                        { value: "pantera", label: "Pantera" },
-                        { value: "lobo", label: "Lobo" },
+                        { value: 1, label: "Panda" },
+                        { value: 2, label: "Falção" },
+                        { value: 3, label: "Lince" },
+                        { value: 4, label: "Leão" },
+                        { value: 5, label: "Águia Real" },
+                        { value: 6, label: "Tigre" },
+                        { value: 7, label: "Raposa" },
+                        { value: 8, label: "Urso" },
+                        { value: 9, label: "Pantera" },
+                        { value: 10, label: "Lobo" },
                     ]}
                     label="Unidade"
-                    value={dados.unidade || ""}
-                    onChange={(e) => setDados({ ...dados, unidade: e.target.value })}
+                    value={dados.unit || ""}
+                    onChange={(e) => setDados({ ...dados, unit: e.target.value })}
                     className="h-[8vh] w-[20vw]"
                 />
                 {/* ...outros AddMemberInput... */}
                 <AddMemberInput
-                    id="unity_role"
+                    id="unitRole"
                     type="select"
                     options={[
-                        { value: "conselheiro", label: "Conselheiro" },
-                        { value: "conselheiro_auxiliar", label: "Conselheiro Auxiliar" },
-                        { value: "capitao", label: "Capitão" },
-                        { value: "vice_capitao", label: "Vice-Capitão" },
-                        { value: "secretario", label: "Secretário" },
-                        { value: "vice-secretario", label: "Vice-Secretário" },
-                        { value: "padioleiro", label: "Padioleiro" },
-                        { value: "capelao", label: "Capelão" },
-                        { value: "almo_xarifado", label: "Almoxarifado" },
-                        { value: "member", label: "Membro" }
+                        { value: "CONSELHEIRO", label: "Conselheiro" },
+                        { value: "CONSELHEIRO_AUXILIAR", label: "Conselheiro Auxiliar" },
+                        { value: "CAPITAO", label: "Capitão" },
+                        { value: "VICE_CAPITAO", label: "Vice-Capitão" },
+                        { value: "SECRETARIO", label: "Secretário" },
+                        { value: "VICE_SECRETARIO", label: "Vice-Secretário" },
+                        { value: "PADIOLEIRO", label: "Padioleiro" },
+                        { value: "CAPELAO", label: "Capelão" },
+                        { value: "ALMOXARIFADO", label: "Almoxarifado" },
+                        { value: "MEMBRO", label: "Membro" }
                     ]}
                     label="Função na Unidade"
-                    value={dados.unity_role || ""}
-                    onChange={(e) => setDados({ ...dados, unity_role: e.target.value })}
+                    value={dados.unitRole || ""}
+                    onChange={(e) => setDados({ ...dados, unitRole: e.target.value })}
                     className="h-[8vh] w-[20vw]"
                 />
                 <AddMemberInput
-                    id="class_category"
+                    id="classCategory"
                     type="select"
                     options={[
-                        { value: "amigo", label: "Amigo" },
-                        { value: "companheiro", label: "Companheiro" },
-                        { value: "pesquisador", label: "Pesquisador" },
-                        { value: "pioneiro", label: "Pioneiro" },
-                        { value: "excursionista", label: "Excursionista" },
-                        { value: "guia", label: "Guia" },
-                        { value: "agrupadas", label: "Agrupadas" },
-                        { value: "desbravadores-completo", label: "Desbravadores Completo" },
-                        { value: "lider", label: "Líder" },
-                        { value: "lider_master", label: "Líder Master" },
-                        { value: "lider_master_avancado", label: "Líder Master Avançado" }
+                        { value: "AMIGO", label: "Amigo" },
+                        { value: "COMPANHEIRO", label: "Companheiro" },
+                        { value: "PESQUISADOR", label: "Pesquisador" },
+                        { value: "PIONEIRO", label: "Pioneiro" },
+                        { value: "EXCURSIONISTA", label: "Excursionista" },
+                        { value: "GUIA", label: "Guia" },
+                        { value: "AGRUPADAS", label: "Agrupadas" },
+                        { value: "DESBRAVADORES_COMPLETO", label: "Desbravadores Completo" },
+                        { value: "LIDER", label: "Líder" },
+                        { value: "LIDER_MASTER", label: "Líder Master" },
+                        { value: "LIDER_MASTER_AVANCADO", label: "Líder Master Avançado" }
                     ]}
                     label="Categoria da Classe"
-                    value={dados.class_category || ""}
-                    onChange={(e) => setDados({ ...dados, class_category: e.target.value })}
+                    value={dados.classCategory || ""}
+                    onChange={(e) => setDados({ ...dados, classCategory: e.target.value })}
                     className="h-[8vh] w-[20vw]"
                 />
                 <AddMemberInput
-                    id="class_role"
+                    id="classRole"
                     type="select"
                     options={[
-                        { value: "instrutor", label: "Instrutor" },
-                        { value: "instrutor_auxiliar", label: "Instrutor Auxiliar" },
-                        { value: "meber", label: "Membro" }
+                        { value: "INSTRUTOR", label: "Instrutor" },
+                        { value: "INSTRUTOR_AUXILIAR", label: "Instrutor Auxiliar" },
+                        { value: "MEMBRO", label: "Membro" }
                     ]}
                     label="Função na Classe"
-                    value={dados.class_role || ""}
-                    onChange={(e) => setDados({ ...dados, class_role: e.target.value })}
+                    value={dados.classRole || ""}
+                    onChange={(e) => setDados({ ...dados, classRole: e.target.value })}
                     className="h-[8vh] w-[20vw]"
                 />
             </div>

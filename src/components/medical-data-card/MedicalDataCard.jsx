@@ -64,38 +64,34 @@ const styles = {
 };
 
 const MedicalDataCard = ({ questions, onChange }) => {
-  const [answers, setAnswers] = useState(
-    questions.map(() => ({ value: null, extra: "" }))
-  );
+    const [answers, setAnswers] = useState(
+        questions.map(() => ({ value: null, extra: "" }))
+    );
 
-  useEffect(() => {
-    const result = answers.map((ans, idx) => {
-      if (ans.value === "sim") {
-        return { question: questions[idx], answer: "sim", extra: ans.extra };
-      }
-      if (ans.value === "nao") {
-        return { question: questions[idx], answer: "nao", extra: null };
-      }
-      return null;
-    });
+    useEffect(() => {
+    // Transforma para o formato esperado pelo MedicalData.jsx
+    const result = answers.map((ans) => ({
+        value: ans.value === "sim" ? true : ans.value === "nao" ? false : null,
+        extra: ans.value === "sim" ? ans.extra : ""
+    }));
     onChange && onChange(result);
-  }, [answers, questions, onChange]);
+    }, [answers, onChange]);
 
-  const handleChange = (idx, value) => {
-    setAnswers(prev =>
-      prev.map((ans, i) =>
-        i === idx ? { value, extra: value === "sim" ? ans.extra : "" } : ans
-      )
-    );
-  };
+    const handleChange = (idx, value) => {
+        setAnswers(prev =>
+        prev.map((ans, i) =>
+            i === idx ? { value, extra: value === "sim" ? ans.extra : "" } : ans
+        )
+        );
+    };
 
-  const handleExtraChange = (idx, text) => {
-    setAnswers(prev =>
-      prev.map((ans, i) =>
-        i === idx ? { ...ans, extra: text } : ans
-      )
-    );
-  };
+    const handleExtraChange = (idx, text) => {
+        setAnswers(prev =>
+        prev.map((ans, i) =>
+            i === idx ? { ...ans, extra: text } : ans
+        )
+        );
+    };
 
   return (
       <div style={styles.questionsGrid}>

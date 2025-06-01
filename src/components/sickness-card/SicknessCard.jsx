@@ -1,9 +1,9 @@
 import React from "react";
 
 const SicknessCard = ({ sicknessList = [], values = {}, onChange }) => {
-  const handleChange = (sickness, value) => {
+  const handleChange = (sicknessKey, value) => {
     if (onChange) {
-      onChange(sickness, value === true);
+      onChange(sicknessKey, value === true);
     }
   };
 
@@ -17,17 +17,17 @@ const SicknessCard = ({ sicknessList = [], values = {}, onChange }) => {
         </tr>
       </thead>
       <tbody>
-        {sicknessList.map((sickness, idx) => (
-          <tr key={sickness}>
-            <td className="bg-white" style={{ border: "1px solid #ccc", padding: "8px" }}>{sickness}</td>
+        {sicknessList.map(({ key, label }) => (
+          <tr key={key}>
+            <td className="bg-white" style={{ border: "1px solid #ccc", padding: "8px" }}>{label}</td>
             <td className="bg-white" style={{ border: "1px solid #ccc", textAlign: "center" }}>
               <label className="inline-flex items-center cursor-pointer">
                 <input
                   type="radio"
-                  name={sickness}
+                  name={key}
                   value={true}
-                  checked={values[sickness] === true}
-                  onChange={() => handleChange(sickness, true)}
+                  checked={values[key] === true}
+                  onChange={() => handleChange(key, true)}
                   className="peer sr-only"
                 />
                 <span className="w-6 h-6 rounded-full flex items-center justify-center bg-[#666666] peer-checked:bg-amber-400 peer-checked:ring-2 peer-checked:ring-amber-400"></span>
@@ -37,10 +37,10 @@ const SicknessCard = ({ sicknessList = [], values = {}, onChange }) => {
               <label className="inline-flex items-center cursor-pointer">
                 <input
                   type="radio"
-                  name={sickness}
+                  name={key}
                   value={false}
-                  checked={values[sickness] === false}
-                  onChange={() => handleChange(sickness, false)}
+                  checked={values[key] === false}
+                  onChange={() => handleChange(key, false)}
                   className="peer sr-only"
                 />
                 <span className="w-6 h-6 rounded-full flex items-center justify-center bg-[#666666] peer-checked:bg-amber-400 peer-checked:ring-2 peer-checked:ring-amber-400"></span>
