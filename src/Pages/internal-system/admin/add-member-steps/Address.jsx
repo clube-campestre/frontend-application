@@ -35,8 +35,7 @@ function Address({ dados, setDados }) {
             // Depois de receber data da API:
             const novosDados = {
             street: data.logradouro,
-            complement: data.bairro,
-            district: data.district,
+            district: data.bairro,
             city: data.localidade,
             state: data.uf,
             cep: formatCep(cepNumerico),
