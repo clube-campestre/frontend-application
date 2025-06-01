@@ -26,7 +26,7 @@ const Classes = () => {
     { id: 2, name: "Companheiro", logo: companheiroImage },
     { id: 3, name: "Pesquisador", logo: pesquisadorImage },
     { id: 4, name: "Pioneiro", logo: pioneiroImage },
-    { id: 5, name: "Excurionista", logo: excursionistaImage },
+    { id: 5, name: "Excusionista", logo: excursionistaImage },
     { id: 6, name: "Guia", logo: guiaImage },
   ];
 
@@ -238,6 +238,29 @@ const Classes = () => {
     }
   };
 
+    const handleUpdateMemberUnit = async (members) => {
+    try {
+      await Promise.all(
+        members.map(async (member) => {
+          const response = await api.put(`/members/${member.id}`, member);
+          if (response.status === 200) {
+            Toast.fire({
+              icon: "success",
+              title: "Membro editado com sucesso!",
+            });
+          }
+          handleShowAddMemberModal();
+        })
+      );
+    } catch (error) {
+      Toast.fire({
+        icon: "error",
+        title: "Erro ao editar membro.",
+      });
+      console.error("Error editing member:", error);
+    }
+  };
+
   return (
     <div className="flex flex-col items-center justify-self-center justify-around h-[82vh] w-[80vw]">
       {/* Header Section */}
@@ -339,7 +362,10 @@ const Classes = () => {
               className={selectedClassName}
               isOpen={showAddMemberModal}
               onClose={handleShowAddMemberModal}
-              // Sem callback pois modal é independente e não retorna dados
+              onConfirm={(selectedMembers) => {
+                console.log("Membros selecionados:", selectedMembers);
+                handleUpdateMemberUnit(selectedMembers)
+              }}
             />
           )}
         </div>

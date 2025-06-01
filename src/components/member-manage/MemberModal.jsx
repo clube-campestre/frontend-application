@@ -5,10 +5,17 @@ import { api } from "../../provider/api";
 import Swal from "sweetalert2";
 import React, { useState } from "react";
 
-function MemberModal({ members, unityId, className, onConfirm, onClose }) {
+function MemberModal({ members, unitId, unitName, className, onConfirm, onClose }) {
+  console.log("Membros" ,members)
+  console.log('Unidade', unitName)
+  console.log('Classe', className )
   // Filtra os membros que não pertencem à unidade selecionada
   const [availableMembers, setAvailableMembers] = useState(
-    members.filter((member) => member.unityId !== unityId) || members.filter((member) => member.classCategory !== className)
+    members.filter(
+      (member) =>
+        (unitId && member.unitId !== unitId) ||
+        (className && member.classCategory !== className)
+    )
   );
 
   // Estado para armazenar os membros selecionados
@@ -19,7 +26,7 @@ function MemberModal({ members, unityId, className, onConfirm, onClose }) {
 
   // Função para selecionar um membro da lista de disponíveis
   const handleSelectMember = (id) => {
-    const memberToSelect = availableMembers.find((m) => m.id === id);
+    const memberToSelect = availableMembers.find((m) => m.id === id); 
     if (memberToSelect) {
       // Adiciona o membro à lista de selecionados
       setSelectedMembers((prev) => [...prev, memberToSelect]);
@@ -29,7 +36,7 @@ function MemberModal({ members, unityId, className, onConfirm, onClose }) {
   };
 
   // Função para remover um membro da lista de selecionados
-  const handleDeselectMember = (id) => {
+  const handleDeselectMember = (id) => {  
     const memberToDeselect = selectedMembers.find((m) => m.id === id);
     if (memberToDeselect) {
       // Adiciona o membro de volta à lista de disponíveis
@@ -44,7 +51,7 @@ function MemberModal({ members, unityId, className, onConfirm, onClose }) {
     // Atualiza os membros selecionados com o ID da unidade
     const updatedMembers = selectedMembers.map((m) => ({
       ...m,
-      unityId: unityId || m.unityId,
+      unitId: unitId || m.unitId,
       classCategory: className || m.classCategory,
       className,
     }));
@@ -127,7 +134,7 @@ function MemberModal({ members, unityId, className, onConfirm, onClose }) {
         {/* Lista de membros selecionados */}
         <div className="w-1/2 max-h-full overflow-y-auto border border-gray-300 rounded p-3 flex flex-col">
           <div className="flex justify-between items-center mb-3">
-            <h3 className="font-semibold">Membros selecionados</h3>
+            <h3 className="font-semibold">Adicionando em {unitName || className}</h3>
             {/* Botão de confirmar */}
             <button
               onClick={handleConfirm} // Confirma a seleção ao clicar
