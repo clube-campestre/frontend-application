@@ -71,9 +71,11 @@ function MedicalData({ dados, setDados }) {
 							"Passou por cirurgias? Se sim, quais?",
 							"Motivo de internação nos últimos 5 anos:",
 						]}
+						answers={dados.medicalAnswers} // <-- Passa as respostas salvas
 						onChange={(respostas) => {
 							const novosDados = {
 								...dados,
+   								medicalAnswers: respostas, // <-- Salva todas as respostas
 								heartProblems: respostas[0]?.value ? respostas[0]?.extra || "Sim" : "",
 								drugAllergy: respostas[1]?.value ? respostas[1]?.extra || "Sim" : "",
 								lactoseAllergy: respostas[2]?.value ?? false,

@@ -91,6 +91,7 @@ const InternalHome = () => {
     const fetchPoints = async () => {
       try {
         const response = await api.get("/units/ranking");
+        console.log('RANKING', response.data)
         setPoints(response.data);
       } catch (error) {
         console.error("Erro ao buscar pontos:", error);
@@ -178,3 +179,19 @@ const InternalHome = () => {
 };
 
 export default InternalHome;
+
+
+function Home() {
+  const [contador, setContador] = useState(0);
+  const incrmentear = () => {
+    setContador(contador + 1);
+    console.log("Valor após setState:", contador)
+  };
+
+  return (
+    <div>
+      <p>Contador: {contador}</p>
+      <button onClick={incrmentear}> Incrementar</button>
+    </div>
+  );
+}

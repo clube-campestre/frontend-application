@@ -68,7 +68,7 @@ function Address({ dados, setDados }) {
 
 
     useEffect(() => {
-        console.log("✅ dados atualizados:", dados);
+       
     }, [dados]);
 
     return (

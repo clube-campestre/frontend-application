@@ -230,7 +230,7 @@ const Unities = () => {
           const response = await api.get(`/members`);
           setMembers(response.data);
         } else {
-          const response = await api.get(`/members/unit/${selectedUnit}`);
+          const response = await api.get(`/members/unit/${selectedUnitName}`);
           setMembers(response.data.members);
           setUnitPoints(response.data.score);
           setUnitCounselor(response.data.counselorName);
