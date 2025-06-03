@@ -16,14 +16,14 @@ function MedicalData({ dados, setDados }) {
 						id="blood_type"
 						type="select"
 						options={[
-							{ value: "a+", label: "A+" },
-							{ value: "a-", label: "A-" },
-							{ value: "b+", label: "B+" },
-							{ value: "b-", label: "B-" },
-							{ value: "ab+", label: "AB+" },
-							{ value: "ab-", label: "AB-" },
-							{ value: "o+", label: "O+" },
-							{ value: "o-", label: "O-" },
+							{ value: "A+", label: "A+" },
+							{ value: "A-", label: "A-" },
+							{ value: "B+", label: "B+" },
+							{ value: "B-", label: "B-" },
+							{ value: "AB+", label: "AB+" },
+							{ value: "AB-", label: "AB-" },
+							{ value: "O+", label: "O+" },
+							{ value: "O-", label: "O-" },
 						]}
 						label="Tipo Sanguíneo"
 						value={dados.blood_type || ""}
