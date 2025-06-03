@@ -16,16 +16,17 @@ function InternData({ dados, setDados }) {
 						id="unit"
 						type="select"
 						options={[
-							{ value: 1, label: "Panda" },
-							{ value: 2, label: "Falção" },
-							{ value: 3, label: "Lince" },
-							{ value: 4, label: "Leão" },
-							{ value: 5, label: "Águia Real" },
-							{ value: 6, label: "Tigre" },
-							{ value: 7, label: "Raposa" },
-							{ value: 8, label: "Urso" },
-							{ value: 9, label: "Pantera" },
-							{ value: 10, label: "Lobo" },
+							{ value: "panda", label: "Panda" },
+							{ value: "falcao", label: "Falção" },
+							{ value: "lince", label: "Lince" },
+							{ value: "leao", label: "Leão" },
+							{ value: "aguia real", label: "Águia Real" },
+							{ value: "tigre", label: "Tigre" },
+							{ value: "raposa", label: "Raposa" },
+							{ value: "urso", label: "Urso" },
+							{ value: "pantera", label: "Pantera" },
+							{ value: "lobo", label: "Lobo" },
+							{ value: null, label: "Nenhuma"}// NO BACK NÂO ESTA PRONTO
 						]}
 						label="Unidade"
 						value={dados.unit || ""}
@@ -55,6 +56,7 @@ function InternData({ dados, setDados }) {
 							{ value: "CAPELAO", label: "Capelão" },
 							{ value: "ALMOXARIFADO", label: "Almoxarifado" },
 							{ value: "MEMBRO", label: "Membro" },
+							{ value: "NENHUMA", label: "Nenhuma"} // NO BACK NÂO ESTA PRONTO
 						]}
 						label="Função na Unidade"
 						value={dados.unitRole || ""}
@@ -84,6 +86,10 @@ function InternData({ dados, setDados }) {
 								value: "LIDER_MASTER_AVANCADO",
 								label: "Líder Master Avançado",
 							},
+							{
+								value: "NENHUMA",
+								label: "Nenhuma",
+							},
 						]}
 						label="Categoria da Classe"
 						value={dados.classCategory || ""}
@@ -105,6 +111,7 @@ function InternData({ dados, setDados }) {
 								label: "Instrutor Auxiliar",
 							},
 							{ value: "MEMBRO", label: "Membro" },
+							{ value: "NENHUMA", label: "Nenhuma" },
 						]}
 						label="Função na Classe"
 						value={dados.classRole || ""}

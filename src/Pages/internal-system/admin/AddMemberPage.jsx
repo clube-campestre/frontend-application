@@ -21,10 +21,12 @@ export default function CadastroMembro() {
 
 	const handleProximo = () => {
 		setEtapaAtual((prev) => Math.min(prev + 1, 6));
+		 console.log("✅ dados atualizados:", formDados);
 	};
 
 	const handleVoltar = () => {
 		setEtapaAtual((prev) => Math.max(prev - 1, 1));
+		 console.log("✅ dados atualizados:", fo);
 	};
 
 	const handleEnviar = async () => {
@@ -127,7 +129,7 @@ export default function CadastroMembro() {
 			responsibleContact: formDados.responsibleContact || "",
 			responsibleEmail: formDados.responsibleEmail || "",
 			unitRole: (formDados.unitRole || "").toUpperCase(),
-			unitId: Number(formDados.unit),
+			unitName: formDados.unit,
 			classCategory: (formDados.classCategory || "").toUpperCase(),
 			classRole: (formDados.classRole || "").toUpperCase(),
 		};
