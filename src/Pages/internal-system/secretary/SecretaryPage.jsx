@@ -92,7 +92,8 @@ const SecretaryPage = () => {
         },
       });
 
-      setMembers(response.data.items || []);
+      setMembers(response.data || []);
+      // setMembers(response.data.items || []);
       setPageSize(response.data.pageSize);
       setTotalItems(response.data.totalItems);
       setTotalPages(response.data.totalPages);
@@ -125,7 +126,8 @@ const SecretaryPage = () => {
       },
     });
 
-    setMembers(response.data.items || initialMemberData);
+    // setMembers(response.data.items || []);
+    setMembers(response.data);
     setPageSize(response.data.pageSize);
     setTotalItems(response.data.totalItems);
     setTotalPages(response.data.totalPages);
@@ -144,7 +146,7 @@ const SecretaryPage = () => {
           size: pageSize,
         },
       });
-      setMembers(response.data.items || initialMemberData);
+      setMembers(response.data || initialMemberData);
       // setMembers(response.data.items);
       setPageSize(response.data.pageSize);
       setTotalItems(response.data.totalItems);
@@ -308,7 +310,7 @@ const SecretaryPage = () => {
         <EditModal
           onClose={() => setEditModalOpen(false)}
           editingItem={selectedMember}
-          onSubmit={handleEditTransaction}
+          onSubmit={"handleEditTransaction"}
           title="Editar Transação"
           fields={statementFields}
         />
