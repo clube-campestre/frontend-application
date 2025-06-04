@@ -111,7 +111,7 @@ const SecretaryPage = () => {
     }
   };
 
-  const handleClearFilters = async () => {
+  const handleClearFilters = async () => { 
     setFilters({
       name: "",
       classe: "",

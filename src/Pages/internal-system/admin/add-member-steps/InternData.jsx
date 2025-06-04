@@ -16,20 +16,20 @@ function InternData({ dados, setDados }) {
 						id="unit"
 						type="select"
 						options={[
-							{ value: "panda", label: "Panda" },
-							{ value: "falcao", label: "Falção" },
-							{ value: "lince", label: "Lince" },
-							{ value: "leao", label: "Leão" },
-							{ value: "aguia real", label: "Águia Real" },
-							{ value: "tigre", label: "Tigre" },
-							{ value: "raposa", label: "Raposa" },
-							{ value: "urso", label: "Urso" },
-							{ value: "pantera", label: "Pantera" },
-							{ value: "lobo", label: "Lobo" },
+							{ value: 1, label: "Panda" },
+							{ value: 2, label: "Falção" },
+							{ value: 3, label: "Lince" },
+							{ value: 4, label: "Leão" },
+							{ value: 5, label: "Águia Real" },
+							{ value: 6, label: "Tigre" },
+							{ value: 7, label: "Raposa" },
+							{ value: 8, label: "Urso" },
+							{ value: 9, label: "Pantera" },
+							{ value: 10, label: "Lobo" },
 							{ value: null, label: "Nenhuma"}// NO BACK NÂO ESTA PRONTO
 						]}
 						label="Unidade"
-						value={dados.unit || ""}
+						value={dados.unit || null}
 						onChange={(e) =>
 							setDados({ ...dados, unit: e.target.value })
 						}
