@@ -6,9 +6,6 @@ import Swal from "sweetalert2";
 import React, { useState } from "react";
 
 function MemberModal({ members, unitId, unitName, className, onConfirm, onClose }) {
-  console.log("Membros" ,members)
-  console.log('Unidade', unitName)
-  console.log('Classe', className )
   // Filtra os membros que não pertencem à unidade selecionada
   const [availableMembers, setAvailableMembers] = useState(
     members.filter(
@@ -61,7 +58,7 @@ function MemberModal({ members, unitId, unitName, className, onConfirm, onClose 
 
   // Filtra os membros disponíveis com base no termo de pesquisa
   const filteredMembers = availableMembers.filter((member) =>
-    member.name.toLowerCase().includes(searchTerm.toLowerCase())
+    member.username.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -97,10 +94,10 @@ function MemberModal({ members, unitId, unitName, className, onConfirm, onClose 
               {/* Nome e Data de Aniversário */}
               <div className="flex flex-col items-start justify-center w-[25%] h-full pl-3 pr-3">
                 <div className="text-[16px] font-bold">
-                  <span>{member.name}</span>
+                  <span>{member.username}</span>
                 </div>
                 <div className="text-[11px] text-[#8D8D8D]">
-                  <span>{new Date(member.birthday).toLocaleDateString()}</span>
+                  <span>{new Date(member.birthDate).toLocaleDateString()}</span>
                 </div>
               </div>
 
@@ -109,10 +106,10 @@ function MemberModal({ members, unitId, unitName, className, onConfirm, onClose 
               {/* Unidade */}
               <div className="flex flex-col items-start justify-center w-[25%] h-full pl-3 pr-3">
                 <div className="text-[16px]">
-                  <span>{member.unity}</span>
+                  <span>{member.unit.surname}</span>
                 </div>
                 <div className="text-[11px] text-[#8D8D8D]">
-                  <span>{member.unityRole}</span>
+                  <span>{member.unitRole}</span>
                 </div>
               </div>
 
@@ -163,10 +160,10 @@ function MemberModal({ members, unitId, unitName, className, onConfirm, onClose 
                 {/* Nome e Data de Nascimento */}
                 <div className="flex flex-col items-start justify-center w-[25%] h-full pl-3 pr-3">
                   <div className="text-[16px] font-bold">
-                    <span>{member.name}</span>
+                    <span>{member.username}</span>
                   </div>
                   <div className="text-[11px] text-[#8D8D8D]">
-                    <span>{new Date(member.birthday).toLocaleDateString()}</span>
+                    <span>{new Date(member.birthDate).toLocaleDateString()}</span>
                   </div>
                 </div>
 
@@ -175,10 +172,10 @@ function MemberModal({ members, unitId, unitName, className, onConfirm, onClose 
                 {/* Unidade */}
                 <div className="flex flex-col items-start justify-center w-[25%] h-full pl-3 pr-3">
                   <div className="text-[16px]">
-                    <span>{member.unity}</span>
+                    <span>{member.unit.surname}</span>
                   </div>
                   <div className="text-[11px] text-[#8D8D8D]">
-                    <span>{member.unityRole}</span>
+                    <span>{member.unitRole}</span>
                   </div>
                 </div>
 
