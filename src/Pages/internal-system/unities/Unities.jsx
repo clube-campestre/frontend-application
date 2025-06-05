@@ -414,18 +414,8 @@ const Unities = () => {
 
         {/* Members Section */}
         <div className="flex flex-col gap-2 w-[98%] h-[53vh] p-4 overflow-y-auto">
-          {/* members.length > 0 ? (
-						members.map((member) => (
-							<MemberCard
-								key={member.id}
-								item={member}
-								showModal={handleShowEditMemberModal}
-								handleSelectMember={handleSelectMember}
-							/>
-						))
-					)  */}
-          {mockMembers.length > 0 ? (
-            mockMembers
+          {members.length > 0 ? (
+            members
               .filter(
                 (member) => !selectedUnit || member.unitId === selectedUnit
               )
@@ -435,24 +425,13 @@ const Unities = () => {
                   item={member}
                   showModal={handleShowEditMemberModal}
                   handleSelectMember={handleSelectMember}
+                  editFields={membersFields}
                 />
               ))
           ) : (
             <p className="text-gray-500 text-center">
               Nenhum membro encontrado.
             </p>
-          )}
-          {showEditMemberModal && (
-            <EditModal
-              title="Editar Membro"
-              fields={membersFields}
-              editingItem={selectedMember}
-              onClose={handleShowEditMemberModal}
-              onSubmit={(data) => {
-                handleEditMember(data);
-                handleShowEditMemberModal();
-              }}
-            />
           )}
           {showAddUnitPointModal && (
             <EditModal

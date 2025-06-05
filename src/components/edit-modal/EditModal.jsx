@@ -131,7 +131,7 @@ export default function EditModal({
 	};
 
 	return (
-		<div className="fixed inset-0 z-50 flex items-center justify-center bg-[#000000da]">
+		<div className="fixed inset-0 z-50 flex items-center overflow-y-auto justify-center bg-[#000000da]">
 			<div className="bg-[#f3f3f3] p-10 rounded-xl shadow-lg min-w-[500px] relative">
 				<button
 					onClick={onClose}
