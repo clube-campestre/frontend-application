@@ -4,7 +4,7 @@ const InfoMember = ({ member, onClose }) => {
 	if (!member) return null;
 
 	return (
-		<div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 font-sans">
+		<div className="fixed inset-0 bg-[#000000da]  bg-opacity-40 flex items-center justify-center z-50 font-sans">
 			<div className="bg-white rounded-lg w-[90%] h-[90%] shadow-lg p-6 overflow-y-auto relative">
 				<button onClick={onClose} className="absolute top-4 right-4 text-2xl text-gray-500 hover:text-black">
 					<IoMdClose />

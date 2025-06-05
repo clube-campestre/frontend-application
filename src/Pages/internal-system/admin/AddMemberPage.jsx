@@ -137,35 +137,35 @@ export default function CadastroMembro() {
 		alert(`isBaptized: ${formDados.isBaptized}`);
 		console.log('FormDados: ', formDados)
 		console.log("Payload enviado:", payload);
-		await api.post("/members", payload);
-		Toast.fire({
-			icon: "success",
-			title: "Membro cadastrado com sucesso!",
-		});
+		// await api.post("/members", payload);
+		// Toast.fire({
+		// 	icon: "success",
+		// 	title: "Membro cadastrado com sucesso!",
+		// });
 
-		// if(formDados.foto != null){
-		// 	const formData = new FormData();
-		// 	formData.append("image", formDados.foto); // nome esperado no backend
-		// 	console.log("ENVIANDO IMAGEM")
-		// 	try {
-		// 		const response = await api	.post(`/drive/upload?cpf=${formDados.cpf}`,
-		// 			formData,
-		// 			{
-		// 				headers: {
-		// 					"Content-Type": "multipart/form-data",
-		// 				},
-		// 			}
-		// 		);
-		// 		alert("Upload realizado com sucesso!");
-		// 		console.log(response.data);
-		// 	} catch (error) {
-		// 		console.error("Erro no upload:", error);
-		// 		alert("Falha no upload");
-		// 	}
-		// }
-		// else{
-		// 	console.log("TA NULL")
-		// }
+		if(formDados.foto != null){
+			const formData = new FormData();
+			formData.append("image", formDados.foto); // nome esperado no backend
+			console.log("ENVIANDO IMAGEM")
+			try {
+				const response = await api	.post(`/drive/upload?cpf=${formDados.cpf}`,
+					formData,
+					{
+						headers: {
+							"Content-Type": "multipart/form-data",
+						},
+					}
+				);
+				alert("Upload realizado com sucesso!");
+				console.log(response.data);
+			} catch (error) {
+				console.error("Erro no upload:", error);
+				alert("Falha no upload");
+			}
+		}
+		else{
+			console.log("TA NULL")
+		}
 	};
 
 	// // Exemplo de como enviar para a API a parte de salvar a imagem no google drive
