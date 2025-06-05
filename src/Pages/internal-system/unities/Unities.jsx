@@ -292,20 +292,18 @@ const Unities = () => {
 							size: pageSize,
 						},
 					});
-					setMembers(response.data.items);
+					setMembers(response.data.items || []);
 					setTotalItems(response.data.totalItems);
 					setTotalPages(response.data.totalPages);
 				} else {
-					const response = await api.get(
-						`/members/unit/${selectedUnit}`,
-						{
-							params: {
-								page: pageNumber,
-								size: pageSize,
-							},
-						}
-					);
-					setMembers(response.data.items);
+					const response = await api.get(`/members/unit`, {
+						params: {
+							unitId: selectedUnit,
+							page: pageNumber,
+							size: pageSize,
+						},
+					});
+					setMembers(response.data.members || []);
 					setUnitPoints(response.data.score);
 					setUnitCounselor(response.data.counselorName);
 					setTotalItems(response.data.totalItems);
@@ -313,6 +311,15 @@ const Unities = () => {
 				}
 			} catch (error) {
 				console.error("Error fetching members:", error);
+        setMembers([]);
+        setUnitCounselor(null);
+        setUnitPoints(null);
+        if(error.response.data.message) {
+          Toast.fire({
+            icon: "error",
+            title: "Essa unidade não possui um conselheiro cadastrado.",
+          });
+        }
 			}
 		};
 
@@ -545,7 +552,7 @@ const Unities = () => {
 					)}
 					{showAddMemberModal && (
 						<MemberModal
-							members={mockMembers}
+							members={members}
 							unitId={selectedUnit}
 							unitName={selectedUnitName}
 							isOpen={showAddMemberModal}

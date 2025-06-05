@@ -8,7 +8,6 @@ import MedicalData from "./add-member-steps/MedicalData";
 import MemberGuardian from "./add-member-steps/MemberGuardian";
 import InternData from "./add-member-steps/InternData";
 
-//Obs.: Para capturar os dados de Sickness acesse o objeto `dados.sickness`
 const formData = new FormData();
 
 export default function CadastroMembro() {
@@ -21,12 +20,12 @@ export default function CadastroMembro() {
 
 	const handleProximo = () => {
 		setEtapaAtual((prev) => Math.min(prev + 1, 6));
-		 console.log("✅ dados atualizados:", formDados);
+		console.log("✅ dados atualizados:", formDados);
 	};
 
 	const handleVoltar = () => {
 		setEtapaAtual((prev) => Math.max(prev - 1, 1));
-		 console.log("✅ dados atualizados:", fo);
+		console.log("✅ dados atualizados:", formDados);
 	};
 
 	const handleEnviar = async () => {
@@ -99,8 +98,8 @@ export default function CadastroMembro() {
 
 		// Monta o objeto unit conforme esperado (id e surname)
 		const unit = {
-		  id: Number(formDados.unit),
-		  surname: formDados.unitSurname || "" // ajuste conforme sua lógica
+			id: Number(formDados.unit),
+			surname: formDados.unitSurname || "", // ajuste conforme sua lógica
 		};
 
 		// Monta o payload principal conforme MemberDataDtoRequest
@@ -115,7 +114,6 @@ export default function CadastroMembro() {
 			birthDate: new Date(formDados.birthDate).toISOString() || "",
 			sex: (formDados.sex || "").toUpperCase(),
 			tshirtSize: (formDados.tshirtSize || "").toUpperCase(),
-			// isBaptized: typeof formDados.isBaptized === "boolean" ? formDados.isBaptized : formDados.isBaptized === "true" ? true : false,
 			isBaptized: formDados.isBaptized == "true" ? true : false,
 			address,
 			medicalData,
@@ -134,21 +132,21 @@ export default function CadastroMembro() {
 			classCategory: (formDados.classCategory || "").toUpperCase(),
 			classRole: (formDados.classRole || "").toUpperCase(),
 		};
-		alert(`isBaptized: ${formDados.isBaptized}`);
-		console.log('FormDados: ', formDados)
+		console.log("FormDados: ", formDados);
 		console.log("Payload enviado:", payload);
-		// await api.post("/members", payload);
-		// Toast.fire({
-		// 	icon: "success",
-		// 	title: "Membro cadastrado com sucesso!",
-		// });
+		await api.post("/members", payload);
+		Toast.fire({
+			icon: "success",
+			title: "Membro cadastrado com sucesso!",
+		});
 
-		if(formDados.foto != null){
+		if (formDados.foto != null) {
 			const formData = new FormData();
 			formData.append("image", formDados.foto); // nome esperado no backend
-			console.log("ENVIANDO IMAGEM")
+			console.log("ENVIANDO IMAGEM");
 			try {
-				const response = await api	.post(`/drive/upload?cpf=${formDados.cpf}`,
+				const response = await api.post(
+					`/drive/upload?cpf=${formDados.cpf}`,
 					formData,
 					{
 						headers: {
@@ -162,15 +160,10 @@ export default function CadastroMembro() {
 				console.error("Erro no upload:", error);
 				alert("Falha no upload");
 			}
-		}
-		else{
-			console.log("TA NULL")
+		} else {
+			console.log("TA NULL");
 		}
 	};
-
-	// // Exemplo de como enviar para a API a parte de salvar a imagem no google drive
-	// formData.append('foto', dados.foto ||'');
-	// formData.append('cpf', dados.cpf || '');
 
 	return (
 		<div className="flex flex-col items-center w-full">

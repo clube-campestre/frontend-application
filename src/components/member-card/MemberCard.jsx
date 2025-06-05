@@ -43,7 +43,7 @@ export const MemberCard = ({ item, editFields }) => {
   };
 
   return (
-    <div className="flex flex-row items-center justify-between w-full min-h-[10vh] max-h-[10vh] bg-[#FAFAFA] rounded hover:bg-[#D9D9D9] cursor-pointer shadow-md transition-all duration-200 ease-in-out">
+    <div className="flex flex-row items-center justify-between w-full min-h-[10vh] max-h-[10vh] bg-[#FAFAFA] rounded shadow-md transition-all duration-200 ease-in-out">
       {/* Nome e Data de Aniversário */}
       <div className="flex flex-col items-start justify-center w-[25%] h-full pl-3 pr-3">
         <div className="text-[16px] font-bold">
