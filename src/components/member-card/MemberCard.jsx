@@ -43,7 +43,7 @@ export const MemberCard = ({ item, editFields }) => {
   };
 
   return (
-    <div className="flex flex-row items-center justify-between w-full min-h-[10vh] max-h-[10vh] bg-[#FAFAFA] rounded hover:bg-[#D9D9D9] cursor-pointer shadow-md transition-all duration-200 ease-in-out">
+    <div className="flex flex-row items-center justify-between w-full min-h-[10vh] max-h-[10vh] bg-[#FAFAFA] rounded hover:bg-[#D9D9D9] shadow-md transition-all duration-200 ease-in-out">
       {/* Nome e Data de Aniversário */}
       <div className="flex flex-col items-start justify-center w-[25%] h-full pl-3 pr-3">
         <div className="text-[16px] font-bold">
@@ -132,7 +132,7 @@ export const MemberCard = ({ item, editFields }) => {
           onClick={() => setShowEditModal(true)}
           className="text-amber-500 hover:text-amber-600"
         >
-          <FaPencilAlt size={18} />
+          <FaPencilAlt size={18} className="cursor-pointer" />
         </button>
       </div>
 
@@ -140,12 +140,12 @@ export const MemberCard = ({ item, editFields }) => {
 
       {/* Botão Apagar */}
       {isUserAbbleToDelete && (
-        <div className="flex items-center justify-center w-[10%]">
+        <div className="flex items-center justify-center w-[10%] ">
           <button
             onClick={() => handleDeleteMember(item.cpf)}
             className="text-gray-400 hover:text-gray-600"
           >
-            <FaTrash size={18} />
+            <FaTrash size={18} className="cursor-pointer" />
           </button>
         </div>
       )}
@@ -158,7 +158,7 @@ export const MemberCard = ({ item, editFields }) => {
           onClick={() => setShowViewModal(true)}
           className="text-gray-400 hover:text-gray-600"
         >
-          <FaEye size={18} />
+          <FaEye size={18} className="cursor-pointer" />
         </button>
       </div>
       {/* Modal de Visualização */}

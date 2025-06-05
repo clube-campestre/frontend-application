@@ -693,11 +693,11 @@ const SecretaryPage = () => {
             </div>
           </div>
 
-          <div className="bg-gray-100 p-4 rounded-md h-[90%]">
-            <div className=" rounded-md ">
+          <div className="bg-gray-100 p-4 rounded-md">
+            <div className=" rounded-md flex flex-col gap-2 w-[98%] h-[50vh] p-4 ">
               {members.length > 0 ? (
                 members.map((member) => (
-                  <div key={member.id} className="mb-4">
+                  <div key={member.id}>
                 <MemberCard
                   key={member.id}
                   item={member}

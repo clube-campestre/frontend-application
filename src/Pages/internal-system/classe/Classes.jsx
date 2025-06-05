@@ -287,7 +287,7 @@ const Classes = () => {
       </div>
 
       {/* Main Content Section */}
-      <div className="flex flex-col items-center h-[65vh] w-full bg-[#EDEDED] rounded-[7px] shadow-md overflow-y-auto">
+      <div className="flex flex-col items-center h-[65vh] w-full bg-[#EDEDED] rounded-[7px] shadow-md ">
         {/* Counselor Section */}
         <div className="flex items-center justify-between w-full p-4">
           <div className="flex items-center gap-2">
@@ -312,7 +312,7 @@ const Classes = () => {
         </div>
 
         {/* Members Section */}
-        <div className="flex flex-col gap-2 w-full h-[70vh] p-4 overflow-y-auto">
+        <div className="flex flex-col gap-2 w-[98%] h-[53vh] p-4 overflow-y-auto">
           {members.length > 0 ? (
             members
               .filter(
