@@ -174,113 +174,6 @@ const Unities = () => {
 		},
 	];
 
-	const mockMembers = [
-		{
-			id: 1,
-			name: "Ana Souza",
-			birthday: "10/02/2008",
-			contact: "(11) 91234-5678",
-			cpf: "123.456.789-00",
-			responsibleContact: "(11) 99876-5432",
-			unit: "Panda",
-			unitId: 1,
-			unitRole: "Membro",
-			classCategory: "Amigo",
-			classRole: "Instrutor",
-		},
-		{
-			id: 2,
-			name: "Bruno Lima",
-			birthday: "12/07/2007",
-			contact: "(21) 93456-7890",
-			cpf: "987.654.321-00",
-			responsibleContact: "(21) 98765-4321",
-			unit: "Falcão",
-			unitId: 2,
-			unitRole: "Conselheiro",
-			classCategory: "Amigo",
-			classRole: "Instrutor Associado",
-		},
-		{
-			id: 3,
-			name: "Carla Mendes",
-			birthday: "05/11/2009",
-			contact: "(31) 90012-3456",
-			cpf: "456.789.123-00",
-			responsibleContact: "(31) 98888-7777",
-			unit: "Tigre",
-			unitId: 4,
-			unitRole: "Conselheiro Associado",
-			classCategory: "Amigo",
-			classRole: "Membro",
-		},
-		{
-			id: 4,
-			name: "Daniel Oliveira",
-			birthday: "05/04/2006",
-			contact: "(71) 91111-2222",
-			cpf: "321.654.987-00",
-			responsibleContact: "(71) 97777-6666",
-			unit: "Lobo",
-			unitId: 8,
-			unitRole: "Conselheiro",
-			classCategory: "Amigo",
-			classRole: "Instrutor",
-		},
-		{
-			id: 5,
-			name: "Eduarda Santos",
-			birthday: "12/08/2010",
-			contact: "(85) 93333-4444",
-			cpf: "789.123.456-00",
-			responsibleContact: "(85) 96666-5555",
-			unit: "Águia Real",
-			unitId: 3,
-			unitRole: "Conselheiro",
-			classCategory: "Amigo",
-			classRole: "Instrutor",
-		},
-		{
-			id: 6,
-			name: "Eduarda Santos",
-			birthday: "12/08/2010",
-			contact: "(85) 93333-4444",
-			cpf: "789.123.456-00",
-			responsibleContact: "(85) 96666-5555",
-			unit: "Águia Real",
-			unitId: 3,
-			unitRole: "Conselheiro",
-			classCategory: "Amigo",
-			classRole: "Instrutor",
-		},
-		{
-			id: 7,
-			name: "Eduarda Santos",
-			birthday: "12/08/2010",
-			contact: "(85) 93333-4444",
-			cpf: "789.123.456-00",
-			responsibleContact: "(85) 96666-5555",
-			unit: "Águia Real",
-			unitId: 3,
-			unitRole: "Conselheiro",
-			classCategory: "Amigo",
-			classRole: "Instrutor",
-		},
-		{
-			id: 8,
-			name: "Eduarda Santos",
-			birthday: "12/08/2010",
-			contact: "(85) 93333-4444",
-			cpf: "789.123.456-00",
-			responsibleContact: "(85) 96666-5555",
-			unit: "Águia Real",
-			unitId: 3,
-			unitRole: "Conselheiro",
-			classCategory: "Amigo",
-			classRole: "Instrutor",
-		},
-	];
-
 	useEffect(() => {
 		console.log("Selected Unit:", selectedUnitName);
 		const fetchMembers = async () => {
@@ -311,15 +204,15 @@ const Unities = () => {
 				}
 			} catch (error) {
 				console.error("Error fetching members:", error);
-        setMembers([]);
-        setUnitCounselor(null);
-        setUnitPoints(null);
-        if(error.response.data.message) {
-          Toast.fire({
-            icon: "error",
-            title: "Essa unidade não possui um conselheiro cadastrado.",
-          });
-        }
+				setMembers([]);
+				setUnitCounselor(null);
+				setUnitPoints(null);
+				if (error.response.data.message) {
+					Toast.fire({
+						icon: "error",
+						title: "Essa unidade não possui um conselheiro cadastrado.",
+					});
+				}
 			}
 		};
 
