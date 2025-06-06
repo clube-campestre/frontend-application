@@ -114,7 +114,7 @@ const Unities = () => {
 			placeholder: "Selecione a unidade",
 			type: "select",
 			options: unities.map((unit) => ({
-				value: unit.name,
+				value: unit.id,
 				label: unit.name,
 			})),
 			selectedOption: "Selecione uma unidade",
@@ -210,7 +210,7 @@ const Unities = () => {
 				if (error.response.data.message) {
 					Toast.fire({
 						icon: "error",
-						title: "Essa unidade não possui um conselheiro cadastrado.",
+						title: "Essa unidade não possui um conselheiro cadastrado. Cadastre um conselheiro para visualizar os membros.",
 					});
 				}
 			}
@@ -282,23 +282,13 @@ const Unities = () => {
 			return;
 		}
 
-		let unitName = data.unit.toLowerCase();
-
-		if (unitName === "águia real") {
-			unitName = "aguia_real";
-		} else if (unitName === "falcão") {
-			unitName = "falcao";
-		} else if (unitName === "leão") {
-			unitName = "leao";
-		}
-
 		try {
 			const response = await api.put(
 				"/units/score",
 				{},
 				{
 					params: {
-						unitName: unitName,
+						id: data.unit,
 						newScore: data.points,
 					},
 				}
