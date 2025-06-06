@@ -25,6 +25,7 @@ const Unities = () => {
 	const [showAddUnitPointModal, setShowAddUnitPointModal] = useState(false);
 	const [selectedMember, setSelectedMember] = useState(null);
 	const [members, setMembers] = useState([]);
+	const [allMembers, setAllMembers] = useState([]);
 	const [unitPoints, setUnitPoints] = useState(null);
 	const [unitCounselor, setUnitCounselor] = useState(null);
 	const [pageNumber, setPageNumber] = useState(0);
@@ -175,9 +176,10 @@ const Unities = () => {
 	];
 
 	useEffect(() => {
-		console.log("Selected Unit:", selectedUnitName);
 		const fetchMembers = async () => {
 			try {
+				const allMembersResponse = await api.get("/members");
+				setAllMembers(allMembersResponse.data || []);
 				if (selectedUnit === null) {
 					const response = await api.get(`/members/filter`, {
 						params: {
@@ -244,13 +246,13 @@ const Unities = () => {
 			await Promise.all(
 				members.map(async (member) => {
 					const response = await api.put(
-						`/members/${member.id}`,
+						`/members/${member.cpf}`,
 						member
 					);
 					if (response.status === 200) {
 						Toast.fire({
 							icon: "success",
-							title: "Membro editado com sucesso!",
+							title: `Membro adicionado com sucesso na unidade ${selectedUnitName}!`,
 						});
 					}
 					handleShowAddMemberModal();
@@ -259,7 +261,7 @@ const Unities = () => {
 		} catch (error) {
 			Toast.fire({
 				icon: "error",
-				title: "Erro ao editar membro.",
+				title: `Erro ao adicionar membro na unidade ${selectedUnitName}.`,
 			});
 			console.error("Error editing member:", error);
 		}
@@ -435,16 +437,12 @@ const Unities = () => {
 					)}
 					{showAddMemberModal && (
 						<MemberModal
-							members={members}
+							members={allMembers}
 							unitId={selectedUnit}
 							unitName={selectedUnitName}
 							isOpen={showAddMemberModal}
 							onClose={handleShowAddMemberModal}
 							onConfirm={(selectedMembers) => {
-								console.log(
-									"Membros selecionados:",
-									selectedMembers
-								);
 								handleUpdateMemberUnit(selectedMembers);
 							}}
 						/>

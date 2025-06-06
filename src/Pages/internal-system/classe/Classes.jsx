@@ -163,13 +163,13 @@ const Classes = () => {
 			await Promise.all(
 				members.map(async (member) => {
 					const response = await api.put(
-						`/members/${member.id}`,
+						`/members/${member.cpf}`,
 						member
 					);
 					if (response.status === 200) {
 						Toast.fire({
 							icon: "success",
-							title: "Membro editado com sucesso!",
+							title: `Membro adicionado com sucesso na classe ${selectedClassName}!`,
 						});
 					}
 					handleShowAddMemberModal();
@@ -178,7 +178,7 @@ const Classes = () => {
 		} catch (error) {
 			Toast.fire({
 				icon: "error",
-				title: "Erro ao editar membro.",
+				title: `Erro ao adicionar membro na classe ${selectedClassName}.`,
 			});
 			console.error("Error editing member:", error);
 		}
@@ -273,10 +273,6 @@ const Classes = () => {
 							isOpen={showAddMemberModal}
 							onClose={handleShowAddMemberModal}
 							onConfirm={(selectedMembers) => {
-								console.log(
-									"Membros selecionados:",
-									selectedMembers
-								);
 								handleUpdateMemberUnit(selectedMembers);
 							}}
 						/>
