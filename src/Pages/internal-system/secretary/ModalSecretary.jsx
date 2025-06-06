@@ -1,11 +1,12 @@
 import { IoMdClose } from "react-icons/io";
+import avatarImage from "../../../assets/images/avatar.png";
 
 const InfoMember = ({ member, onClose }) => {
 	if (!member) return null;
 
 	console.log("Member Info:", member);
 	return (
-		<div className="fixed inset-0 bg-[#000000da]  bg-opacity-40 flex items-center justify-center z-50 font-sans">
+		<div className="fixed inset-0 bg-[#000000da] bg-opacity-40 flex items-center justify-center z-50 font-sans">
 			<div className="bg-white rounded-lg w-[90%] h-[90%] shadow-lg p-6 overflow-y-auto relative">
 				<button
 					onClick={onClose}
@@ -16,10 +17,7 @@ const InfoMember = ({ member, onClose }) => {
 
 				<div className="flex items-center space-x-2 border-b border-gray-300 pb-2 mb-4">
 					<div className="w-2 h-6 bg-yellow-500 rounded"></div>
-					<h2
-						className="text-xl font-semibold"
-						style={{ color: "#232222" }}
-					>
+					<h2 className="text-xl font-semibold" style={{ color: "#232222" }}>
 						Dados pessoais
 					</h2>
 				</div>
@@ -30,7 +28,7 @@ const InfoMember = ({ member, onClose }) => {
 				>
 					<div className="flex items-center space-x-3 col-span-1">
 						<img
-							src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSIEaBVDfj_YlWbHCteGTaLBQu8aYMC2o2LBuOHEkjC-GqXCnRoTrnd7fBF-bdjLK89Lv4&usqp=CAU"
+							src={member.idImage ? `https://drive.google.com/thumbnail?id=${member.idImage}` : avatarImage}
 							alt="Foto"
 							className="rounded-full w-16 h-16"
 						/>
@@ -40,27 +38,23 @@ const InfoMember = ({ member, onClose }) => {
 								<strong>Unidade:</strong> {member.unit?.surname}
 							</p>
 							<p>
-								<strong>Função da unidade:</strong>{" "}
-								{member.unitRole}
+								<strong>Função da unidade:</strong> {member.unitRole}
 							</p>
 							<p>
-								<strong>Papel da classe:</strong>{" "}
-								{member.classRole}
+								<strong>Papel da classe:</strong> {member.classRole}
 							</p>
 							<p>
-								<strong>Categoria da classe:</strong>{" "}
-								{member.classCategory}
+								<strong>Categoria da classe:</strong> {member.classCategory}
 							</p>
 						</div>
 					</div>
 					<div>
 						<p>
-							<strong>CPF:</strong>
-							{member.cpf}
+							<strong>CPF:</strong> {member.cpf}
 						</p>
 						<p>
 							<strong>Data Nasc:</strong>{" "}
-							{new Date(member.birthDate).toLocaleDateString()}
+							{member.birthDate ? new Date(member.birthDate).toLocaleDateString() : ""}
 						</p>
 						<p>
 							<strong>Contato:</strong> {member.contact}
@@ -69,45 +63,39 @@ const InfoMember = ({ member, onClose }) => {
 							<strong>Sexo:</strong> {member.sex}
 						</p>
 						<p>
-							<strong>Batizado:</strong>{" "}
-							{member.isBaptized ? "Sim" : "Não"}
+							<strong>Batizado:</strong> {member.isBaptized ? "Sim" : "Não"}
 						</p>
 					</div>
 					<div>
 						<p>
-							<strong>CEP:</strong> {member.address.cep}
+							<strong>CEP:</strong> {member.address?.cep}
 						</p>
 						<p>
-							<strong>Cidade:</strong> {member.address.city}
+							<strong>Cidade:</strong> {member.address?.city}
 						</p>
 						<p>
-							<strong>Bairro:</strong> {member.address.district}
+							<strong>Bairro:</strong> {member.address?.district}
 						</p>
 						<p>
-							<strong>Rua:</strong> {member.address.street}
+							<strong>Rua:</strong> {member.address?.street}
 						</p>
 						<p>
-							<strong>Número:</strong> {member.address.number}
+							<strong>Número:</strong> {member.address?.number}
 						</p>
 					</div>
 				</div>
 				<div className="mt-6 border rounded-md p-4 text-sm">
-					<h3
-						className="font-semibold mb-2"
-						style={{ color: "#021C4F" }}
-					>
+					<h3 className="font-semibold mb-2" style={{ color: "#021C4F" }}>
 						Contato do Responsável
 					</h3>
 					<div className="grid grid-cols-2 gap-4">
 						{member.fatherName && (
 							<div>
 								<p>
-									<strong>Nome do Pai:</strong>{" "}
-									{member.fatherName}
+									<strong>Nome do Pai:</strong> {member.fatherName}
 								</p>
 								<p>
-									<strong>Contato:</strong>{" "}
-									{member.fatherContact}
+									<strong>Contato:</strong> {member.fatherContact}
 								</p>
 								<p>
 									<strong>Email:</strong> {member.fatherEmail}
@@ -117,12 +105,10 @@ const InfoMember = ({ member, onClose }) => {
 						{member.motherName && (
 							<div>
 								<p>
-									<strong>Nome da Mãe:</strong>{" "}
-									{member.motherName}
+									<strong>Nome da Mãe:</strong> {member.motherName}
 								</p>
 								<p>
-									<strong>Contato:</strong>{" "}
-									{member.motherContact}
+									<strong>Contato:</strong> {member.motherContact}
 								</p>
 								<p>
 									<strong>Email:</strong> {member.motherEmail}
@@ -132,16 +118,13 @@ const InfoMember = ({ member, onClose }) => {
 						{!member.fatherName && !member.motherName && (
 							<div>
 								<p>
-									<strong>Responsável Legal:</strong>{" "}
-									{member.responsibleName}
+									<strong>Responsável Legal:</strong> {member.responsibleName}
 								</p>
 								<p>
-									<strong>Contato:</strong>{" "}
-									{member.responsibleContact}
+									<strong>Contato:</strong> {member.responsibleContact}
 								</p>
 								<p>
-									<strong>Email:</strong>{" "}
-									{member.responsibleEmail}
+									<strong>Email:</strong> {member.responsibleEmail}
 								</p>
 							</div>
 						)}
@@ -150,10 +133,7 @@ const InfoMember = ({ member, onClose }) => {
 
 				{/* Dados Médicos */}
 				<div className="mt-6 border rounded-md text-sm pb-6">
-					<h3
-						className="font-semibold px-4 py-3"
-						style={{ color: "#021C4F" }}
-					>
+					<h3 className="font-semibold px-4 py-3" style={{ color: "#021C4F" }}>
 						Dados Médicos
 					</h3>
 					<div className="flex flex-col px-4">
@@ -166,10 +146,7 @@ const InfoMember = ({ member, onClose }) => {
 									{ key: "dengue", label: "Dengue" },
 									{ key: "pneumonia", label: "Pneumonia" },
 									{ key: "malaria", label: "Malária" },
-									{
-										key: "febreAmarela",
-										label: "Febre Amarela",
-									},
+									{ key: "febreAmarela", label: "Febre Amarela" },
 									{ key: "sarampo", label: "Sarampo" },
 									{ key: "tetano", label: "Tétano" },
 									{ key: "variola", label: "Varíola" },
@@ -183,14 +160,8 @@ const InfoMember = ({ member, onClose }) => {
 									{ key: "covid19", label: "COVID-19" },
 									{ key: "h1n1", label: "H1N1" },
 									{ key: "caxumba", label: "Caxumba" },
-									{
-										key: "lactoseAllergy",
-										label: "Alergia à Lactose",
-									},
-									{
-										key: "bloodTransfusion",
-										label: "Transfusão de Sangue",
-									},
+									{ key: "lactoseAllergy", label: "Alergia à Lactose" },
+									{ key: "bloodTransfusion", label: "Transfusão de Sangue" },
 									{
 										key: "faintingOrConvulsion",
 										label: "Desmaio ou Convulsão",
@@ -212,30 +183,21 @@ const InfoMember = ({ member, onClose }) => {
 										obsKey: "diabeticMedications",
 									},
 								].map((item, index) => {
-									const hasCondition =
-										member.medicalData[item.key];
+									const hasCondition = member.medicalData[item.key];
 									const observation = item.obsKey
 										? member.medicalData[item.obsKey]
 										: "";
 
 									return (
-										<div
-											key={index}
-											className="border-b pb-1"
-										>
-											<p className="font-medium">
-												{item.label}:
-											</p>
+										<div key={index} className="border-b pb-1">
+											<p className="font-medium">{item.label}:</p>
 											{observation ? (
 												<p className="ml-2 text-gray-700">
-													<strong>Observação:</strong>{" "}
-													{observation}
+													<strong>Observação:</strong> {observation}
 												</p>
 											) : (
 												<p className="ml-2 text-gray-700">
-													{hasCondition
-														? "Possui"
-														: "Não possui"}
+													{hasCondition ? "Possui" : "Não possui"}
 												</p>
 											)}
 										</div>
@@ -245,41 +207,19 @@ const InfoMember = ({ member, onClose }) => {
 								{/* Exibição dos campos livres (se tiverem conteúdo) */}
 								{[
 									{ key: "others", label: "Outras Doenças" },
-									{
-										key: "heartProblems",
-										label: "Problemas Cardíacos",
-									},
-									{
-										key: "drugAllergy",
-										label: "Alergia a Medicamentos",
-									},
+									{ key: "heartProblems", label: "Problemas Cardíacos" },
+									{ key: "drugAllergy", label: "Alergia a Medicamentos" },
 									{ key: "deficiency", label: "Deficiência" },
-									{
-										key: "psychologicalDisorder",
-										label: "Transtorno Psicológico",
-									},
-									{
-										key: "recentFracture",
-										label: "Fratura Recente",
-									},
+									{ key: "psychologicalDisorder", label: "Transtorno Psicológico" },
+									{ key: "recentFracture", label: "Fratura Recente" },
 									{ key: "surgeries", label: "Cirurgias" },
-									{
-										key: "hospitalizationReasonLast5Years",
-										label: "Internações nos últimos 5 anos",
-									},
+									{ key: "hospitalizationReasonLast5Years", label: "Internações nos últimos 5 anos" },
 								].map((field, index) => {
 									const value = member.medicalData[field.key];
 									return value ? (
-										<div
-											key={index}
-											className="border-b pb-1"
-										>
-											<p className="font-medium">
-												{field.label}:
-											</p>
-											<p className="ml-2 text-gray-700">
-												{value}
-											</p>
+										<div key={index} className="border-b pb-1">
+											<p className="font-medium">{field.label}:</p>
+											<p className="ml-2 text-gray-700">{value}</p>
 										</div>
 									) : null;
 								})}
