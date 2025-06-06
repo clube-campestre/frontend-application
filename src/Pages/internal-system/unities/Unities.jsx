@@ -25,6 +25,7 @@ const Unities = () => {
 	const [showAddUnitPointModal, setShowAddUnitPointModal] = useState(false);
 	const [selectedMember, setSelectedMember] = useState(null);
 	const [members, setMembers] = useState([]);
+	const [allMembers, setAllMembers] = useState([]);
 	const [unitPoints, setUnitPoints] = useState(null);
 	const [unitCounselor, setUnitCounselor] = useState(null);
 	const [pageNumber, setPageNumber] = useState(0);
@@ -114,7 +115,7 @@ const Unities = () => {
 			placeholder: "Selecione a unidade",
 			type: "select",
 			options: unities.map((unit) => ({
-				value: unit.name,
+				value: unit.id,
 				label: unit.name,
 			})),
 			selectedOption: "Selecione uma unidade",
@@ -175,9 +176,10 @@ const Unities = () => {
 	];
 
 	useEffect(() => {
-		console.log("Selected Unit:", selectedUnitName);
 		const fetchMembers = async () => {
 			try {
+				const allMembersResponse = await api.get("/members");
+				setAllMembers(allMembersResponse.data || []);
 				if (selectedUnit === null) {
 					const response = await api.get(`/members/filter`, {
 						params: {
@@ -210,7 +212,7 @@ const Unities = () => {
 				if (error.response.data.message) {
 					Toast.fire({
 						icon: "error",
-						title: "Essa unidade não possui um conselheiro cadastrado.",
+						title: "Essa unidade não possui um conselheiro cadastrado. Cadastre um conselheiro para visualizar os membros.",
 					});
 				}
 			}
@@ -244,13 +246,13 @@ const Unities = () => {
 			await Promise.all(
 				members.map(async (member) => {
 					const response = await api.put(
-						`/members/${member.id}`,
+						`/members/${member.cpf}`,
 						member
 					);
 					if (response.status === 200) {
 						Toast.fire({
 							icon: "success",
-							title: "Membro editado com sucesso!",
+							title: `Membro adicionado com sucesso na unidade ${selectedUnitName}!`,
 						});
 					}
 					handleShowAddMemberModal();
@@ -259,7 +261,7 @@ const Unities = () => {
 		} catch (error) {
 			Toast.fire({
 				icon: "error",
-				title: "Erro ao editar membro.",
+				title: `Erro ao adicionar membro na unidade ${selectedUnitName}.`,
 			});
 			console.error("Error editing member:", error);
 		}
@@ -282,23 +284,13 @@ const Unities = () => {
 			return;
 		}
 
-		let unitName = data.unit.toLowerCase();
-
-		if (unitName === "águia real") {
-			unitName = "aguia_real";
-		} else if (unitName === "falcão") {
-			unitName = "falcao";
-		} else if (unitName === "leão") {
-			unitName = "leao";
-		}
-
 		try {
 			const response = await api.put(
 				"/units/score",
 				{},
 				{
 					params: {
-						unitName: unitName,
+						id: data.unit,
 						newScore: data.points,
 					},
 				}
@@ -445,16 +437,12 @@ const Unities = () => {
 					)}
 					{showAddMemberModal && (
 						<MemberModal
-							members={members}
+							members={allMembers}
 							unitId={selectedUnit}
 							unitName={selectedUnitName}
 							isOpen={showAddMemberModal}
 							onClose={handleShowAddMemberModal}
 							onConfirm={(selectedMembers) => {
-								console.log(
-									"Membros selecionados:",
-									selectedMembers
-								);
 								handleUpdateMemberUnit(selectedMembers);
 							}}
 						/>

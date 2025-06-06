@@ -6,7 +6,6 @@ import Swal from "sweetalert2";
 import React, { useState } from "react";
 
 function MemberModal({ members, unitId, unitName, className, onConfirm, onClose }) {
-  // Filtra os membros que não pertencem à unidade selecionada
   const [availableMembers, setAvailableMembers] = useState(
     members.filter(
       (member) =>
@@ -17,39 +16,43 @@ function MemberModal({ members, unitId, unitName, className, onConfirm, onClose 
 
   // Estado para armazenar os membros selecionados
   const [selectedMembers, setSelectedMembers] = useState([]);
+  console.log("Membros:", members);
+  console.log("Membros disponíveis:", availableMembers);
+  console.log("Membros selecionados:", selectedMembers);
 
   // Estado para armazenar o termo de pesquisa
   const [searchTerm, setSearchTerm] = useState("");
 
   // Função para selecionar um membro da lista de disponíveis
-  const handleSelectMember = (id) => {
-    const memberToSelect = availableMembers.find((m) => m.id === id); 
+  const handleSelectMember = (cpf) => {
+    console.log("Selecionando membro com cpf:", cpf);
+    const memberToSelect = availableMembers.find((member) => member.cpf === cpf); 
     if (memberToSelect) {
       // Adiciona o membro à lista de selecionados
       setSelectedMembers((prev) => [...prev, memberToSelect]);
       // Remove o membro da lista de disponíveis
-      setAvailableMembers((prev) => prev.filter((m) => m.id !== id));
+      setAvailableMembers((prev) => prev.filter((member) => member.cpf !== cpf));
     }
   };
 
   // Função para remover um membro da lista de selecionados
-  const handleDeselectMember = (id) => {  
-    const memberToDeselect = selectedMembers.find((m) => m.id === id);
+  const handleDeselectMember = (cpf) => {  
+    const memberToDeselect = selectedMembers.find((member) => member.cpf === cpf);
     if (memberToDeselect) {
       // Adiciona o membro de volta à lista de disponíveis
       setAvailableMembers((prev) => [...prev, memberToDeselect]);
       // Remove o membro da lista de selecionados
-      setSelectedMembers((prev) => prev.filter((m) => m.id !== id));
+      setSelectedMembers((prev) => prev.filter((member) => member.cpf !== cpf));
     }
   };
 
   // Função para confirmar a seleção de membros
   const handleConfirm = () => {
     // Atualiza os membros selecionados com o ID da unidade
-    const updatedMembers = selectedMembers.map((m) => ({
-      ...m,
-      unitId: unitId || m.unitId,
-      classCategory: className || m.classCategory,
+    const updatedMembers = selectedMembers.map((member) => ({
+      ...member,
+      unitId: unitId || member.unitId,
+      classCategory: className || member.classCategory,
       className,
     }));
     // Chama a função de callback passada como prop
@@ -87,9 +90,9 @@ function MemberModal({ members, unitId, unitName, className, onConfirm, onClose 
           {/* Lista de membros filtrados */}
           {filteredMembers.map((member) => (
             <div
-              key={member.id}
+              key={member.cpf}
               className="flex flex-row items-center justify-between w-full h-16 bg-[#FAFAFA] rounded hover:bg-[#D9D9D9] cursor-pointer shadow-md transition-all duration-200 ease-in-out mb-4"
-              onClick={() => handleSelectMember(member.id)} // Seleciona o membro ao clicar
+              onClick={() => handleSelectMember(member.cpf)} // Seleciona o membro ao clicar
             >
               {/* Nome e Data de Aniversário */}
               <div className="flex flex-col items-start justify-center w-[25%] h-full pl-3 pr-3">
@@ -153,9 +156,9 @@ function MemberModal({ members, unitId, unitName, className, onConfirm, onClose 
             // Lista de membros selecionados
             selectedMembers.map((member) => (
               <div
-                key={member.id}
+                key={member.cpf}
                 className="flex flex-row items-center justify-between w-full h-16 bg-[#FAFAFA] rounded hover:bg-[#D9D9D9] cursor-pointer shadow-md transition-all duration-200 ease-in-out mb-4"
-                onClick={() => handleDeselectMember(member.id)} // Remove o membro ao clicar
+                onClick={() => handleDeselectMember(member.cpf)} // Remove o membro ao clicar
               >
                 {/* Nome e Data de Nascimento */}
                 <div className="flex flex-col items-start justify-center w-[25%] h-full pl-3 pr-3">
