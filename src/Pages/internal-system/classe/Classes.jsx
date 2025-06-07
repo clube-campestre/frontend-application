@@ -125,12 +125,12 @@ const Classes = () => {
 				setMembers([]);
 				setClassInstructor(null);
 				setTotalItems(0);
-				if (error.response.data.message) {
-					Toast.fire({
-						icon: "error",
-						title: "Essa classe não possui um instrutor cadastrado. Cadastre um instrutor para visualizar os membros.",
-					});
-				}
+				Toast.fire({
+					icon: "error",
+					title: `${
+						error.response.data.message || "Erro ao buscar membros."
+					}`,
+				});
 				console.error("Error fetching members:", error);
 			}
 		};
