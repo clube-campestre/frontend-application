@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 import MemberModalController from "../member-modal-controller/MemberModalController";
 import EditModal from "../edit-modal/EditModal";
 
-export const MemberCard = ({ item, editFields }) => {
+export const MemberCard = ({ item, editFields, onEdit }) => {
   const isUserAbbleToDelete = getUser().access !== "SUPERVISOR";
   const [showViewModal, setShowViewModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -129,7 +129,13 @@ export const MemberCard = ({ item, editFields }) => {
       {/* Botão Editar */}
       <div className="flex items-center justify-center w-[10%]">
         <button
-          onClick={() => setShowEditModal(true)}
+          onClick={() => {
+            if (typeof onEdit === "function") {
+              onEdit(item); // Chama o modal de edição por steps
+            } else {
+              setShowEditModal(true); // Fallback para o EditModal padrão
+            }
+          }}
           className="text-amber-500 hover:text-amber-600"
         >
           <FaPencilAlt size={18} className="cursor-pointer" />
@@ -169,14 +175,14 @@ export const MemberCard = ({ item, editFields }) => {
         />
       )}
 
-      {/* Modal de Edição */}
+      {/* Modal de Edição padrão */}
       {showEditModal && (
         <EditModal
           editingItem={item}
           onClose={() => setShowEditModal(false)}
           onSubmit={() => setShowEditModal(false)}
           title="Editar Membro"
-          fields={editFields} // Passe os campos corretos aqui
+          fields={editFields}
         />
       )}
     </div>

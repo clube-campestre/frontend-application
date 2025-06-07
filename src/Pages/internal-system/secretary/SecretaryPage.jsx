@@ -3,6 +3,11 @@ import { FaSearch } from "react-icons/fa";
 import { MemberCard } from "../../../components/member-card/MemberCard";
 import EditModal from "../../../components/edit-modal/EditModal";
 import MemberModalController from "../../../components/member-modal-controller/MemberModalController";
+import PersonalData from "../admin/add-member-steps/PersonalData";
+import Address from "../admin/add-member-steps/Address";
+import MedicalData from "../admin/add-member-steps/MedicalData";
+import MemberGuardian from "../admin/add-member-steps/MemberGuardian";
+import InternData from "../admin/add-member-steps/InternData";
 import { GiBroom } from "react-icons/gi";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import { IoIosSearch } from "react-icons/io";
@@ -14,6 +19,9 @@ const SecretaryPage = () => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [editModalOpen, setEditModalOpen] = useState(false);
 	const [showEditMemberModal, setShowEditMemberModal] = useState(false);
+	const [showEditStepsModal, setShowEditStepsModal] = useState(false);
+	const [editStep, setEditStep] = useState(1);
+	const [editMemberData, setEditMemberData] = useState(null);
 	const [selectedMember, setSelectedMember] = useState(null);
 	const [pageNumber, setPageNumber] = useState(0);
 	const [pageSize, setPageSize] = useState(5);
@@ -26,6 +34,11 @@ const SecretaryPage = () => {
 
 	const handleSelectMember = (member) => {
 		setSelectedMember(member);
+	};
+	const handleEditMember = (member) => {
+		setEditMemberData(member);
+		setEditStep(1);
+		setShowEditStepsModal(true);
 	};
 
 	const classes = [
@@ -722,6 +735,18 @@ const SecretaryPage = () => {
 		fetchMembers();
 	}, [pageNumber]);
 
+
+	const handleSaveEditMember = async () => {
+		try {
+			await api.put(`/members/${editMemberData.id}`, editMemberData);
+			Toast.fire({ icon: "success", title: "Membro editado com sucesso!" });
+			setShowEditStepsModal(false);
+			fetchMembers();
+		} catch (error) {
+			Toast.fire({ icon: "error", title: "Erro ao editar membro." });
+		}
+	};
+
 	return (
 		<div className="max-h-screen bg-white p-6">
 			<div className="flex justify-center">
@@ -786,13 +811,10 @@ const SecretaryPage = () => {
 										<MemberCard
 											key={member.id}
 											item={member}
-											showModal={
-												handleShowEditMemberModal
-											}
-											handleSelectMember={
-												handleSelectMember
-											}
+											showModal={handleShowEditMemberModal}
+											handleSelectMember={handleSelectMember}
 											editFields={membersFields}
+											onEdit={() => handleEditMember(member)}
 										/>
 									</div>
 								))
@@ -867,6 +889,60 @@ const SecretaryPage = () => {
 					fields={membersFields}
 				/>
 			)}
+
+			{showEditStepsModal && editMemberData && (
+			<div className="fixed inset-0 bg-[#000000da] bg-opacity-40 flex items-center justify-center z-50">
+				<div className="bg-white rounded-lg shadow-lg p-6 w-[70vw] max-h-[90vh] overflow-y-auto">
+					<div className="flex h-[80%] w-[90%]">
+						{editStep === 1 && (
+							<PersonalData dados={editMemberData} setDados={setEditMemberData} />
+						)}
+						{editStep === 2 && (
+							<Address dados={editMemberData} setDados={setEditMemberData} />
+						)}
+						{editStep === 3 && (
+							<MedicalData dados={editMemberData} setDados={setEditMemberData} />
+						)}
+						{editStep === 4 && (
+							<MemberGuardian dados={editMemberData} setDados={setEditMemberData} />
+						)}
+						{editStep === 5 && (
+							<InternData dados={editMemberData} setDados={setEditMemberData} />
+						)}
+					</div>
+					<div className="flex justify-between mt-6">
+						<button
+							onClick={() => setEditStep((prev) => Math.max(prev - 1, 1))}
+							disabled={editStep === 1}
+							className="px-4 py-2 rounded bg-gray-300"
+						>
+							Voltar
+						</button>
+						{editStep < 5 ? (
+							<button
+								onClick={() => setEditStep((prev) => prev + 1)}
+								className="px-4 py-2 rounded bg-yellow-500 text-white"
+							>
+								Próximo
+							</button>
+						) : (
+							<button
+								onClick={handleSaveEditMember}
+								className="px-4 py-2 rounded bg-green-600 text-white"
+							>
+								Salvar
+							</button>
+						)}
+					</div>
+					<button
+						onClick={() => setShowEditStepsModal(false)}
+						className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
+					>
+						X
+					</button>
+				</div>
+			</div>
+		)}
 		</div>
 	);
 };
