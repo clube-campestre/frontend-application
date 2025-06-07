@@ -175,49 +175,49 @@ const Unities = () => {
 		},
 	];
 
-	useEffect(() => {
-		const fetchMembers = async () => {
-			try {
-				const allMembersResponse = await api.get("/members");
-				setAllMembers(allMembersResponse.data || []);
-				if (selectedUnit === null) {
-					const response = await api.get(`/members/filter`, {
-						params: {
-							page: pageNumber,
-							size: pageSize,
-						},
-					});
-					setMembers(response.data.items || []);
-					setTotalItems(response.data.totalItems);
-					setTotalPages(response.data.totalPages);
-				} else {
-					const response = await api.get(`/members/unit`, {
-						params: {
-							unitId: selectedUnit,
-							page: pageNumber,
-							size: pageSize,
-						},
-					});
-					setMembers(response.data.members || []);
-					setUnitPoints(response.data.score);
-					setUnitCounselor(response.data.counselorName);
-					setTotalItems(response.data.totalItems);
-					setTotalPages(response.data.totalPages);
-				}
-			} catch (error) {
-				console.error("Error fetching members:", error);
-				setMembers([]);
-				setUnitCounselor(null);
-				setUnitPoints(null);
-				if (error.response.data.message) {
-					Toast.fire({
-						icon: "error",
-						title: "Essa unidade não possui um conselheiro cadastrado. Cadastre um conselheiro para visualizar os membros.",
-					});
-				}
+	const fetchMembers = async () => {
+		try {
+			const allMembersResponse = await api.get("/members");
+			setAllMembers(allMembersResponse.data || []);
+			if (selectedUnit === null) {
+				const response = await api.get(`/members/filter`, {
+					params: {
+						page: pageNumber,
+						size: pageSize,
+					},
+				});
+				setMembers(response.data.items || []);
+				setTotalItems(response.data.totalItems);
+				setTotalPages(response.data.totalPages);
+			} else {
+				const response = await api.get(`/members/unit`, {
+					params: {
+						unitId: selectedUnit,
+						page: pageNumber,
+						size: pageSize,
+					},
+				});
+				setMembers(response.data.members || []);
+				setUnitPoints(response.data.score);
+				setUnitCounselor(response.data.counselorName);
+				setTotalItems(response.data.totalItems);
+				setTotalPages(response.data.totalPages);
 			}
-		};
+		} catch (error) {
+			console.error("Error fetching members:", error);
+			setMembers([]);
+			setUnitCounselor(null);
+			setUnitPoints(null);
+			Toast.fire({
+				icon: "error",
+				title: `${error.response.data.message || "Erro ao buscar membros."}`,
+			});
+			if (error.response.data.message) {
+			}
+		}
+	};
 
+	useEffect(() => {
 		fetchMembers();
 	}, [selectedUnit]);
 
@@ -256,6 +256,7 @@ const Unities = () => {
 						});
 					}
 					handleShowAddMemberModal();
+					fetchMembers();
 				})
 			);
 		} catch (error) {
