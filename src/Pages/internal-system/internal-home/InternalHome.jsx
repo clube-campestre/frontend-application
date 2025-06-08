@@ -31,16 +31,19 @@ const InternalHome = () => {
   const handleTagChange = async (e) => {
     const tagId = e.target.value;
     setSelectedTagId(tagId);
-
-    const tag = tags.find((t) => String(t.id) === tagId);
-    setGoalAmount(tag?.goal || 0);
+    console.log("Entrei no handleTagChange", tagId);
 
     if (tagId) {
       try {
-        const response = await api.get(`/statements/tags/${tagId}`);
-        setCollectedAmount(response.data.collectedAmount || 0);
+        console.log("Fazendo a requisição para a API com tagId:", tagId);
+        const response = await api.get(`/statements/goal/${tagId}`);
+        console.log('RESPONSE', response.data)
+        // Ajuste para usar os campos corretos da resposta
+        setCollectedAmount(response.data.totalPrice || 0);
+        setGoalAmount(response.data.tag?.goal || 0);
       } catch (error) {
         setCollectedAmount(0);
+        setGoalAmount(0);
       }
     } else {
       setCollectedAmount(0);

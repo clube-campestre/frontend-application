@@ -38,30 +38,30 @@ const SecretaryPage = () => {
 	};
 
 	const classes = [
-		{ id: 1, name: "Amigo" },
-		{ id: 2, name: "Companheiro" },
-		{ id: 3, name: "Pesquisador" },
-		{ id: 4, name: "Pioneiro" },
-		{ id: 5, name: "Excurionista" },
-		{ id: 6, name: "Guia" },
-		{ id: 7, name: "Agrupadas" },
-		{ id: 8, name: "Desbravadores_Completo" },
-		{ id: 9, name: "Lider" },
-		{ id: 10, name: "Lider_Master" },
-		{ id: 10, name: "Lider_Master_Avancado" },
+		{ id: "Amigo", name: "Amigo" },
+		{ id: "Companheiro", name: "Companheiro" },
+		{ id: "Pesquisador", name: "Pesquisador" },
+		{ id: "Pioneiro", name: "Pioneiro" },
+		{ id: "Excurionista", name: "Excurionista" },
+		{ id: "Guia", name: "Guia" },
+		{ id: "Agrupadas", name: "Agrupadas" },
+		{ id: "Desbravadores_Completo", name: "Desbravadores Completo" },
+		{ id: "Lider", name: "Líder" },
+		{ id: "Lider_Master", name: "Líder Master" },
+		{ id: "Lider_Master_Avancado", name: "Líder Master Avançado" },
 	];
 
 	const unities = [
-		{ id: 1, name: "Panda" },
-		{ id: 2, name: "Falcão" },
-		{ id: 3, name: "Lince" },
-		{ id: 4, name: "Leão" },
-		{ id: 5, name: "Águia Real" },
-		{ id: 6, name: "Tigre" },
-		{ id: 7, name: "Raposa" },
-		{ id: 8, name: "Urso" },
-		{ id: 9, name: "Pantera" },
-		{ id: 10, name: "Lobo" },
+		{ id: "Panda", name: "Panda" },
+		{ id: "Falcão", name: "Falcão" },
+		{ id: "Lince", name: "Lince" },
+		{ id: "Leão", name: "Leão" },
+		{ id: "Águia Real", name: "Águia Real" },
+		{ id: "Tigre", name: "Tigre" },
+		{ id: "Raposa", name: "Raposa" },
+		{ id: "Urso", name: "Urso" },
+		{ id: "Pantera", name: "Pantera" },
+		{ id: "Lobo", name: "Lobo" },
 	];
 
 	const membersFields = [
@@ -645,12 +645,12 @@ const SecretaryPage = () => {
 
 	const handleFilterMembers = async () => {
 		const params = {
-			name: filters.name || "",
-			classCategory: filters.classe || "",
-			unity: filters.unidade || "",
+			name: filters.name || null,
+			classCategory: filters.classe || null,
+			unit: filters.unidade || null,
 		};
 
-		if (!params.name && !params.classCategory && !params.unity) {
+		if (!params.name && !params.classCategory && !params.unit) {
 			Toast.fire({
 				icon: "info",
 				title: "Por favor, insira pelo menos um filtro.",
@@ -931,10 +931,10 @@ const Dropdown = ({ label, options, handleFilters, filters }) => {
 								key={index}
 								value={
 									key === "unidade"
-										? option.name == "Águia Real"
+										? option.id == "Águia Real"
 											? "aguia_real"
-											: option.name
-										: option.name.toUpperCase()
+											: option.id
+										: option.id.toUpperCase()
 								}
 							>
 								{option.name}
