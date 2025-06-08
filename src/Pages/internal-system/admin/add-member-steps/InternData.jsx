@@ -11,27 +11,26 @@ function InternData({ dados, setDados }) {
 
 			<div className="flex flex-row justify-around items-center h-[90%] w-[85%]">
 				<div className="flex flex-col justify-between items-center gap-5">
-					{/* ...existing AddMemberInput components... */}
 					<AddMemberInput
 						id="unit"
 						type="select"
 						options={[
-							{ value: 1, label: "Panda" },
-							{ value: 2, label: "Falção" },
-							{ value: 3, label: "Lince" },
-							{ value: 4, label: "Leão" },
-							{ value: 5, label: "Águia Real" },
-							{ value: 6, label: "Tigre" },
-							{ value: 7, label: "Raposa" },
-							{ value: 8, label: "Urso" },
-							{ value: 9, label: "Pantera" },
-							{ value: 10, label: "Lobo" },
-							{ value: null, label: "Nenhuma"}// NO BACK NÂO ESTA PRONTO
+							{ value: "1", label: "Panda" },
+							{ value: "2", label: "Falção" },
+							{ value: "3", label: "Lince" },
+							{ value: "4", label: "Leão" },
+							{ value: "5", label: "Águia Real" },
+							{ value: "6", label: "Tigre" },
+							{ value: "7", label: "Raposa" },
+							{ value: "8", label: "Urso" },
+							{ value: "9", label: "Pantera" },
+							{ value: "10", label: "Lobo" },
+							{ value: "", label: "Nenhuma" },
 						]}
 						label="Unidade"
-						value={dados.unit || null}
+						value={dados.unit ?? ""}
 						onChange={(e) =>
-							setDados({ ...dados, unit: e.target.value })
+							setDados({ ...dados, unit: e.target.value === "" ? "" : Number(e.target.value) })
 						}
 						className="h-[8vh] w-[20vw]"
 					/>

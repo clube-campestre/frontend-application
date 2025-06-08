@@ -1,5 +1,6 @@
 import AddMemberInput from "../../../../components/add-member-input/AddMemberInput";
 import MedicalDataCard from "../../../../components/medical-data-card/MedicalDataCard";
+import { maskCns } from "../../../../utils/validators/addMemberValidator";
 
 // Etapa 4 - MedicalData
 function MedicalData({ dados, setDados }) {
@@ -36,9 +37,9 @@ function MedicalData({ dados, setDados }) {
 						id="cns"
 						type="text"
 						label="Carteira SUS "
-						value={dados.cns || ""}
+						value={maskCns(dados.cns || "")}
 						onChange={(e) =>
-							setDados({ ...dados, cns: e.target.value })
+							setDados({ ...dados, cns: e.target.value.replace(/\D/g, "") })
 						}
 						className="w-[22vw] self-end"
 					/>

@@ -249,7 +249,7 @@ const Classes = () => {
 
 				{/* Members Section */}
 				<div className="flex flex-col gap-2 w-[98%] h-[53vh] p-4 overflow-y-auto">
-					{members.length > 0 ? (
+					{members.length > 0 ? ( 
 						members.map((member) => (
 							<MemberCard
 								key={member.id}

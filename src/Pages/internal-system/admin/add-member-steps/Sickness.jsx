@@ -37,7 +37,7 @@ const sicknessGroups = [
   ],
   [
     "sarampo",
-    "tétano",
+    "tetano",
     "variola",
     "coqueluche",
     "difteria",

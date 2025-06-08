@@ -3,11 +3,7 @@ import { FaSearch } from "react-icons/fa";
 import { MemberCard } from "../../../components/member-card/MemberCard";
 import EditModal from "../../../components/edit-modal/EditModal";
 import MemberModalController from "../../../components/member-modal-controller/MemberModalController";
-import PersonalData from "../admin/add-member-steps/PersonalData";
-import Address from "../admin/add-member-steps/Address";
-import MedicalData from "../admin/add-member-steps/MedicalData";
-import MemberGuardian from "../admin/add-member-steps/MemberGuardian";
-import InternData from "../admin/add-member-steps/InternData";
+import AddMemberPage from "../admin/AddMemberPage";
 import { GiBroom } from "react-icons/gi";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import { IoIosSearch } from "react-icons/io";
@@ -21,6 +17,7 @@ const SecretaryPage = () => {
 	const [showEditMemberModal, setShowEditMemberModal] = useState(false);
 	const [showEditStepsModal, setShowEditStepsModal] = useState(false);
 	const [editStep, setEditStep] = useState(1);
+	const [showEditMemberPage, setShowEditMemberPage] = useState(false);
 	const [editMemberData, setEditMemberData] = useState(null);
 	const [selectedMember, setSelectedMember] = useState(null);
 	const [pageNumber, setPageNumber] = useState(0);
@@ -37,8 +34,7 @@ const SecretaryPage = () => {
 	};
 	const handleEditMember = (member) => {
 		setEditMemberData(member);
-		setEditStep(1);
-		setShowEditStepsModal(true);
+		setShowEditMemberPage(true);
 	};
 
 	const classes = [
@@ -647,7 +643,6 @@ const SecretaryPage = () => {
 		classe: "",
 	});
 
-
 	const handleFilterMembers = async () => {
 		const params = {
 			name: filters.name || "",
@@ -734,7 +729,6 @@ const SecretaryPage = () => {
 	useEffect(() => {
 		fetchMembers();
 	}, [pageNumber]);
-
 
 	const handleSaveEditMember = async () => {
 		try {
@@ -889,60 +883,26 @@ const SecretaryPage = () => {
 					fields={membersFields}
 				/>
 			)}
-
-			{showEditStepsModal && editMemberData && (
-			<div className="fixed inset-0 bg-[#000000da] bg-opacity-40 flex items-center justify-center z-50">
-				<div className="bg-white rounded-lg shadow-lg p-6 w-[70vw] max-h-[90vh] overflow-y-auto">
-					<div className="flex h-[80%] w-[90%]">
-						{editStep === 1 && (
-							<PersonalData dados={editMemberData} setDados={setEditMemberData} />
-						)}
-						{editStep === 2 && (
-							<Address dados={editMemberData} setDados={setEditMemberData} />
-						)}
-						{editStep === 3 && (
-							<MedicalData dados={editMemberData} setDados={setEditMemberData} />
-						)}
-						{editStep === 4 && (
-							<MemberGuardian dados={editMemberData} setDados={setEditMemberData} />
-						)}
-						{editStep === 5 && (
-							<InternData dados={editMemberData} setDados={setEditMemberData} />
-						)}
-					</div>
-					<div className="flex justify-between mt-6">
+			
+			{showEditMemberPage && editMemberData && (
+				<div className="fixed inset-0 bg-[#000000da] bg-opacity-40 flex items-center justify-center z-50">
 						<button
-							onClick={() => setEditStep((prev) => Math.max(prev - 1, 1))}
-							disabled={editStep === 1}
-							className="px-4 py-2 rounded bg-gray-300"
+							onClick={() => setShowEditMemberPage(false)}
+							className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 z-10"
 						>
-							Voltar
+							X
 						</button>
-						{editStep < 5 ? (
-							<button
-								onClick={() => setEditStep((prev) => prev + 1)}
-								className="px-4 py-2 rounded bg-yellow-500 text-white"
-							>
-								Próximo
-							</button>
-						) : (
-							<button
-								onClick={handleSaveEditMember}
-								className="px-4 py-2 rounded bg-green-600 text-white"
-							>
-								Salvar
-							</button>
-						)}
-					</div>
-					<button
-						onClick={() => setShowEditStepsModal(false)}
-						className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
-					>
-						X
-					</button>
+						<AddMemberPage
+							initialData={editMemberData}
+							editMode={true}
+							onClose={() => setShowEditMemberPage(false)}
+							onSave={() => {
+								setShowEditMemberPage(false);
+								fetchMembers();
+							}}
+						/>
 				</div>
-			</div>
-		)}
+			)}
 		</div>
 	);
 };
