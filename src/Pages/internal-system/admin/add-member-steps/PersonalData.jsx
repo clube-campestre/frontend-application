@@ -1,4 +1,5 @@
 import AddMemberInput from "../../../../components/add-member-input/AddMemberInput";
+import { maskCpf, maskBirthCertificate, maskPhone } from "../../../../utils/validators/addMemberValidator";
 
 // Etapa 1 - PersonalData
 function PersonalData({ dados, setDados }) {
@@ -25,13 +26,15 @@ function PersonalData({ dados, setDados }) {
 						id="birthCertificate"
 						type="text"
 						label="Certidão de Nascimento"
-						value={dados.birthCertificate || ""}
-						onChange={(e) =>
-							setDados({
-								...dados,
-								birthCertificate: e.target.value,
-							})
-						}
+						value={maskBirthCertificate(dados.birthCertificate || "")}
+						onChange={(e) => {
+							// Aceita letras (qualquer caso) e números, limita a 32 caracteres
+							const raw = e.target.value
+								.replace(/[^a-zA-Z0-9]/g, "") // permite letras e números
+								.toUpperCase()
+								.slice(0, 32);
+							setDados({ ...dados, birthCertificate: raw });
+						}}
 						className="h-[8vh] w-[22vw] "
 					/>
 				</div>
@@ -40,9 +43,9 @@ function PersonalData({ dados, setDados }) {
 						id="cpf"
 						type="text"
 						label="CPF"
-						value={dados.cpf || ""}
+						value={maskCpf(dados.cpf || "")}
 						onChange={(e) =>
-							setDados({ ...dados, cpf: e.target.value })
+							setDados({ ...dados, cpf: e.target.value.replace(/\D/g, "") })
 						}
 						className="h-[8vh] w-[30vw]"
 					/>
@@ -75,9 +78,9 @@ function PersonalData({ dados, setDados }) {
 						id="contact"
 						type="text"
 						label="Contato"
-						value={dados.contact || ""}
+						value={maskPhone(dados.contact || "")}
 						onChange={(e) =>
-							setDados({ ...dados, contact: e.target.value })
+							setDados({ ...dados, contact: e.target.value.replace(/\D/g, "") })
 						}
 						className="h-[8vh] w-[30vw]"
 					/>

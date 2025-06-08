@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import AddMemberInput from "../../../../components/add-member-input/AddMemberInput";
+import { maskPhone } from "../../../../utils/validators/addMemberValidator"; // Importa a máscara
 
 // Etapa 5 - MemberGuardian
 function MemberGuardian({ dados, setDados }) {
@@ -38,8 +39,10 @@ function MemberGuardian({ dados, setDados }) {
                 id="fatherContact"
                 type="text"
                 label="Contato do Pai"
-                value={dados.fatherContact || ""}
-                onChange={(e) => setDados({ ...dados, fatherContact: e.target.value })}
+                value={maskPhone(dados.fatherContact || "")}
+                onChange={(e) =>
+                  setDados({ ...dados, fatherContact: e.target.value.replace(/\D/g, "").slice(0, 11) })
+                }
                 className="h-[8vh] w-[22vw]"
               />
             </div>
@@ -66,8 +69,10 @@ function MemberGuardian({ dados, setDados }) {
                 id="motherContact"
                 type="text"
                 label="Contato da Mãe"
-                value={dados.motherContact || ""}
-                onChange={(e) => setDados({ ...dados, motherContact: e.target.value })}
+                value={maskPhone(dados.motherContact || "")}
+                onChange={(e) =>
+                  setDados({ ...dados, motherContact: e.target.value.replace(/\D/g, "").slice(0, 11) })
+                }
                 className="h-[8vh] w-[22vw]"
               />
             </div>
@@ -106,8 +111,10 @@ function MemberGuardian({ dados, setDados }) {
                 id="responsibleContact"
                 type="text"
                 label="Contato do Responsável"
-                value={dados.responsibleContact || ""}
-                onChange={(e) => setDados({ ...dados, responsibleContact: e.target.value })}
+                value={maskPhone(dados.responsibleContact || "")}
+                onChange={(e) =>
+                  setDados({ ...dados, responsibleContact: e.target.value.replace(/\D/g, "").slice(0, 11) })
+                }
                 className="h-[8vh] w-[22vw]"
               />
             </div>
