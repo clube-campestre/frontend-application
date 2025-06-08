@@ -15,7 +15,7 @@ const placeFields = [
     id: "referencia",
     type: "text",
     label: "Ponto de Referência",
-    isRequired: true,
+    isRequired: false,
   },
   { id: "cotacao", type: "text", label: "Cotação (R$)", isRequired: true },
   { id: "capacidade", type: "number", label: "Capacidade", isRequired: true },
