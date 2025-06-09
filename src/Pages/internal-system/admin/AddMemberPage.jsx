@@ -11,10 +11,92 @@ import { useNavigate } from "react-router-dom";
 
 const formData = new FormData();
 
+const MOCK_MEMBER = {
+    username: "Ellen Caroline",
+    birthCertificate: "12345678909876543234567898765432",
+    cpf: "50934958831",
+    issuingAuthority: "SSP",
+    contact: "11999999999",
+    birthDate: "2005-12-12",
+    sex: "FEMININO",
+    tshirtSize: "M",
+    isBaptized: "true",
+    cep: "01234-567",
+    houseNumber: "123",
+    street: "Rua das Flores",
+    district: "Centro",
+    city: "São Paulo",
+    state: "SP",
+    complement: "Apto 45",
+    sickness: {
+        catapora: true,
+        meningite: false,
+        hepatite: false,
+        dengue: false,
+        pneumonia: false,
+        malaria: false,
+        febreAmarela: false,
+        sarampo: false,
+        tetano: false,
+        variola: false,
+        coqueluche: false,
+        difteria: false,
+        rinite: false,
+        bronquite: false,
+        asma: false,
+        rubeola: false,
+        colera: false,
+        covid19: false,
+        h1n1: false,
+        caxumba: false,
+        others: "",
+    },
+    heartProblems: "",
+    drugAllergy: "",
+    lactoseAllergy: false,
+    deficiency: "",
+    bloodTransfusion: false,
+    skinAllergy: false,
+    skinAllergyMedications: "",
+    faintingOrConvulsion: false,
+    faintingOrSeizuresMedications: "",
+    psychologicalDisorder: "",
+    allergy: false,
+    allergyMedications: "",
+    diabetic: false,
+    diabeticMedications: "",
+    recentSeriousInjury: false,
+    recentFracture: "",
+    surgeries: "",
+    hospitalizationReasonLast5Years: "",
+    blood_type: "O+",
+    cns: "123456789012345",
+    agreement: "Unimed",
+    fatherName: "Carlos da Silva",
+    fatherEmail: "carlos@email.com",
+    fatherContact: "11988888888",
+    motherName: "Maria da Silva",
+    motherEmail: "maria@email.com",
+    motherContact: "11977777777",
+    responsibleName: "",
+    responsibleEmail: "",
+    responsibleContact: "",
+    unitRole: "CONSELHEIRO",
+    classCategory: "AMIGO",
+    classRole: "MEMBRO",
+    foto: null,
+    unit: 1,
+    unitSurname: "Panda",
+};
+
 export default function AddMemberPage({ initialData = {}, editMode = false, onClose, onSave }) {
     const navigate = useNavigate(); // Adicione este hook
     const [etapaAtual, setEtapaAtual] = useState(1);
-    const [formDados, setFormDados] = useState( editMode ? normalizeMemberToForm(initialData) : initialData);
+    const [formDados, setFormDados] = useState(
+        editMode
+            ? normalizeMemberToForm(initialData)
+            : { ...MOCK_MEMBER }
+    );
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
