@@ -30,7 +30,7 @@ function SideBar({ activePath, userRole }) {
 	);
 
 	return (
-		<aside className="h-[90vh] w-16 bg-black flex flex-col items-center py-7 space-y-8 ml-6 mt-5 rounded-xl justify-between">
+		<aside className="h-[90vh] w-16 bg-black flex flex-col items-center py-7 space-y-8 ml-6 mt-5 rounded-xl justify-around">
 			{allowedMenuItems.map((item, index) => {
 				const isActive = activePath === item.path;
 				const Icon = item.icon;
