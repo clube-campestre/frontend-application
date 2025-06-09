@@ -46,7 +46,6 @@ function SideBar({ activePath }) {
 									showCancelButton: true,
 									confirmButtonColor: "#5ccb5f",
 									cancelButtonColor: "#d33",
-									showCancelButton: true,
 									confirmButtonText: "Sim, sair",
 									cancelButtonText: "Cancelar",
 								}).then((result) => {

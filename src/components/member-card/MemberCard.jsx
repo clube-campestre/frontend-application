@@ -6,6 +6,7 @@ import Toast from "../../utils/Toast";
 import Swal from "sweetalert2";
 import MemberModalController from "../member-modal-controller/MemberModalController";
 import EditModal from "../edit-modal/EditModal";
+import { maskCpf, maskPhone } from "../../utils/validators/addMemberValidator";
 
 export const MemberCard = ({ item, editFields, onEdit, onDelete }) => {
   const isUserAbbleToDelete = getUser().access !== "SUPERVISOR";
@@ -47,95 +48,102 @@ export const MemberCard = ({ item, editFields, onEdit, onDelete }) => {
   return (
     <div className="flex flex-row items-center justify-between w-full min-h-[10vh] max-h-[10vh] bg-[#FAFAFA] rounded hover:bg-[#D9D9D9] shadow-md transition-all duration-200 ease-in-out">
       {/* Nome e Data de Aniversário */}
-      <div className="flex flex-col items-start justify-center w-[25%] h-full pl-3 pr-3">
-        <div className="text-[16px] font-bold">
-          <span>{item.username}</span>
+      <div className="flex flex-col items-start justify-center min-w-[160px] max-w-[200px] w-[20%] h-full pl-3 pr-3">
+        <div className="text-[16px] font-bold truncate w-full">
+          <span className="truncate block">{item.username}</span>
         </div>
-        <div className="text-[13px] text-[#8D8D8D]">
-          <span>{new Date(item.birthDate).toLocaleDateString()}</span>
+        <div className="text-[13px] text-[#8D8D8D] truncate w-full">
+          <span className="truncate block">
+            {new Date(item.birthDate).toLocaleDateString()}
+          </span>
         </div>
       </div>
 
       <div className="h-[90%] w-0.5 bg-[#EDEDED]"></div>
 
       {/* Contato e CPF */}
-      <div className="flex flex-col items-start justify-center w-[25%] h-full pl-3 pr-3">
-        <div className="text-[16px]">
-          <span>{item.contact}</span>
+      <div className="flex flex-col items-start justify-center min-w-[160px] max-w-[220px] w-[25%] h-full pl-3 pr-3">
+        <div className="text-[16px] truncate w-full">
+          <span className="truncate block">{maskPhone(item.contact)}</span>
         </div>
-        <div className="text-[13px] text-[#8D8D8D]">
-          <span>CPF: {item.cpf}</span>
+        <div className="text-[13px] text-[#8D8D8D] truncate w-full">
+          <span className="truncate block">CPF: {maskCpf(item.cpf)}</span>
         </div>
       </div>
 
       <div className="h-[90%] w-0.5 bg-[#EDEDED]"></div>
 
       {/* Contato do Responsável */}
-      {item.fatherContact || item.motherContact ? (
-        <>
-          <div className="flex flex-col items-start justify-center w-[25%] h-full pl-3 pr-3">
-            <div className="text-[16px]">
-              <span>{item.motherContact}</span>
+      {(() => {
+        const contacts = [];
+        if (item.motherContact) {
+          contacts.push({
+            label: "Contato da Mãe",
+            value: maskPhone(item.motherContact),
+          });
+        }
+        if (item.fatherContact) {
+          contacts.push({
+            label: "Contato do Pai",
+            value: maskPhone(item.fatherContact),
+          });
+        }
+        // Se nenhum dos dois estiver preenchido, mostra o responsável
+        if (contacts.length === 0 && item.guardianContact) {
+          contacts.push({
+            label: "Contato do Responsável",
+            value: maskPhone(item.guardianContact),
+          });
+        }
+        return contacts.map((contact, idx) => (
+          <div
+            key={contact.label}
+            className="flex flex-col items-start justify-center min-w-[160px] max-w-[220px] w-[25%] h-full pl-3 pr-3"
+          >
+            <div className="text-[16px] truncate w-full">
+              <span className="truncate block">{contact.value}</span>
             </div>
-            <div className="text-[13px] text-[#8D8D8D]">
-              <span>Contato da Mãe</span>
+            <div className="text-[13px] text-[#8D8D8D] truncate w-full">
+              <span className="truncate block">{contact.label}</span>
             </div>
           </div>
-
-          <div className="flex flex-col items-start justify-center w-[25%] h-full pl-3 pr-3">
-            <div className="text-[16px]">
-              <span>{item.fatherContact}</span>
-            </div>
-            <div className="text-[13px] text-[#8D8D8D]">
-              <span>Contato do Pai</span>
-            </div>
-          </div>
-        </>
-      ) : (
-        <div className="flex flex-col items-start justify-center w-[25%] h-full pl-3 pr-3">
-          <div className="text-[16px]">
-            <span>{item.responsibleContact}</span>
-          </div>
-          <div className="text-[13px] text-[#8D8D8D]">
-            <span>Responsável Legal</span>
-          </div>
-        </div>
-      )}
+        ));
+      })()}
 
       <div className="h-[90%] w-0.5 bg-[#EDEDED]"></div>
 
       {/* Unidade */}
-      <div className="flex flex-col items-start justify-center w-[25%] h-full pl-3 pr-3">
-        <div className="text-[16px]">
-          <span>{item.unit?.surname}</span>
+      <div className="flex flex-col items-start justify-center min-w-[120px] max-w-[180px] w-[25%] h-full pl-3 pr-3">
+        <div className="text-[16px] truncate w-full">
+          <span className="truncate block">{item.unit?.surname}</span>
         </div>
-        <div className="text-[13px] text-[#8D8D8D]">
-          <span>{item.unitRole}</span>
+        <div className="text-[13px] text-[#8D8D8D] truncate w-full">
+          <span className="truncate block">{item.unitRole}</span>
         </div>
       </div>
 
       <div className="h-[90%] w-0.5 bg-[#EDEDED]"></div>
 
       {/* Classe */}
-      <div className="flex flex-col items-start justify-center w-[25%] h-full pl-3 pr-3">
-        <div className="text-[16px]">
-          <span>{item.classCategory}</span>
+      <div className="flex flex-col items-start justify-center min-w-[120px] max-w-[180px] w-[25%] h-full pl-3 pr-3">
+        <div className="text-[16px] truncate w-full">
+          <span className="truncate block">{item.classCategory}</span>
         </div>
-        <div className="text-[11px] text-[#8D8D8D]">
-          <span>{item.classRole}</span>
+        <div className="text-[11px] text-[#8D8D8D] truncate w-full">
+          <span className="truncate block">{item.classRole}</span>
         </div>
       </div>
 
       <div className="h-[90%] w-0.5 bg-[#EDEDED]"></div>
 
       {/* Botão Editar */}
-      <div className="flex items-center justify-center w-[10%]">
+      <div className="flex items-center justify-center min-w-[60px] max-w-[80px] w-[10%]">
         <button
           onClick={() => {
             if (typeof onEdit === "function") {
-              onEdit(item); // Chama o modal de edição por steps
+              onEdit(item);
             } else {
-              setShowEditModal(true); // Fallback para o EditModal padrão
+              setShowEditModal(true);
             }
           }}
           className="text-amber-500 hover:text-amber-600"
@@ -148,7 +156,7 @@ export const MemberCard = ({ item, editFields, onEdit, onDelete }) => {
 
       {/* Botão Apagar */}
       {isUserAbbleToDelete && (
-        <div className="flex items-center justify-center w-[10%] ">
+        <div className="flex items-center justify-center min-w-[60px] max-w-[80px] w-[10%]">
           <button
             onClick={() => handleDeleteMember(item.cpf)}
             className="text-gray-400 hover:text-gray-600"
@@ -161,7 +169,7 @@ export const MemberCard = ({ item, editFields, onEdit, onDelete }) => {
       <div className="h-[90%] w-0.5 bg-[#EDEDED]"></div>
 
       {/* Botão Detalhes */}
-      <div className="flex items-center justify-center w-[10%]">
+      <div className="flex items-center justify-center min-w-[60px] max-w-[80px] w-[10%]">
         <button
           onClick={() => setShowViewModal(true)}
           className="text-gray-400 hover:text-gray-600"

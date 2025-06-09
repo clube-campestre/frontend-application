@@ -132,7 +132,7 @@ const Unities = () => {
 
 	const membersFields = [
 		{
-			name: "name",
+			name: "username",
 			label: "Nome do Membro",
 			placeholder: "Digite o nome do membro",
 			type: "text",
@@ -146,7 +146,7 @@ const Unities = () => {
 			isRequired: true,
 		},
 		{
-			name: "birthday",
+			name: "birthDate",
 			label: "Data de Nascimento",
 			placeholder: "DD/M	M/AAAA",
 			type: "date",
@@ -160,14 +160,14 @@ const Unities = () => {
 			isRequired: true,
 		},
 		{
-			name: "responsibleName",
+			name: "motherName" || "fatherName" || "guardianName",
 			label: "Nome do Responsável",
 			placeholder: "Digite o nome do responsável",
 			type: "text",
 			isRequired: true,
 		},
 		{
-			name: "responsibleContact",
+			name: "motherContact" || "fatherContact" || "guardianContact",
 			label: "Contato do Responsável",
 			placeholder: "(XX) XXXXX-XXXX",
 			type: "text",
@@ -223,14 +223,14 @@ const Unities = () => {
 
 	const handleEditMember = async (member) => {
 		try {
-			const response = await api.put(`/members/${member.id}`, member);
+			const response = await api.put(`/members/${member.cpf}`, member);
 			if (response.status === 200) {
 				Toast.fire({
 					icon: "success",
 					title: "Membro editado com sucesso!",
 				});
-				setSelectedUnit(null);
-				handleShowEditMemberModal();
+				setShowEditMemberModal(false);
+				fetchMembers();
 			}
 		} catch (error) {
 			Toast.fire({
@@ -346,7 +346,7 @@ const Unities = () => {
 							<span className="text-[20px] font-medium">
 								PONTUAÇÃO
 							</span>
-							<span className="text-4xl font-extrabold">
+							<span className="text-4Fxl font-extrabold">
 								{unitPoints || 0}
 							</span>
 						</>
@@ -404,26 +404,17 @@ const Unities = () => {
 							<MemberCard
 								key={member.id}
 								item={member}
-								showModal={handleShowEditMemberModal}
-								handleSelectMember={handleSelectMember}
+								editFields={membersFields}
+								onEdit={() => {
+									setSelectedMember(member);
+									setShowEditMemberModal(true);
+								}}
 							/>
 						))
 					) : (
 						<p className="text-gray-500 text-center">
 							Nenhum membro encontrado.
 						</p>
-					)}
-					{showEditMemberModal && (
-						<EditModal
-							title="Editar Membro"
-							fields={membersFields}
-							editingItem={selectedMember}
-							onClose={handleShowEditMemberModal}
-							onSubmit={(data) => {
-								handleEditMember(data);
-								handleShowEditMemberModal();
-							}}
-						/>
 					)}
 					{showAddUnitPointModal && (
 						<EditModal
@@ -446,6 +437,15 @@ const Unities = () => {
 							onConfirm={(selectedMembers) => {
 								handleUpdateMemberUnit(selectedMembers);
 							}}
+						/>
+					)}
+					{showEditMemberModal && selectedMember && (
+						<EditModal
+							editingItem={selectedMember}
+							onClose={handleShowEditMemberModal}
+							onSubmit={handleEditMember}
+							title="Editar Membro"
+							fields={membersFields}
 						/>
 					)}
 				</div>

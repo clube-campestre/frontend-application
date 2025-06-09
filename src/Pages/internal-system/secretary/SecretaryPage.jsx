@@ -801,33 +801,27 @@ const SecretaryPage = () => {
 					</div>
 
 					<div className="bg-gray-100 p-4 rounded-md">
-						<div className=" rounded-md flex flex-col gap-2  p-4 ">
+						{/* Members Section */}
+						<div className="flex flex-col gap-2 w-[98%] h-[47vh] p-4 overflow-y-auto">
 							{members.length > 0 ? (
 								members.map((member) => (
-									<div key={member.id}>
-										<MemberCard
-											key={member.id}
-											item={member}
-											showModal={
-												handleShowEditMemberModal
-											}
-											handleSelectMember={
-												handleSelectMember
-											}
-											editFields={membersFields}
-											onEdit={() => handleEditMember(member)}
-											onDelete={fetchMembers} // Passe a função que atualiza a lista
-
-										/>
-									</div>
+									<MemberCard
+										key={member.id}
+										item={member}
+										editFields={membersFields}
+										onEdit={() => {
+											setEditMemberData(member);
+											setShowEditMemberPage(true);
+										}}
+										onDelete={fetchMembers}
+									/>
 								))
 							) : (
-								<div className="p-4 text-gray-500">
+								<p className="text-gray-500 text-center">
 									Nenhum membro encontrado.
-								</div>
+								</p>
 							)}
 						</div>
-					</div>
 					{members.length > 0 && (
 						<>
 							<section className="flex items-center justify-center gap-4 w-full mt-4">
@@ -875,6 +869,7 @@ const SecretaryPage = () => {
 							</div>
 						</>
 					)}
+					</div>
 				</div>
 			</div>
 			{isModalOpen && selectedMember && (
@@ -895,21 +890,24 @@ const SecretaryPage = () => {
 
 			{showEditMemberPage && editMemberData && (
 				<div className="fixed inset-0 bg-[#000000da] bg-opacity-40 flex items-center justify-center z-50">
-					<button
-						onClick={() => setShowEditMemberPage(false)}
-						className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 z-10"
-					>
-						X
-					</button>
-					<AddMemberPage
-						initialData={editMemberData}
-						editMode={true}
-						onClose={() => setShowEditMemberPage(false)}
-						onSave={() => {
-							setShowEditMemberPage(false);
-							fetchMembers();
-						}}
-					/>
+					<div className="relative rounded-lg shadow-lg p-0">
+						<button
+							onClick={() => setShowEditMemberPage(false)}
+							className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 z-10 text-4xl"
+							style={{ background: "none", border: "none" }}
+						>
+							×
+						</button>
+						<AddMemberPage
+							initialData={editMemberData}
+							editMode={true}
+							onClose={() => setShowEditMemberPage(false)}
+							onSave={() => {
+								setShowEditMemberPage(false);
+								fetchMembers();
+							}}
+						/>
+					</div>
 				</div>
 			)}
 		</div>

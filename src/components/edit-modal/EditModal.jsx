@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { FaRegStar, FaStar } from "react-icons/fa";
+import { maskCpf, maskBirthCertificate, maskPhone, maskCep } from "../../utils/validators/addMemberValidator";
 
 export default function EditModal({
 	onClose,
@@ -76,26 +77,24 @@ export default function EditModal({
 	function applyFieldsMasks(name, valor) {
 		if (valor === undefined || valor === null) return "";
 
-		valor = String(valor); // Converte para string
+		valor = String(valor);
 
+		if (name === "cpf") {
+			return maskCpf(valor);
+		}
+		if (name === "birthCertificate") {
+			return maskBirthCertificate(valor);
+		}
+		if (
+			name === "contact" ||
+			name === "fatherContact" ||
+			name === "motherContact" ||
+			name === "responsibleContact"
+		) {
+			return maskPhone(valor);
+		}
 		if (name === "cep") {
-			const onlyNums = valor.replace(/\D/g, "").slice(0, 8);
-			if (onlyNums.length <= 5) return onlyNums;
-			return onlyNums.slice(0, 5) + "-" + onlyNums.slice(5);
-		}
-
-		if (name === "cotacao") {
-			const numeric = valor.replace(/\D/g, "");
-			const cents = (parseInt(numeric, 10) / 100).toFixed(2);
-			return "R$ " + cents.replace(".", ",");
-		}
-
-		if (name === "telefone") {
-			const nums = valor.replace(/\D/g, "").slice(0, 11);
-			if (nums.length <= 10) {
-				return nums.replace(/(\d{2})(\d{4})(\d{0,4})/, "($1) $2-$3");
-			}
-			return nums.replace(/(\d{2})(\d{5})(\d{0,4})/, "($1) $2-$3");
+			return maskCep(valor);
 		}
 
 		return valor;
@@ -144,7 +143,13 @@ export default function EditModal({
 					{title}
 				</h2>
 
-				<form onSubmit={handleSubmit} className="space-y-5">
+				<form
+					onSubmit={(e) => {
+						e.preventDefault();
+						onSubmit(form); // formData = dados editados
+					}}
+					className="space-y-5"
+				>
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 						{fields.map((field) => {
 							if (field.type === "radio") {
