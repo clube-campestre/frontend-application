@@ -10,6 +10,7 @@ import { GiBroom } from "react-icons/gi";
 import Toast from "../../../utils/Toast";
 import { FaPencilAlt, FaTrash } from "react-icons/fa";
 
+
 const Statement = () => {
 	const [showAddModal, setShowAddModal] = useState(false);
 	const [showEditModal, setShowEditModal] = useState(false);
@@ -426,7 +427,7 @@ const Statement = () => {
 		<div className="flex items-center justify-center w-full h-[82vh]">
 			<div className="flex flex-col items-center justify-start w-[80vw] h-[82vh]">
 				{/* Header Section */}
-				<header className="flex items-center justify-between w-full h-18">
+				<header className="flex items-center justify-between w-full h-16">
 					<div className="flex items-center gap-2">
 						<div className="h-8 w-2 bg-yellow-400 rounded"></div>
 						<h2 className="text-xl font-normal">Lançar Receita</h2>
@@ -671,7 +672,7 @@ const Statement = () => {
 					<div className="flex flex-col gap-2">
 						{transactions.length > 0 ? (
 							transactions.map((transaction) => (
-								<div key={transaction.id}>
+								<div>
 									<StatementCard
 										key={transaction.id}
 										item={transaction}
