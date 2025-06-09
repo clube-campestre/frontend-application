@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 import MemberModalController from "../member-modal-controller/MemberModalController";
 import EditModal from "../edit-modal/EditModal";
 
-export const MemberCard = ({ item, editFields, onEdit }) => {
+export const MemberCard = ({ item, editFields, onEdit, onDelete }) => {
   const isUserAbbleToDelete = getUser().access !== "SUPERVISOR";
   const [showViewModal, setShowViewModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -31,7 +31,9 @@ export const MemberCard = ({ item, editFields, onEdit }) => {
           icon: "success",
           title: "Membro deletado com sucesso!",
         });
-        // Aqui você pode emitir um evento ou chamar uma função para atualizar a lista no pai, se necessário
+        if (typeof onDelete === "function") {
+          onDelete(); // Chama a função do pai para atualizar a lista
+        }
       } catch (err) {
         Toast.fire({
           icon: "error",

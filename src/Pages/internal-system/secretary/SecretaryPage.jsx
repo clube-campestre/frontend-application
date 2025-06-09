@@ -809,6 +809,7 @@ const SecretaryPage = () => {
 											handleSelectMember={handleSelectMember}
 											editFields={membersFields}
 											onEdit={() => handleEditMember(member)}
+											onDelete={fetchMembers} // Passe a função que atualiza a lista
 										/>
 									</div>
 								))
