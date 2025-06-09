@@ -79,7 +79,7 @@ export default function AddUserModal({
 						className="w-full px-3 py-2 rounded border"
 						required
 					/>
-					{editingUser && !isOwnUser ? null : (
+					{editingUser ? null : (
 						<>
 							<label htmlFor="password">Senha</label>
 							<input
@@ -115,7 +115,7 @@ export default function AddUserModal({
 											checked={
 												editingUser
 													? form.access.toLowerCase() ==
-													  permission.toLowerCase()
+														permission.toLowerCase()
 													: undefined
 											}
 										/>

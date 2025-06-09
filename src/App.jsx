@@ -3,10 +3,11 @@ import { BrowserRouter, Routes, Route, Link } from "react-router";
 import Login from "./Pages/Login/Login";
 import Home from "./Pages/home/Home";
 import MainLayout from "./components/main-layout/MainLayout";
-import Admin from "./pages/internal-system/admin/Admin"
+import Admin from "./pages/internal-system/admin/Admin";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import InternalHome from "./Pages/internal-system/internal-home/InternalHome";
-import AddMembro from "./pages/internal-system/admin/AddMember"
+// import AddMembro from "./pages/internal-system/admin/AddMember"
+import AddMembro from "./pages/internal-system/admin/AddMemberPage"
 import AddEvento from "./pages/internal-system/admin/AddEvent"
 import AddTransport from "./Pages/internal-system/admin/AddTransport"
 import AddPlace from "./Pages/internal-system/admin/AddPlace"
@@ -16,7 +17,7 @@ import Configurations from "./Pages/internal-system/configurations/Configuration
 import UserManagement from "./pages/internal-system/configurations/UserManagement";
 import Calendar from "./pages/internal-system/admin/Calendar";
 import Unities from "./Pages/internal-system/unities/Unities";
-import SecretaryPage from "./pages/internal-system/secretary/SecretaryPage";
+import SecretaryPage from "./Pages/internal-system/secretary/SecretaryPage";
 
 function App() {
   return (
@@ -38,7 +39,8 @@ function App() {
           <Route path="/add-transport" element={<AddTransport />} />
           <Route path="/add-place" element={<AddPlace />} />
           <Route path="/unities" element={<Unities />} />
-           <Route path="/secretaria" element={<SecretaryPage />} />
+          <Route path="/secretary" element={<SecretaryPage />} />
+
           <Route path="/classes" element={<Classes />} />
           <Route path="/statement" element={<Statement />} />
           <Route path='/configurations' element={<Configurations/>} />

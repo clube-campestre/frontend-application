@@ -4,7 +4,7 @@ import anelImagem1 from "../../assets/images/anel1-login-cadastro.png";
 import Logo from "../../assets/images/logo.png";
 import anelImagem2 from "../../assets/images/anel2-login-cadastro.png";
 import { loginService } from "../../services/userService";
-import Swal from "sweetalert2";
+import Toast from "../../utils/Toast";
 import FloatingInput from "../../components/floating-input/FloatingInput";
 import { useNavigate } from "react-router-dom";
 
@@ -12,13 +12,6 @@ const Login = () => {
 	const navigate = useNavigate();
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const Toast = Swal.mixin({
-		toast: true,
-		position: "top",
-		showConfirmButton: false,
-		timer: 2500,
-		timerProgressBar: true,
-	});
 
 	const handleLogin = async (e) => {
 		e.preventDefault();

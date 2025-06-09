@@ -1,11 +1,11 @@
 import FormRegister from "../../../components/admin-internal/FormRegister";
 import { api } from "../../../provider/api";
-import Swal from "sweetalert2";
+import Toast from "../../../utils/Toast";
 import { useNavigate } from "react-router";
 
 const transportFields = [
   { id: "empresa", type: "text", label: "Empresa", isRequired: true },
-  { id: "cotacao", type: "number", label: "Cotação (R$)", isRequired: true },
+  { id: "cotacao", type: "text", label: "Cotação (R$)", isRequired: true },
   {
     id: "distanciaHistorica",
     type: "number",
@@ -19,13 +19,6 @@ const transportFields = [
 
 const AddTransport = () => {
   const navigate = useNavigate();
-  const Toast = Swal.mixin({
-    toast: true,
-    position: "top",
-    showConfirmButton: false,
-    timer: 2500,
-    timerProgressBar: true,
-  });
 
   const handleSubmit = async (formData) => {
     try {

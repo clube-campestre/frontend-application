@@ -1,7 +1,7 @@
 import FormRegister from "../../../components/admin-internal/FormRegister";
 import { api } from "../../../provider/api";
-import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import Toast from "../../../utils/Toast";
 
 const placeFields = [
   { id: "nome", type: "text", label: "Nome do Local", isRequired: true },
@@ -15,22 +15,14 @@ const placeFields = [
     id: "referencia",
     type: "text",
     label: "Ponto de Referência",
-    isRequired: true,
+    isRequired: false,
   },
-  { id: "cotacao", type: "number", label: "Cotação (R$)", isRequired: true },
+  { id: "cotacao", type: "text", label: "Cotação (R$)", isRequired: true },
   { id: "capacidade", type: "number", label: "Capacidade", isRequired: true },
   { id: "telefone", type: "text", label: "Telefone", isRequired: true },
 ];
 
 const AddPlace = () => {
-  const Toast = Swal.mixin({
-    toast: true,
-    position: "top",
-    showConfirmButton: false,
-    timer: 2500,
-    timerProgressBar: true,
-  });
-
   const navigate = useNavigate();
 
   const handleSubmit = async (formData) => {

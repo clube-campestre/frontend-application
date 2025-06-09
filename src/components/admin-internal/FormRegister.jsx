@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FaRegStar, FaStar } from "react-icons/fa";
-import Swal from "sweetalert2";
+import Toast from "../../utils/Toast";
 
 const FormRegister = ({ formTitle, fields, onSubmit }) => {
   const [formData, setFormData] = useState(() =>
@@ -9,25 +9,80 @@ const FormRegister = ({ formTitle, fields, onSubmit }) => {
     })
   );
   const [hoveredNota, setHoveredNota] = useState(0);
+  const [isLoadingCep, setIsLoadingCep] = useState(false);
 
-  const Toast = Swal.mixin({
-    toast: true,
-    position: "top",
-    showConfirmButton: false,
-    timer: 2500,
-    timerProgressBar: true,
-  });
+  const formatToBRL = (value) => {
+    if (!value) return "R$ 0,00";
+    const numericValue = value.replace(/\D/g, "");
+    const number = parseFloat(numericValue) / 100;
+    return number.toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
+  };
+
+  const unmaskBRL = (value) => {
+    return Number(value.replace(/\D/g, "")) / 100;
+  };
+
+  const formatPhone = (value) => {
+    const cleaned = value.replace(/\D/g, "").slice(0, 11); // Limita a 11 dígitos
+    const match = cleaned.match(/^(\d{0,2})(\d{0,5})(\d{0,4})$/);
+
+    if (!match) return "";
+
+    const [, ddd, firstPart, secondPart] = match;
+
+    let result = "";
+    if (ddd) result += `(${ddd}`;
+    if (ddd && ddd.length === 2) result += `) `;
+    if (firstPart) result += firstPart;
+    if (secondPart) result += `-${secondPart}`;
+
+    return result;
+  };
+
+  const unmaskPhone = (value) => {
+    return value ? value.replace(/\D/g, "") : "";
+  };
 
   const handleChange = (id, valor) => {
-    setFormData((prev) => ({ ...prev, [id]: valor }));
+    if (id === "cep") {
+      let cep = valor.replace(/\D/g, "");
+
+      if (cep.length > 5) {
+        cep = cep.slice(0, 5) + "-" + cep.slice(5, 8);
+      }
+
+      cep = cep.slice(0, 9);
+
+      setFormData((prev) => ({ ...prev, [id]: cep }));
+    } else if (id === "cotacao") {
+      const formatted = formatToBRL(valor);
+      setFormData((prev) => ({ ...prev, [id]: formatted }));
+    } else if (id === "telefone" || id === "whatsapp") {
+      const formatted = formatPhone(valor);
+      setFormData((prev) => ({ ...prev, [id]: formatted }));
+    } else {
+      setFormData((prev) => ({ ...prev, [id]: valor }));
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(formData);
+
+    const updatedFormData = {
+      ...formData,
+      cotacao: unmaskBRL(formData.cotacao),
+      telefone: unmaskPhone(formData.telefone),
+      whatsapp: unmaskPhone(formData.whatsapp),
+    };
+
+    onSubmit(updatedFormData);
   };
 
   const getAddress = async (cep) => {
+    setIsLoadingCep(true);
     try {
       const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
       const data = await response.json();
@@ -50,12 +105,17 @@ const FormRegister = ({ formTitle, fields, onSubmit }) => {
         icon: "error",
         title: "Erro ao buscar CEP",
       });
+    } finally {
+      setIsLoadingCep(false);
     }
   };
 
   const handleBlur = (id, valor) => {
-    if (id === "cep" && valor.length === 8) {
-      getAddress(valor);
+    if (id === "cep") {
+      const cepNumerico = valor.replace(/\D/g, "");
+      if (cepNumerico.length === 8) {
+        getAddress(cepNumerico);
+      }
     }
   };
 
@@ -76,7 +136,13 @@ const FormRegister = ({ formTitle, fields, onSubmit }) => {
               >
                 {field.label}
               </label>
-              {renderizarCampo(field, formData, handleChange, handleBlur)}
+              {renderizarCampo(
+                field,
+                formData,
+                handleChange,
+                handleBlur,
+                isLoadingCep
+              )}
             </div>
           ))}
 
@@ -124,8 +190,15 @@ const FormRegister = ({ formTitle, fields, onSubmit }) => {
   );
 };
 
-const renderizarCampo = (campo, formData, handleChange, handleBlur) => {
+const renderizarCampo = (
+  campo,
+  formData,
+  handleChange,
+  handleBlur,
+  isLoadingCep
+) => {
   const { id, type, isRequired } = campo;
+  const isEndereco = ["rua", "bairro", "estado", "cidade"].includes(id);
 
   return (
     <input
@@ -135,6 +208,7 @@ const renderizarCampo = (campo, formData, handleChange, handleBlur) => {
       onChange={(e) => handleChange(id, e.target.value)}
       onBlur={(e) => handleBlur(id, e.target.value)}
       required={isRequired}
+      disabled={isEndereco && isLoadingCep}
       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FCAE2D]"
     />
   );
