@@ -88,11 +88,11 @@ export const MemberCard = ({ item, editFields, onEdit, onDelete }) => {
             value: maskPhone(item.fatherContact),
           });
         }
-        // Se nenhum dos dois estiver preenchido, mostra o responsável
-        if (contacts.length === 0 && item.guardianContact) {
+        // Sempre mostra o responsável, se existir
+        if (item.responsibleContact) {
           contacts.push({
             label: "Contato do Responsável",
-            value: maskPhone(item.guardianContact),
+            value: maskPhone(item.responsibleContact),
           });
         }
         return contacts.map((contact, idx) => (
