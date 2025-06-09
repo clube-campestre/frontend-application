@@ -137,7 +137,7 @@ const Classes = () => {
 		
 	useEffect(() => {
 		fetchMembers();
-	}, [selectedClassName]);
+	}, [selectedClassName, pageNumber]);
 
 	const handleEditMember = async (member) => {
 		try {

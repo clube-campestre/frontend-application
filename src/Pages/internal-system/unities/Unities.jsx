@@ -118,8 +118,20 @@ const Unities = () => {
 				value: unit.id,
 				label: unit.name,
 			})),
-			selectedOption: "Selecione uma unidade",
+			selectedOption: "Selecione a unidade",
 			isRequired: true,
+		},
+		{
+			name: "isSum",
+			label: "Tipo de Pontuação",
+			placeholder: "Selecione o tipo de pontuação",
+			type: "select",
+			options: [
+				{ value: true, label: "Adicionar Pontos" },
+				{ value: false, label: "Remover Pontos" },
+			],
+			isRequired: true,
+			selectedOption: "Selecione o tipo de pontuação",
 		},
 		{
 			name: "points",
@@ -219,7 +231,7 @@ const Unities = () => {
 
 	useEffect(() => {
 		fetchMembers();
-	}, [selectedUnit]);
+	}, [selectedUnit, pageNumber]);
 
 	const handleEditMember = async (member) => {
 		try {
@@ -286,20 +298,21 @@ const Unities = () => {
 		}
 
 		try {
-			const response = await api.put(
+			const response = await api.post(
 				"/units/score",
 				{},
 				{
 					params: {
 						id: data.unit,
-						newScore: data.points,
+						score: data.points,
+						isSum: data.isSum,
 					},
 				}
 			);
 			if (response.status === 200) {
 				Toast.fire({
 					icon: "success",
-					title: "Pontuação adicionada com sucesso!",
+					title: `Pontuação ${data.isSum ? "adicionada" : "removida"} com sucesso!`,
 				});
 			}
 		} catch (error) {
@@ -390,7 +403,7 @@ const Unities = () => {
 										setShowAddUnitPointModal(true)
 									}
 								>
-									Adicionar Pontuação <LuCirclePlus />
+									Alterar Pontuação <LuCirclePlus />
 								</button>
 							</div>
 						</>
