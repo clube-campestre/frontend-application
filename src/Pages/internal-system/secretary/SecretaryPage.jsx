@@ -15,8 +15,6 @@ const SecretaryPage = () => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [editModalOpen, setEditModalOpen] = useState(false);
 	const [showEditMemberModal, setShowEditMemberModal] = useState(false);
-	const [showEditStepsModal, setShowEditStepsModal] = useState(false);
-	const [editStep, setEditStep] = useState(1);
 	const [showEditMemberPage, setShowEditMemberPage] = useState(false);
 	const [editMemberData, setEditMemberData] = useState(null);
 	const [selectedMember, setSelectedMember] = useState(null);
@@ -730,19 +728,6 @@ const SecretaryPage = () => {
 		fetchMembers();
 	}, [pageNumber]);
 
-	const handleSaveEditMember = async () => {
-		try {
-			await api.put(`/members/${editMemberData.id}`, editMemberData);
-			Toast.fire({
-				icon: "success",
-				title: "Membro editado com sucesso!",
-			});
-			setShowEditStepsModal(false);
-			fetchMembers();
-		} catch (error) {
-			Toast.fire({ icon: "error", title: "Erro ao editar membro." });
-		}
-	};
 
 	return (
 		<div className="max-h-screen bg-white p-6">
