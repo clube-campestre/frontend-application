@@ -7,6 +7,7 @@ import guiaImage from "../../../assets/images/guia 3.svg";
 import { LuCirclePlus } from "react-icons/lu";
 import { MemberCard } from "../../../components/member-card/MemberCard";
 import MemberModal from "../../../components/member-manage/MemberModal";
+import EditModal from "../../../components/edit-modal/EditModal";
 import { useState, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import { api } from "../../../provider/api";
@@ -36,7 +37,7 @@ const Classes = () => {
 
 	const membersFields = [
 		{
-			name: "name",
+			name: "username",
 			label: "Nome do Membro",
 			placeholder: "Digite o nome do membro",
 			type: "text",
@@ -50,7 +51,7 @@ const Classes = () => {
 			isRequired: true,
 		},
 		{
-			name: "birthday",
+			name: "birthDate",
 			label: "Data de Nascimento",
 			placeholder: "DD/MM/AAAA",
 			type: "date",
@@ -64,14 +65,14 @@ const Classes = () => {
 			isRequired: true,
 		},
 		{
-			name: "responsibleName",
+			name: "motherName" || "fatherName" || "guardianName",
 			label: "Nome do Responsável",
 			placeholder: "Digite o nome do responsável",
 			type: "text",
 			isRequired: true,
 		},
 		{
-			name: "responsibleContact",
+			name: "motherContact" || "fatherContact" || "guardianContact",
 			label: "Contato do Responsável",
 			placeholder: "(XX) XXXXX-XXXX",
 			type: "text",
@@ -92,9 +93,8 @@ const Classes = () => {
 		setShowAddMemberModal((prev) => !prev);
 	};
 
-	useEffect(() => {
-		const fetchMembers = async () => {
-			try {
+	const fetchMembers = async () => {
+		try {
 				const allMembersResponse = await api.get("/members");
 				setAllMembers(allMembersResponse.data || []);
 				if (selectedClassName === null) {
@@ -134,20 +134,21 @@ const Classes = () => {
 				console.error("Error fetching members:", error);
 			}
 		};
-
+		
+	useEffect(() => {
 		fetchMembers();
 	}, [selectedClassName]);
 
 	const handleEditMember = async (member) => {
 		try {
-			const response = await api.put(`/members/${member.id}`, member);
+			const response = await api.put(`/members/${member.cpf}`, member);
 			if (response.status === 200) {
 				Toast.fire({
 					icon: "success",
 					title: "Membro editado com sucesso!",
 				});
-				setSelectedClassName(null);
-				handleShowEditMemberModal();
+				setShowEditMemberModal(false);
+				fetchMembers();
 			}
 		} catch (error) {
 			Toast.fire({
@@ -254,9 +255,11 @@ const Classes = () => {
 							<MemberCard
 								key={member.id}
 								item={member}
-								showModal={handleShowEditMemberModal}
-								handleSelectMember={handleSelectMember}
 								editFields={membersFields}
+								onEdit={() => {
+									setSelectedMember(member);
+									setShowEditMemberModal(true);
+								}}
 							/>
 						))
 					) : (
@@ -275,6 +278,17 @@ const Classes = () => {
 							onConfirm={(selectedMembers) => {
 								handleUpdateMemberUnit(selectedMembers);
 							}}
+						/>
+					)}
+
+					{/* Edit Member Modal */}
+					{showEditMemberModal && selectedMember && (
+						<EditModal
+							editingItem={selectedMember}
+							onClose={handleShowEditMemberModal}
+							onSubmit={handleEditMember}
+							title="Editar Membro"
+							fields={membersFields}
 						/>
 					)}
 				</div>
