@@ -52,16 +52,16 @@ const SecretaryPage = () => {
 	];
 
 	const unities = [
-		{ id: "Panda", name: "Panda" },
-		{ id: "Falcão", name: "Falcão" },
-		{ id: "Lince", name: "Lince" },
-		{ id: "Leão", name: "Leão" },
-		{ id: "Águia Real", name: "Águia Real" },
-		{ id: "Tigre", name: "Tigre" },
-		{ id: "Raposa", name: "Raposa" },
-		{ id: "Urso", name: "Urso" },
-		{ id: "Pantera", name: "Pantera" },
-		{ id: "Lobo", name: "Lobo" },
+		{ id: "PANDA", name: "Panda" },
+		{ id: "FALCAO", name: "Falcão" },
+		{ id: "LINCE", name: "Lince" },
+		{ id: "LEAO", name: "Leão" },
+		{ id: "AGUIA_REAL", name: "Águia Real" },
+		{ id: "TIGRE", name: "Tigre" },
+		{ id: "RAPOSA", name: "Raposa" },
+		{ id: "URSO", name: "Urso" },
+		{ id: "PANTERA", name: "Pantera" },
+		{ id: "LOBO", name: "Lobo" },
 	];
 
 	const membersFields = [
@@ -733,7 +733,10 @@ const SecretaryPage = () => {
 	const handleSaveEditMember = async () => {
 		try {
 			await api.put(`/members/${editMemberData.id}`, editMemberData);
-			Toast.fire({ icon: "success", title: "Membro editado com sucesso!" });
+			Toast.fire({
+				icon: "success",
+				title: "Membro editado com sucesso!",
+			});
 			setShowEditStepsModal(false);
 			fetchMembers();
 		} catch (error) {
@@ -798,18 +801,23 @@ const SecretaryPage = () => {
 					</div>
 
 					<div className="bg-gray-100 p-4 rounded-md">
-						<div className=" rounded-md flex flex-col gap-2 w-[98%] h-[50vh] p-4 ">
+						<div className=" rounded-md flex flex-col gap-2  p-4 ">
 							{members.length > 0 ? (
 								members.map((member) => (
 									<div key={member.id}>
 										<MemberCard
 											key={member.id}
 											item={member}
-											showModal={handleShowEditMemberModal}
-											handleSelectMember={handleSelectMember}
+											showModal={
+												handleShowEditMemberModal
+											}
+											handleSelectMember={
+												handleSelectMember
+											}
 											editFields={membersFields}
 											onEdit={() => handleEditMember(member)}
 											onDelete={fetchMembers} // Passe a função que atualiza a lista
+
 										/>
 									</div>
 								))
@@ -884,24 +892,24 @@ const SecretaryPage = () => {
 					fields={membersFields}
 				/>
 			)}
-			
+
 			{showEditMemberPage && editMemberData && (
 				<div className="fixed inset-0 bg-[#000000da] bg-opacity-40 flex items-center justify-center z-50">
-						<button
-							onClick={() => setShowEditMemberPage(false)}
-							className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 z-10"
-						>
-							X
-						</button>
-						<AddMemberPage
-							initialData={editMemberData}
-							editMode={true}
-							onClose={() => setShowEditMemberPage(false)}
-							onSave={() => {
-								setShowEditMemberPage(false);
-								fetchMembers();
-							}}
-						/>
+					<button
+						onClick={() => setShowEditMemberPage(false)}
+						className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 z-10"
+					>
+						X
+					</button>
+					<AddMemberPage
+						initialData={editMemberData}
+						editMode={true}
+						onClose={() => setShowEditMemberPage(false)}
+						onSave={() => {
+							setShowEditMemberPage(false);
+							fetchMembers();
+						}}
+					/>
 				</div>
 			)}
 		</div>
@@ -928,16 +936,7 @@ const Dropdown = ({ label, options, handleFilters, filters }) => {
 					<option value="">Selecione uma {label}</option>
 					{options &&
 						options.map((option, index) => (
-							<option
-								key={index}
-								value={
-									key === "unidade"
-										? option.id == "Águia Real"
-											? "aguia_real"
-											: option.id
-										: option.id.toUpperCase()
-								}
-							>
+							<option key={index} value={option.id}>
 								{option.name}
 							</option>
 						))}

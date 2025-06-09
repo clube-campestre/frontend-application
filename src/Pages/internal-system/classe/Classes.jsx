@@ -30,7 +30,7 @@ const Classes = () => {
 		{ id: 2, name: "Companheiro", logo: companheiroImage },
 		{ id: 3, name: "Pesquisador", logo: pesquisadorImage },
 		{ id: 4, name: "Pioneiro", logo: pioneiroImage },
-		{ id: 5, name: "Excusionista", logo: excursionistaImage },
+		{ id: 5, name: "Excursionista", logo: excursionistaImage },
 		{ id: 6, name: "Guia", logo: guiaImage },
 	];
 

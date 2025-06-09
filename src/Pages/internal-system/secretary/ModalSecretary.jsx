@@ -80,7 +80,7 @@ const InfoMember = ({ member, onClose }) => {
 							<strong>Rua:</strong> {member.address?.street}
 						</p>
 						<p>
-							<strong>Número:</strong> {member.address?.number}
+							<strong>Número:</strong> {member.address?.houseNumber}
 						</p>
 					</div>
 				</div>
