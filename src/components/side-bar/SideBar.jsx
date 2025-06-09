@@ -1,4 +1,3 @@
-import React from "react";
 import {
 	FaHome,
 	FaUserPlus,
@@ -14,23 +13,28 @@ import { NavLink } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const menuItems = [
-	{ icon: FaHome, label: "Início", path: "/internal-home" },
-	{ icon: FaUserPlus, label: "Administração", path: "/admin" },
-	{ icon: LuFolderCheck, label: "Secretaria", path: "/secretary" },
-	{ icon: FaFileInvoiceDollar, label: "Tesouraria", path: "/statement" },
-	{ icon: FaUsers, label: "Unidades", path: "/unities" },
-	{ icon: GiCampingTent, label: "Classes", path: "/classes" },
-	{ icon: FaCalendarAlt, label: "Eventos", path: "/events" },
-	{ icon: FaCog, label: "Configurações", path: "/configurations" },
-	{ icon: HiLogout, label: "Sair", path: "/" },
+	{ icon: FaHome, label: "Início", path: "/internal-home", roles: ["DIRETOR", "EXECUTIVO", "TESOURARIA", "SUPERVISOR"]},
+	{ icon: FaUserPlus, label: "Administração", path: "/admin", roles: ["DIRETOR", "EXECUTIVO"]},
+	{ icon: LuFolderCheck, label: "Secretaria", path: "/secretary", roles: ["DIRETOR", "EXECUTIVO"]},
+	{ icon: FaFileInvoiceDollar, label: "Tesouraria", path: "/statement", roles: ["DIRETOR", "EXECUTIVO", "TESOURARIA"]},
+	{ icon: FaUsers, label: "Unidades", path: "/unities", roles: ["DIRETOR", "EXECUTIVO", "SUPERVISOR"]},
+	{ icon: GiCampingTent, label: "Classes", path: "/classes", roles: ["DIRETOR", "EXECUTIVO", "SUPERVISOR"]},
+	{ icon: FaCalendarAlt, label: "Eventos", path: "/events", roles: ["DIRETOR", "EXECUTIVO", "TESOURARIA", "SUPERVISOR"]},
+	{ icon: FaCog, label: "Configurações", path: "/configurations", roles: ["DIRETOR", "EXECUTIVO", "TESOURARIA", "SUPERVISOR"]},
+	{ icon: HiLogout, label: "Sair", path: "/", roles: ["DIRETOR", "EXECUTIVO", "TESOURARIA", "SUPERVISOR"]},
 ];
 
-function SideBar({ activePath }) {
+function SideBar({ activePath, userRole }) {
+	const allowedMenuItems = menuItems.filter((item) =>
+		item.roles.includes(userRole)
+	);
+
 	return (
 		<aside className="h-[90vh] w-16 bg-black flex flex-col items-center py-7 space-y-8 ml-6 mt-5 rounded-xl justify-between">
-			{menuItems.map((item, index) => {
+			{allowedMenuItems.map((item, index) => {
 				const isActive = activePath === item.path;
 				const Icon = item.icon;
+
 				if (item.label === "Sair") {
 					return (
 						<NavLink
