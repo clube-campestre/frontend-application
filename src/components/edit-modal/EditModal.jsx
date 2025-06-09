@@ -298,6 +298,27 @@ export default function EditModal({
 										</div>
 									</div>
 								);
+							} else if (field.type === "checkbox") {
+								return (
+									<div key={field.name} className="flex items-center gap-2 mb-4">
+										<input
+											type="checkbox"
+											id={field.name}
+											name={field.name}
+											checked={!!form[field.name]}
+											onChange={(e) =>
+												setForm({
+													...form,
+													[field.name]: e.target.checked,
+												})
+											}
+											className="accent-[#FCAE2D] w-5 h-5 rounded border-gray-300"
+										/>
+										<label htmlFor={field.name} className="text-gray-700 font-medium">
+											{field.label}
+										</label>
+									</div>
+								);
 							} else {
 								return (
 									<div key={field.name}>

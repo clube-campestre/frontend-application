@@ -68,9 +68,7 @@ export function maskCep(value = "") {
 
 export function maskCns(value = "") {
   let digits = value.replace(/\D/g, "");
-  if (digits.length > 18) digits = digits.slice(0, 18); // Limite máximo para CNS novo
 
-  if (digits.length <= 15) {
     // Formato antigo: 15 dígitos
     digits = digits.slice(0, 15);
     return digits
@@ -78,14 +76,4 @@ export function maskCns(value = "") {
       .replace(/^(\d{3}) (\d{4})(\d)/, "$1 $2 $3")
       .replace(/^(\d{3}) (\d{4}) (\d{4})(\d)/, "$1 $2 $3 $4")
       .trim();
-  } else {
-    // Formato novo: 18 dígitos
-    digits = digits.slice(0, 18);
-    return digits
-      .replace(/^(\d{3})(\d)/, "$1 $2")
-      .replace(/^(\d{3}) (\d{4})(\d)/, "$1 $2 $3")
-      .replace(/^(\d{3}) (\d{4}) (\d{4})(\d)/, "$1 $2 $3 $4")
-      .replace(/^(\d{3}) (\d{4}) (\d{4}) (\d{4})(\d{0,3})/, "$1 $2 $3 $4 $5")
-      .trim();
-  }
 }

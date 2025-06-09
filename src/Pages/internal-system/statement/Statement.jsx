@@ -97,6 +97,20 @@ const Statement = () => {
 			type: "color",
 			isRequired: true,
 		},
+		{
+			name: "goal",
+			label: "Meta (Opcional)",
+			placeholder: "Meta",
+			type: "Number",
+			isRequired: false,
+		},
+		{
+			name: "privateGoal",
+			label: "Meta Privada",
+			placeholder: "Meta Privada",
+			type: "checkbox",
+			isRequired: false,
+		}
 	];
 
 	const handleFilterTransactions = async () => {
@@ -328,6 +342,14 @@ const Statement = () => {
 		}
 	};
 
+	const getTodayDate = () => {
+		const today = new Date();
+		const yyyy = today.getFullYear();
+		const mm = String(today.getMonth() + 1).padStart(2, "0");
+		const dd = String(today.getDate()).padStart(2, "0");
+		return `${yyyy}-${mm}-${dd}`;
+	};
+
 	return (
 		<div className="flex items-center justify-center w-full h-[82vh]">
 			<div className="flex flex-col items-center justify-start w-[80vw] h-[82vh]">
@@ -363,7 +385,7 @@ const Statement = () => {
 							<EditModal
 								onClose={() => setShowAddModal(false)}
 								onSubmit={handleCreateTransaction}
-								editingItem={null}
+								editingItem={{ transactionDate: getTodayDate() }} // <-- aqui define o padrão
 								title="Adicionar Transação"
 								fields={statementFields}
 							/>

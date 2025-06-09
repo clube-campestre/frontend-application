@@ -7,10 +7,12 @@ import Sickness from "./add-member-steps/Sickness";
 import MedicalData from "./add-member-steps/MedicalData";
 import MemberGuardian from "./add-member-steps/MemberGuardian";
 import InternData from "./add-member-steps/InternData";
+import { useNavigate } from "react-router-dom";
 
 const formData = new FormData();
 
 export default function AddMemberPage({ initialData = {}, editMode = false, onClose, onSave }) {
+    const navigate = useNavigate(); // Adicione este hook
     const [etapaAtual, setEtapaAtual] = useState(1);
     const [formDados, setFormDados] = useState( editMode ? normalizeMemberToForm(initialData) : initialData);
     const [loading, setLoading] = useState(false);
@@ -264,6 +266,7 @@ export default function AddMemberPage({ initialData = {}, editMode = false, onCl
                         setLoading(false);
                         if (onSave) onSave();
                         if (onClose) onClose();
+                        navigate("/secretary"); // Redireciona para secretary ao editar
                     }, 3000);
                 }
             } catch (error) {
@@ -276,38 +279,39 @@ export default function AddMemberPage({ initialData = {}, editMode = false, onCl
             }
             return;
         } else {
+            await api.post("/members", payload);
+            Toast.fire({
+                icon: "success",
+                title: "Membro cadastrado com sucesso!",
+            });
 
-			await api.post("/members", payload);
-			Toast.fire({
-				icon: "success",
-				title: "Membro cadastrado com sucesso!",
-			});
-	
-			if (formDados.foto != null) {
-				const formData = new FormData();
-				formData.append("image", formDados.foto); // nome esperado no backend
-				console.log("ENVIANDO IMAGEM");
-				try {
-					const response = await api.post(
-						`/drive/upload?cpf=${formDados.cpf}`,
-						formData,
-						{
-							headers: {
-								"Content-Type": "multipart/form-data",
-							},
-						}
-					);
-					alert("Upload realizado com sucesso!");
-					console.log(response.data);
-				} catch (error) {
-					console.error("Erro no upload:", error);
-					alert("Falha no upload");
-				}
-			} else {
-				console.log("TA NULL");
-			}
-		}
-
+            if (formDados.foto != null) {
+                const formData = new FormData();
+                formData.append("image", formDados.foto); // nome esperado no backend
+                console.log("ENVIANDO IMAGEM");
+                try {
+                    const response = await api.post(
+                        `/drive/upload?cpf=${formDados.cpf}`,
+                        formData,
+                        {
+                            headers: {
+                                "Content-Type": "multipart/form-data",
+                            },
+                        }
+                    );
+                    console.log("Upload realizado com sucesso!");
+                    console.log(response.data);
+                } catch (error) {
+                    console.error("Erro no upload:", error);
+                    console.log("Falha no upload");
+                }
+            } else {
+                console.log("TA NULL");
+            }
+            setTimeout(() => {
+                navigate("/admin"); // Redireciona para admin ao cadastrar
+            }, 2500);
+        }
     };
 
     return (

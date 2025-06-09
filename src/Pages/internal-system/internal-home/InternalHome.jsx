@@ -36,9 +36,10 @@ const InternalHome = () => {
     if (tagId) {
       try {
         console.log("Fazendo a requisição para a API com tagId:", tagId);
-        const response = await api.get(`/statements/goal/${tagId}`);
-        console.log('RESPONSE', response.data)
-        // Ajuste para usar os campos corretos da resposta
+        const response = await api.get(`/statements/goal`, {
+          params: { tagId }
+        });
+        console.log('RESPONSE', response)
         setCollectedAmount(response.data.totalPrice || 0);
         setGoalAmount(response.data.tag?.goal || 0);
       } catch (error) {
