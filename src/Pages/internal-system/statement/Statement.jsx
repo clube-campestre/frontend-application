@@ -8,12 +8,15 @@ import { IoIosSearch } from "react-icons/io";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import { GiBroom } from "react-icons/gi";
 import Toast from "../../../utils/Toast";
+import { FaPencilAlt, FaTrash } from "react-icons/fa";
 
 const Statement = () => {
 	const [showAddModal, setShowAddModal] = useState(false);
 	const [showEditModal, setShowEditModal] = useState(false);
 	const [showTagModal, setShowTagModal] = useState(false);
+	const [showManageTagsModal, setShowManageTagsModal] = useState(false);
 	const [editingItem, setEditingItem] = useState(null);
+	const [editingTag, setEditingTag] = useState(null);
 	const [tags, setTags] = useState([]);
 	const [totalAmount, setTotalAmount] = useState(0);
 	const [transactions, setTransactions] = useState([]);
@@ -48,7 +51,7 @@ const Statement = () => {
 			name: "transactionDate",
 			label: "Data",
 			placeholder: "Data",
-			type: "date",
+			type: "datetime-local",
 			isRequired: true,
 		},
 		{
@@ -111,6 +114,14 @@ const Statement = () => {
 			type: "checkbox",
 			isRequired: false,
 		}
+	];
+
+	// Campos para edição de tag
+	const tagEditFields = [
+		{ name: "surname", label: "Nome da Tag", placeholder: "Nome da Tag", type: "text", isRequired: true },
+		{ name: "color", label: "Cor da Tag", placeholder: "Cor da Tag", type: "color", isRequired: true },
+		{ name: "goal", label: "Meta (Opcional)", placeholder: "Meta", type: "number", isRequired: false },
+		{ name: "privateGoal", label: "Meta Privada", placeholder: "Meta Privada", type: "checkbox", isRequired: false },
 	];
 
 	const handleFilterTransactions = async () => {
@@ -261,6 +272,46 @@ const Statement = () => {
 		}
 	};
 
+	// Editar tag
+	const handleEditTag = async (data) => {
+		try {
+			const response = await api.put(`/tags/${editingTag.id}`, data);
+			if (response.status === 200) {
+				Toast.fire({ icon: "success", title: "Tag editada com sucesso!" });
+				setEditingTag(null);
+				getTags();
+				setShowManageTagsModal(true);
+			}
+		} catch (error) {
+			Toast.fire({ icon: "error", title: "Erro ao editar tag." });
+		}
+	};
+
+	// Deletar tag
+	const handleDeleteTag = async (id) => {
+		Swal.fire({
+			title: "Deseja deletar esta tag?",
+			text: "Essa ação não pode ser desfeita.",
+			icon: "warning",
+			iconColor: "#d33",
+			showCancelButton: true,
+			confirmButtonColor: "#5ccb5f",
+			cancelButtonColor: "#d33",
+			cancelButtonText: "Cancelar",
+			confirmButtonText: "Deletar",
+		}).then(async (result) => {
+			if (result.isConfirmed) {
+				try {
+					await api.delete(`/tags/${id}`);
+					Toast.fire({ icon: "success", title: "Tag deletada com sucesso!" });
+					getTags();
+				} catch (err) {
+					Toast.fire({ icon: "error", title: "Erro ao deletar tag." });
+				}
+			}
+		});
+	};
+
 	useEffect(() => {
 		fetchTransactions();
 		getTags();
@@ -268,7 +319,26 @@ const Statement = () => {
 
 	const handleCreateTransaction = async (data) => {
 		try {
-			const response = await api.post("/statements", data);
+			// Remove tudo exceto dígitos, vírgula, ponto e sinal
+			let cleanPrice = String(data.price || "")
+				.replace(/[^\d.,-]/g, "") // remove tudo exceto dígitos, vírgula, ponto e sinal
+				.replace(/\./g, "")       // remove pontos de milhar
+				.replace(",", ".");       // troca vírgula decimal por ponto
+
+			cleanPrice = cleanPrice ? Number(cleanPrice) : 0;
+
+			// Ajuste: datetime-local já vem no formato correto para o Date
+			const isoDate = data.transactionDate
+				? new Date(data.transactionDate).toISOString()
+				: null;
+
+			const payload = {
+				...data,
+				price: cleanPrice,
+				transactionDate: isoDate,
+			};
+
+			const response = await api.post("/statements", payload);
 			if (response.status === 201) {
 				Toast.fire({
 					icon: "success",
@@ -342,12 +412,14 @@ const Statement = () => {
 		}
 	};
 
-	const getTodayDate = () => {
-		const today = new Date();
-		const yyyy = today.getFullYear();
-		const mm = String(today.getMonth() + 1).padStart(2, "0");
-		const dd = String(today.getDate()).padStart(2, "0");
-		return `${yyyy}-${mm}-${dd}`;
+	const getTodayDateTimeLocal = () => {
+		const now = new Date();
+		const yyyy = now.getFullYear();
+		const mm = String(now.getMonth() + 1).padStart(2, "0");
+		const dd = String(now.getDate()).padStart(2, "0");
+		const hh = String(now.getHours()).padStart(2, "0");
+		const min = String(now.getMinutes()).padStart(2, "0");
+		return `${yyyy}-${mm}-${dd}T${hh}:${min}`;
 	};
 
 	return (
@@ -360,20 +432,96 @@ const Statement = () => {
 						<h2 className="text-xl font-normal">Lançar Receita</h2>
 					</div>
 					<div className="flex items-center gap-2">
+						{/* Botão ÚNICO para Gerenciar Tags */}
 						<button
 							className="flex items-center gap-2 px-4 py-2 bg-[#D9D9D9] text-[#021C4F] rounded hover:bg-gray-400"
-							onClick={() => setShowTagModal(true)}
+							onClick={() => setShowManageTagsModal(true)}
 						>
-							Adicionar Nova Tag <LuCirclePlus />
+							Gerenciar Tags <LuCirclePlus />
 						</button>
-						{showTagModal && (
-							<EditModal
-								onClose={() => setShowTagModal(false)}
-								onSubmit={handleCreateTag}
-								editingItem={null}
-								title="Adicionar Tag"
-								fields={tagFields}
-							/>
+						{/* Modal de Gerenciar Tags */}
+						{showManageTagsModal && (
+							<div className="fixed inset-0 z-50 flex items-center justify-center bg-[#000000da]">
+								<div className="bg-[#f3f3f3] p-8 rounded-xl shadow-lg min-w-[400px] max-h-[80vh] overflow-y-auto relative">
+									<button
+										onClick={() => { setShowManageTagsModal(false); setEditingTag(null); }}
+										className="absolute top-3 right-2 text-2xl"
+									>
+										×
+									</button>
+									<div className="flex gap-2 items-center justify-between mb-4">
+										<h2 className="text-xl font-semibold mb-4">
+											<span className="border-l-4 border-[#FCAE2D] mr-3"></span>
+											Gerenciar Tags
+										</h2>
+										{/* Botão para abrir modal de cadastro de tag */}
+										{!editingTag && (
+											<button
+												className="mb-4 px-4 py-2 bg-[#FCAE2D] text-white rounded hover:bg-[#e2961e] font-semibold"
+												onClick={() => setShowTagModal(true)}
+											>
+											 <LuCirclePlus />
+											</button>
+										)}
+									{/* Modal para cadastrar nova tag */}
+									{showTagModal && (
+										<EditModal
+											onClose={() => setShowTagModal(false)}
+											onSubmit={handleCreateTag}
+											editingItem={null}
+											title="Adicionar Nova Tag"
+											fields={tagFields}
+										/>
+									)}
+									</div>
+									{/* Modal para editar tag */}
+									{editingTag ? (
+										<EditModal
+											onClose={() => setEditingTag(null)}
+											onSubmit={handleEditTag}
+											editingItem={editingTag}
+											title="Editar Tag"
+											fields={tagEditFields}
+										/>
+									) : (
+										<div className="space-y-4">
+											{tags.length === 0 && (
+												<p className="text-gray-500">Nenhuma tag cadastrada.</p>
+											)}
+											{tags.map((tag) => (
+												<div key={tag.id} className="flex items-center justify-between bg-white p-3 rounded shadow">
+													<div className="flex items-center gap-3">
+														<div className="w-5 h-5 rounded-full" style={{ background: tag.color }}></div>
+														<span className="font-normal">{tag.surname}</span>
+														{tag.goal && (
+															<span className="text-xs text-gray-500 ml-2">Meta: {tag.goal}</span>
+														)}
+														{tag.privateGoal && (
+															<span className="text-xs text-gray-500 ml-2">Privada</span>
+														)}
+													</div>
+													<div className="flex gap-2">
+														<button
+															onClick={() => setEditingTag(tag)}
+															className="text-amber-500 hover:text-amber-600"
+															title="Editar"
+														>
+															<FaPencilAlt size={18} className="cursor-pointer" />
+														</button>
+														<button
+															onClick={() => handleDeleteTag(tag.id)}
+															className="text-gray-400 hover:text-gray-600"
+															title="Excluir"
+														>
+															<FaTrash size={18} className="cursor-pointer" />
+														</button>
+													</div>
+												</div>
+											))}
+										</div>
+									)}
+								</div>
+							</div>
 						)}
 						<button
 							className="flex items-center gap-2 px-4 py-2 bg-[#D9D9D9] text-[#021C4F] rounded hover:bg-gray-400"
@@ -385,7 +533,7 @@ const Statement = () => {
 							<EditModal
 								onClose={() => setShowAddModal(false)}
 								onSubmit={handleCreateTransaction}
-								editingItem={{ transactionDate: getTodayDate() }} // <-- aqui define o padrão
+								editingItem={{ transactionDate: getTodayDateTimeLocal() }}
 								title="Adicionar Transação"
 								fields={statementFields}
 							/>

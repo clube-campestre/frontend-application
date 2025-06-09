@@ -27,7 +27,25 @@ export const StatementCard = ({ item, showModal, handleDeleteTransaction }) => {
 
 			<div className="flex flex-col items-start w-[35%] h-full pl-3 pr-3">
 				<div className="flex flex-row items-start justify-start w-full text-[#8D8D8D] text-[11px]">
-					<span>{new Date(item.transactionDate).toLocaleDateString()}</span>
+					<span>
+						{(() => {
+							const date = new Date(item.transactionDate);
+							// Ajusta para UTC-3 (Brasília)
+							date.setHours(date.getHours() - 3);
+							return (
+								date.toLocaleDateString("pt-BR", {
+									day: "2-digit",
+									month: "2-digit",
+									year: "numeric",
+								}) +
+								" " +
+								date.toLocaleTimeString("pt-BR", {
+									hour: "2-digit",
+									minute: "2-digit",
+								})
+							);
+						})()}
+					</span>
 				</div>
 				<div className="text-[18px]">
 					<span>{item.information}</span>

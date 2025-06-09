@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 import { api } from "../../../provider/api";
+import Swal from "sweetalert2";
 
 import loboImage from "../../../assets/images/lobo.png";
 import falcaoImage from "../../../assets/images/falcao.png";
@@ -12,6 +13,7 @@ import tigreImage from "../../../assets/images/tigre.png";
 import ursoImage from "../../../assets/images/urso.png";
 import aguiaRealImage from "../../../assets/images/aguia-real.png";
 import linceImage from "../../../assets/images/lince.png";
+import leaoImage from "../../../assets/images/leao.png";
 
 
 const InternalHome = () => {
@@ -102,9 +104,9 @@ const InternalHome = () => {
     tigre: tigreImage,
     urso: ursoImage,
     "aguia real": aguiaRealImage,
-    leao: temporyImage,
+    leao: leaoImage,
     lince: linceImage,
-    "leão": linceImage,
+    // "leão": leaoImage,
   };
 
   const remainingAmount = goalAmount - collectedAmount;
@@ -149,6 +151,32 @@ const InternalHome = () => {
     },
   };
 
+
+  // Função para resetar pontuação com confirmação
+  const handleResetPoints = async () => {
+    const result = await Swal.fire({
+      title: "Tem certeza?",
+      text: "Essa ação irá resetar a pontuação de todas as unidades!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sim, resetar!",
+      cancelButtonText: "Cancelar",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await api.post("/units/reseted");
+        Swal.fire("Resetado!", "A pontuação foi resetada.", "success");
+        // Atualiza o ranking após resetar
+        const response = await api.get("/units/ranking");
+        setPoints(response.data);
+      } catch (error) {
+        Swal.fire("Erro!", "Não foi possível resetar a pontuação.", "error");
+      }
+    }
+  };
 
   return (
     <div className="grid md:grid-cols-2 gap-6 max-w-7xl mx-auto p-4">
@@ -209,9 +237,17 @@ const InternalHome = () => {
 
       {/* Card do Ranking */}
       <div className="bg-gray-100 rounded-xl p-6 shadow-md">
-        <h2 className="text-xl font-bold text-gray-800 mb-4">
-          Ranking das Unidades
-        </h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold text-gray-800 mb-4">
+            Ranking das Unidades
+          </h2>
+          <button
+            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-150"
+            onClick={handleResetPoints}
+          >
+            Resetar Pontuação
+          </button>
+        </div>
         <div className="overflow-hidden rounded-md border border-gray-300 max-h-[400px] overflow-y-auto">
           <div className="grid grid-cols-2 bg-gray-500 text-white font-semibold text-sm sticky top-0 z-10">
             <div className="py-3 px-4 text-center">Unidade</div>

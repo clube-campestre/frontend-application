@@ -7,6 +7,7 @@ import tigreImage from "../../../assets/images/tigre.png";
 import ursoImage from "../../../assets/images/urso.png";
 import aguiaRealImage from "../../../assets/images/aguia-real.png";
 import linceImage from "../../../assets/images/lince.png";
+import leaoImage from "../../../assets/images/leao.png";
 import { LuCirclePlus } from "react-icons/lu";
 import { MemberCard } from "../../../components/member-card/MemberCard";
 import { useState } from "react";
@@ -68,7 +69,7 @@ const Unities = () => {
 			id: 4,
 			name: "Leão",
 			formatedName: "LEAO",
-			logo: linceImage,
+			logo: leaoImage,
 		},
 		{
 			id: 5,
