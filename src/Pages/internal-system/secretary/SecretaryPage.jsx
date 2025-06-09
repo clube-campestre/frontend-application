@@ -40,7 +40,7 @@ const SecretaryPage = () => {
 		{ id: "Companheiro", name: "Companheiro" },
 		{ id: "Pesquisador", name: "Pesquisador" },
 		{ id: "Pioneiro", name: "Pioneiro" },
-		{ id: "Excurionista", name: "Excurionista" },
+		{ id: "Excursionista", name: "Excursionista" },
 		{ id: "Guia", name: "Guia" },
 		{ id: "Agrupadas", name: "Agrupadas" },
 		{ id: "Desbravadores_Completo", name: "Desbravadores Completo" },
