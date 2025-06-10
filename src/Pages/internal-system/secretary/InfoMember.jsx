@@ -43,7 +43,6 @@ const InfoMember = ({ member, onClose }) => {
 				<div className="flex flex-col items-center space-y-4 w-1/3">
 					<img
 						src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSIEaBVDfj_YlWbHCteGTaLBQu8aYMC2o2LBuOHEkjC-GqXCnRoTrnd7fBF-bdjLK89Lv4&usqp=CAU"
-						alt="Foto do Russell"
 						className="w-40 h-40 rounded-full object-cover shadow-lg"
 					/>
 

@@ -320,14 +320,6 @@ const Statement = () => {
 
 	const handleCreateTransaction = async (data) => {
 		try {
-			// Remove tudo exceto dígitos, vírgula, ponto e sinal
-			let cleanPrice = String(data.price || "")
-				.replace(/[^\d.,-]/g, "") // remove tudo exceto dígitos, vírgula, ponto e sinal
-				.replace(/\./g, "")       // remove pontos de milhar
-				.replace(",", ".");       // troca vírgula decimal por ponto
-
-			cleanPrice = cleanPrice ? Number(cleanPrice) : 0;
-
 			// Ajuste: datetime-local já vem no formato correto para o Date
 			const isoDate = data.transactionDate
 				? new Date(data.transactionDate).toISOString()
@@ -335,7 +327,6 @@ const Statement = () => {
 
 			const payload = {
 				...data,
-				price: cleanPrice,
 				transactionDate: isoDate,
 			};
 

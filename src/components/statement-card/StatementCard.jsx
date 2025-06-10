@@ -16,7 +16,7 @@ export const StatementCard = ({ item, showModal, handleDeleteTransaction }) => {
 				<MdOutlineTransitEnterexit
 					color={iconColor}
 					size={40}
-					className={isSaida ? "rotate-90" : "rotate-0"}
+					className={!isSaida ? "rotate-90" : "rotate-0"}
 				/>
 				<div>
 					<span className="text-[11px] text-[#8D8D8D]">R$</span>

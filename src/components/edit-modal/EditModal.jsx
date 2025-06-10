@@ -54,6 +54,7 @@ export default function EditModal({
 
 	const removeMasks = (data) => {
 		const newData = { ...data };
+		console.log("Removing masks from data:", newData);
 
 		if (newData.price) {
 			const priceStr = String(newData.price);
@@ -146,7 +147,8 @@ export default function EditModal({
 				<form
 					onSubmit={(e) => {
 						e.preventDefault();
-						onSubmit(form); // formData = dados editados
+						// onSubmit(form); // formData = dados editados
+						onSubmit(handleSubmit(e));
 					}}
 					className="space-y-5"
 				>

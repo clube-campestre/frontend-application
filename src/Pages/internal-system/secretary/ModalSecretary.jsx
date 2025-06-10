@@ -28,7 +28,7 @@ const InfoMember = ({ member, onClose }) => {
 				>
 					<div className="flex items-center space-x-3 col-span-1">
 						<img
-							src={member.imagePath ? `${member.imagePath}` : avatarImage}
+							src={avatarImage}
 							alt="Foto"
 							className="rounded-full w-16 h-16"
 						/>
