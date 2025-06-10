@@ -69,11 +69,11 @@ export function maskCep(value = "") {
 export function maskCns(value = "") {
   let digits = value.replace(/\D/g, "");
 
-    // Formato antigo: 15 dígitos
-    digits = digits.slice(0, 15);
-    return digits
-      .replace(/^(\d{3})(\d)/, "$1 $2")
-      .replace(/^(\d{3}) (\d{4})(\d)/, "$1 $2 $3")
-      .replace(/^(\d{3}) (\d{4}) (\d{4})(\d)/, "$1 $2 $3 $4")
-      .trim();
+  // Formato antigo: 15 dígitos
+  digits = digits.slice(0, 15);
+  return digits
+    .replace(/^(\d{3})(\d)/, "$1 $2")
+    .replace(/^(\d{3}) (\d{4})(\d)/, "$1 $2 $3")
+    .replace(/^(\d{3}) (\d{4}) (\d{4})(\d)/, "$1 $2 $3 $4")
+    .trim();
 }

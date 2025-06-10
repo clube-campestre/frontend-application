@@ -41,6 +41,7 @@ export default function AddMemberPage({ initialData = {}, editMode = false, onCl
         const cleanCpf = (formDados.cpf || "").replace(/\D/g, "");
         const cleanContact = (formDados.contact || "").replace(/\D/g, "");
         const cleanBirthCertificate = (formDados.birthCertificate || "").slice(0,32);
+        const cleanCns = (formDados.cns || "").replace(/\D/g, "").slice(0, 15);
 
 
 		const camposObrigatorios = [
@@ -135,7 +136,7 @@ export default function AddMemberPage({ initialData = {}, editMode = false, onCl
         // Monta o objeto medicalData conforme SaveMedicalDataRequestDto
         const medicalData = {
             cpf: cleanCpf,
-            cns: formDados.cns || "000000000000000", // valor default se não preenchido
+            cns: cleanCns || "000000000000000",
             agreement: formDados.agreement || "Publico", // valor default se não preenchido
             bloodType: (formDados.blood_type || "").toUpperCase(),
             catapora: formDados.sickness.catapora ?? false,
@@ -241,77 +242,101 @@ export default function AddMemberPage({ initialData = {}, editMode = false, onCl
                                 {
                                     headers: {
                                         "Content-Type": "multipart/form-data",
-                                    },
-                                }
-                            );
-                        } else {
-                            // POST para adicionar nova imagem
-                            await api.post(
-                                `/drive/upload?cpf=${formDados.cpf}`,
-                                formDataImg,
-                                {
-                                    headers: {
-                                        "Content-Type": "multipart/form-data",
-                                    },
-                                }
-                            );
+                            },
                         }
-                    }
-
-                    Toast.fire({
-                        icon: "success",
-                        title: "Membro editado com sucesso!",
-                    });
-                    setTimeout(() => {
-                        setLoading(false);
-                        if (onSave) onSave();
-                        if (onClose) onClose();
-                        navigate("/secretary"); // Redireciona para secretary ao editar
-                    }, 3000);
-                }
-            } catch (error) {
-                setLoading(false);
-                Toast.fire({
-                    icon: "error",
-                    title: "Erro ao editar membro.",
-                });
-                console.error("Error editing member:", error);
-            }
-            return;
-        } else {
-            await api.post("/members", payload);
-            Toast.fire({
-                icon: "success",
-                title: "Membro cadastrado com sucesso!",
-            });
-
-            if (formDados.foto != null) {
-                const formData = new FormData();
-                formData.append("image", formDados.foto); // nome esperado no backend
-                console.log("ENVIANDO IMAGEM");
-                try {
-                    const response = await api.post(
+                    );
+                } else {
+                    // POST para adicionar nova imagem
+                    await api.post(
                         `/drive/upload?cpf=${formDados.cpf}`,
-                        formData,
+                        formDataImg,
                         {
                             headers: {
                                 "Content-Type": "multipart/form-data",
                             },
                         }
                     );
-                    console.log("Upload realizado com sucesso!");
-                    console.log(response.data);
-                } catch (error) {
-                    console.error("Erro no upload:", error);
-                    console.log("Falha no upload");
                 }
-            } else {
-                console.log("TA NULL");
             }
+
+            Toast.fire({
+                icon: "success",
+                title: "Membro editado com sucesso!",
+            });
             setTimeout(() => {
-                navigate("/admin"); // Redireciona para admin ao cadastrar
-            }, 2500);
+                setLoading(false);
+                if (onSave) onSave();
+                if (onClose) onClose();
+                navigate("/secretary");
+            }, 1000);
         }
+    } catch (error) {
+        setLoading(false);
+        // Busca o defaultMessage se houver erros de validação
+        let errorMsg =
+            error?.response?.data?.errors?.[0]?.defaultMessage ||
+            error?.response?.data?.message ||
+            (error?.response?.data && typeof error.response.data === "string"
+                ? error.response.data
+                : "Erro ao cadastrar/editar membro.");
+
+        Toast.fire({
+            icon: "error",
+            title: errorMsg,
+        });
+        console.error("Erro ao cadastrar/editar membro:", error);
+    }
+    return;
+} else {
+    try {
+        await api.post("/members", payload);
+        Toast.fire({
+            icon: "success",
+            title: "Membro cadastrado com sucesso!",
+        });
+
+        if (formDados.foto != null) {
+            const formData = new FormData();
+            formData.append("image", formDados.foto);
+            try {
+                const response = await api.post(
+                    `/drive/upload?cpf=${formDados.cpf}`,
+                    formData,
+                    {
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                    }
+                );
+                console.log("Upload realizado com sucesso!");
+                console.log(response.data);
+            } catch (error) {
+                Toast.fire({
+                    icon: "error",
+                    title:
+                        error?.response?.data?.message ||
+                        (error?.response?.data && typeof error.response.data === "string"
+                            ? error.response.data
+                            : "Erro no upload da imagem."),
+                });
+                console.error("Erro no upload:", error);
+            }
+        }
+        setTimeout(() => {
+            navigate("/admin");
+        }, 1000);
+    } catch (error) {
+        Toast.fire({
+            icon: "error",
+            title:
+                error?.response?.data?.message ||
+                (error?.response?.data && typeof error.response.data === "string"
+                    ? error.response.data
+                    : "Erro ao cadastrar membro."),
+        });
+        console.error("Erro ao cadastrar membro:", error);
+    }
+}
     };
 
     return (

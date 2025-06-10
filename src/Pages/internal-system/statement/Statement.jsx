@@ -442,7 +442,7 @@ const Statement = () => {
 						</button>
 						{/* Modal de Gerenciar Tags */}
 						{showManageTagsModal && (
-							<div className="fixed inset-0 z-50 flex items-center justify-center bg-[#000000da]">
+							<div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0000006d]">
 								<div className="bg-[#f3f3f3] p-8 rounded-xl shadow-lg min-w-[400px] max-h-[80vh] overflow-y-auto relative">
 									<button
 										onClick={() => { setShowManageTagsModal(false); setEditingTag(null); }}

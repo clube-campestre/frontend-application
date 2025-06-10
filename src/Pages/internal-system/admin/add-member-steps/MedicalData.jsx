@@ -39,7 +39,10 @@ function MedicalData({ dados, setDados }) {
 						label="Carteira SUS "
 						value={maskCns(dados.cns || "")}
 						onChange={(e) =>
-							setDados({ ...dados, cns: e.target.value.replace(/\D/g, "") })
+							setDados({
+								...dados,
+								cns: e.target.value.replace(/\D/g, "").slice(0, 15), // Limita a 15 dígitos
+							})
 						}
 						className="w-[22vw] self-end"
 					/>
