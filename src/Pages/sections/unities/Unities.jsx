@@ -11,114 +11,76 @@ import ursoImage from "../../../assets/images/urso.png";
 import aguiaRealImage from "../../../assets/images/aguia-real.png";
 
 const unityData = [
-	{
-		imagePath: pandaImage,
-		description: "Com espírito curioso e cheio de energia, as integrantes da unidade Panda iniciam sua jornada no clube com entusiasmo e muita vontade de aprender.",
-		title: "Panda (10 anos)"
-	},
-	{
-		imagePath: loboImage,
-		description: "Ágeis e atentas, as desbravadoras da unidade Lince estão sempre prontas para novos desafios e descobertas.",
-		title: "Lince (11 anos)"
-	},
-	{
-		imagePath: aguiaRealImage,
-		description: "Determinadas e visionárias, as Águias Reais buscam aprimorar suas habilidades e alcançar grandes alturas.",
-		title: "Águia Real (12 anos)"
-	},
-	{
-		imagePath: raposaImage,
-		description: "Inteligentes e estratégicas, as desbravadoras da unidade Raposa demonstram criatividade e astúcia em cada atividade.",
-		title: "Raposa (13 anos)"
-	},
-	{
-		imagePath: panteraImage,
-		description: "Destemidas e ágeis, as Panteras combinam força e elegância, sempre prontas para desafios que exigem coragem e estratégia.",
-		title: "Pantera (14-15 anos)"
-	},
-	{
-		imagePath: falcaoImage,
-		description: "Os Falcões iniciam sua caminhada no clube com olhos atentos e asas prontas para voar rumo ao conhecimento.",
-		title: "Falcão (10 anos)"
-	},
-	{
-		imagePath: pandaImage,
-		description: "Corajosos e cheios de energia, os membros da unidade Leão enfrentam desafios com determinação.",
-		title: "Leão (11 anos)"
-	},
-	{
-		imagePath: tigreImage,
-		description: "Ágeis e focados, os Tigres demonstram força e disciplina em suas jornadas.",
-		title: "Tigre (12 anos)" 
-	},
-	{
-		imagePath: ursoImage,
-		description: "Resilientes e estratégicos, os Ursos sabem quando agir e como trabalhar em equipe para superar desafios.",
-		title: "Urso (13 anos)"
-	},
-	{
-		imagePath: loboImage,
-		description: "Líderes naturais, os Lobos combinam inteligência e coragem para trilhar caminhos e guiar os mais jovens.",
-		title: "Lobo (14-15 anos)"
-	},
+    { imagePath: pandaImage, description: "Com espírito curioso e cheio de energia...", title: "Panda (10 anos)" },
+    { imagePath: loboImage, description: "Ágeis e atentas, as desbravadoras...", title: "Lince (11 anos)" },
+    { imagePath: aguiaRealImage, description: "Determinadas e visionárias...", title: "Águia Real (12 anos)" },
+    { imagePath: raposaImage, description: "Inteligentes e estratégicas...", title: "Raposa (13 anos)" },
+    { imagePath: panteraImage, description: "Destemidas e ágeis...", title: "Pantera (14-15 anos)" },
+    { imagePath: falcaoImage, description: "Os Falcões iniciam sua caminhada...", title: "Falcão (10 anos)" },
+    { imagePath: pandaImage, description: "Corajosos e cheios de energia...", title: "Leão (11 anos)" },
+    { imagePath: tigreImage, description: "Ágeis e focados...", title: "Tigre (12 anos)" },
+    { imagePath: ursoImage, description: "Resilientes e estratégicos...", title: "Urso (13 anos)" },
+    { imagePath: loboImage, description: "Líderes naturais...", title: "Lobo (14-15 anos)" },
 ];
 
 const Unities = () => {
-	const [activeIndex, setActiveIndex] = useState(0);
+    const [activeIndex, setActiveIndex] = useState(0);
 
-	const previous = () => {
-		setActiveIndex((prev) => (prev - 1 + unityData.length) % unityData.length);
-	};
+    const previous = () => setActiveIndex((prev) => (prev - 1 + unityData.length) % unityData.length);
+    const next = () => setActiveIndex((prev) => (prev + 1) % unityData.length);
 
-	const next = () => {
-		setActiveIndex((prev) => (prev + 1) % unityData.length);
-	};
+    const getItem = (offset) => {
+        return unityData[(activeIndex + offset + unityData.length) % unityData.length];
+    };
 
-	const getItem = (offset) => {
-		return unityData[
-			(activeIndex + offset + unityData.length) % unityData.length
-		];
-	};
+    // Prepara os itens para evitar chamar a função getItem várias vezes no JSX
+    const prevItem = getItem(-1);
+    const activeItem = getItem(0);
+    const nextItem = getItem(1);
 
-	return (
-		<div id="unities" className="bg-black text-white h-screen py-10 px-4 flex flex-col items-center justify-center relative">
-			<h2 className="text-4xl font-bold mb-20 absolute top-20">Nossas Unidades</h2>
-			<div className="flex items-center gap-16">
-				<button
-					onClick={previous}
-					className="text-[#FCAE2D] hover:scale-110 transition-transform "
-				>
-					<GoChevronLeft size={96} />
-				</button>
+    return (
+        <div id="unities" className="bg-black text-white min-h-screen py-16 px-4 flex flex-col items-center justify-center relative">
+            {/* Título responsivo */}
+            <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">Nossas Unidades</h2>
 
-				<UnityItem
-					imagePath={getItem(-1).imagePath}
-					description={getItem(-1).description}
-					title={getItem(-1).title}
-					isActive={false}
-				/>
-				<UnityItem
-					imagePath={getItem(0).imagePath}
-					description={getItem(0).description}
-					title={getItem(0).title}
-					isActive={true}
-				/>
-				<UnityItem
-					imagePath={getItem(1).imagePath}
-					description={getItem(1).description}
-					title={getItem(1).title}
-					isActive={false}
-				/>
+            <div className="flex items-center justify-center gap-2 sm:gap-4 w-full max-w-7xl">
+                {/* Botão Esquerda */}
+                <button
+                    onClick={previous}
+                    className="text-[#FCAE2D] hover:scale-110 transition-transform p-2"
+                >
+                    <GoChevronLeft className="w-8 h-8 md:w-12 md:h-12 lg:w-16 lg:h-16" />
+                </button>
 
-				<button
-					onClick={next}
-					className="text-[#FCAE2D] hover:scale-110 transition-transform"
-				>
-					<GoChevronRight size={96} />
-				</button>
-			</div>
-		</div>
-	);
+                {/* ALTERAÇÃO: Container único para os cards com lógica de visibilidade responsiva */}
+                <div className="flex items-center justify-center gap-4 md:gap-6 lg:gap-8 flex-grow">
+                    
+                    {/* Card Anterior: Visível apenas em telas grandes (lg) para cima */}
+                    <div className="hidden lg:block">
+                        <UnityItem {...prevItem} isActive={false} />
+                    </div>
+
+                    {/* Card Ativo: Sempre visível */}
+                    <div>
+                        <UnityItem {...activeItem} isActive={true} />
+                    </div>
+
+                    {/* Card Próximo: Visível em telas médias (md) para cima */}
+                    <div className="hidden md:block">
+                        <UnityItem {...nextItem} isActive={false} />
+                    </div>
+                </div>
+
+                {/* Botão Direita */}
+                <button
+                    onClick={next}
+                    className="text-[#FCAE2D] hover:scale-110 transition-transform p-2"
+                >
+                    <GoChevronRight className="w-8 h-8 md:w-12 md:h-12 lg:w-16 lg:h-16" />
+                </button>
+            </div>
+        </div>
+    );
 };
 
 export default Unities;

@@ -4,6 +4,7 @@ import {
 	validatePassword,
 	validateConfirmPassword,
 } from "../utils/validators/registerValidator";
+
 import { api } from "../provider/api";
 import { validateLogin } from "../utils/validators/loginValidator";
 import { setUser, setToken, getToken, getUser } from "../utils/authStorage";
@@ -22,7 +23,7 @@ export const loginService = async (email, password) => {
 	}
 
 	try {
-		const response = await api.post("/accounts/login", {
+		const response = await api.post(`${import.meta.env.VITE_API_URL}/accounts/login`, {
 			email,
 			password,
 		});
@@ -78,7 +79,7 @@ export const registerService = async (
 		return false;
 	}
 
-	const duplicatedUser = await fetch(`${API_URL}?email=${email}`);
+	const duplicatedUser = await fetch(`${import.meta.env.VITE_API_URL}/accounts/login?email=${email}`);
 	const user = await duplicatedUser.json();
 
 	if (user.length > 0) {
@@ -93,7 +94,7 @@ export const registerService = async (
 	}
 
 	try {
-		const response = await fetch(API_URL, {
+		const response = await fetch(import.meta.env.VITE_API_URL/accounts/register, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",

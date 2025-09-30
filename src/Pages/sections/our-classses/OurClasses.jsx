@@ -13,7 +13,6 @@ import logoVermelho from "../../../assets/images/logoVermelho.png";
 import buttonVermelho from "../../../assets/images/companheiroAvançado.png";
 import buttonAmarelo from "../../../assets/images/guiaAvançado.png";
 
-
 const cards = [
   {
     logo: logoAzul,
@@ -80,11 +79,15 @@ const OurClassesCards = () => {
   };
 
   return (
-    <div className="w-full min-h-screen bg-white flex items-center justify-center overflow-hidden">
+    <div className="w-full min-h-screen bg-white flex flex-col items-center justify-center px-4 sm:px-6 lg:px-12">
       <div className="relative w-full max-w-[1300px] overflow-hidden group">
-        <div className="text-4xl font-bold text-center mb-6 mt-3">Nossas Classes</div>
+        {/* Título responsivo */}
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center mb-8 mt-6">
+          Nossas Classes
+        </h2>
 
-        <div className="flex w-max animate-slide group-hover:paused justify-center items-center">
+        {/* Carrossel */}
+        <div className="flex w-max animate-slide group-hover:paused justify-center items-center space-x-4 sm:space-x-6">
           {duplicatedCards.map((card, index) => (
             <CardClasse
               key={index}
@@ -92,6 +95,15 @@ const OurClassesCards = () => {
               isFocused={focusedCard === index}
               onFocus={() => handleFocus(index)}
             />
+          ))}
+        </div>
+      </div>
+
+      {/* Mobile: rolagem manual */}
+      <div className="md:hidden w-full overflow-x-auto mt-6">
+        <div className="flex space-x-4 pb-4">
+          {cards.map((card, index) => (
+            <CardClasse key={index} card={card} />
           ))}
         </div>
       </div>
