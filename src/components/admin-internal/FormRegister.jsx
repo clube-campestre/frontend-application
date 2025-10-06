@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { FaRegStar, FaStar } from "react-icons/fa";
 import Toast from "../../utils/Toast";
+import AddMemberInput from "../add-member-input/AddMemberInput";
 
-const FormRegister = ({ formTitle, fields, onSubmit }) => {
+const FormRegister = ({ formTitle, fields, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState(() =>
     fields.reduce((acc, field) => ({ ...acc, [field.id]: "" }), {
       nota: "",
@@ -26,7 +27,7 @@ const FormRegister = ({ formTitle, fields, onSubmit }) => {
   };
 
   const formatPhone = (value) => {
-    const cleaned = value.replace(/\D/g, "").slice(0, 11); // Limita a 11 dígitos
+    const cleaned = value.replace(/\D/g, "").slice(0, 11);
     const match = cleaned.match(/^(\d{0,2})(\d{0,5})(\d{0,4})$/);
 
     if (!match) return "";
@@ -121,21 +122,27 @@ const FormRegister = ({ formTitle, fields, onSubmit }) => {
 
   return (
     <div className="bg-gray-100 rounded-lg p-6 shadow-md max-w-4xl mx-auto">
-      <div className="flex items-center mb-6">
-        <div className="w-1 h-6 bg-[#FCAE2D] mr-2 rounded"></div>
-        <h2 className="text-xl font-semibold text-gray-800">{formTitle}</h2>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center">
+          <div className="w-1 h-6 bg-[#FCAE2D] mr-2 rounded"></div>
+          <h2 className="text-xl font-semibold text-gray-800">{formTitle}</h2>
+        </div>
+
+        {onCancel && (
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-4 py-2 rounded bg-red-500 text-white hover:bg-red-600 cursor-pointer flex items-center gap-2"
+          >
+            <span>✕</span> Fechar
+          </button>
+        )}
       </div>
 
       <form onSubmit={handleSubmit}>
         <div className="flex flex-wrap -mx-2">
           {fields.map((field) => (
-            <div key={field.id} className="px-2 mb-4 w-1/3">
-              <label
-                htmlFor={field.id}
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                {field.label}
-              </label>
+            <div key={field.id} className="px-2 mb-6 w-1/3">
               {renderizarCampo(
                 field,
                 formData,
@@ -146,7 +153,7 @@ const FormRegister = ({ formTitle, fields, onSubmit }) => {
             </div>
           ))}
 
-          <div className="px-2 mb-4 w-1/3">
+          <div className="px-2 mb-6 w-1/3"> 
             <label
               htmlFor="nota"
               className="block text-sm font-medium text-gray-700 mb-1"
@@ -197,20 +204,23 @@ const renderizarCampo = (
   handleBlur,
   isLoadingCep
 ) => {
-  const { id, type, isRequired } = campo;
+  const { id, type, isRequired, label } = campo;
   const isEndereco = ["rua", "bairro", "estado", "cidade"].includes(id);
 
   return (
-    <input
-      type={type}
-      id={id}
-      value={formData[id] || ""}
-      onChange={(e) => handleChange(id, e.target.value)}
-      onBlur={(e) => handleBlur(id, e.target.value)}
-      required={isRequired}
-      disabled={isEndereco && isLoadingCep}
-      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FCAE2D]"
-    />
+    <div key={id} className="relative">
+      <AddMemberInput
+        id={id}
+        type={type}
+        label={label} // Removido o asterisco aqui, pois será tratado no próprio componente
+        value={formData[id] || ""}
+        onChange={(e) => handleChange(id, e.target.value)}
+        onBlur={(e) => handleBlur(id, e.target.value)}
+        required={isRequired}
+        disabled={isEndereco && isLoadingCep}
+        className="w-full"
+      />
+    </div>
   );
 };
 

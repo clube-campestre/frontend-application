@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { api } from "../../../provider/api";
 import Toast from "../../../utils/Toast";
 import PersonalData from "./add-member-steps/PersonalData";
@@ -12,16 +12,30 @@ import { useNavigate } from "react-router-dom";
 const formData = new FormData();
 
 export default function AddMemberPage({ initialData = {}, editMode = false, onClose, onSave }) {
-    const navigate = useNavigate(); // Adicione este hook
+    const navigate = useNavigate();
     const [etapaAtual, setEtapaAtual] = useState(1);
-    const [formDados, setFormDados] = useState( editMode ? normalizeMemberToForm(initialData) : initialData);
+    const [formDados, setFormDados] = useState(() =>
+        editMode ? normalizeMemberToForm(initialData) : initializeMemberDefaults(initialData)
+    );
     const [loading, setLoading] = useState(false);
+
+    // Evita loop de atualização
+    const initializedRef = useRef(false);
 
     useEffect(() => {
         if (editMode) {
-            setFormDados(normalizeMemberToForm(initialData));
+            setFormDados((prev) => {
+                const next = normalizeMemberToForm(initialData || {});
+                // só atualiza se mudou de fato
+                return JSON.stringify(prev) === JSON.stringify(next) ? prev : next;
+            });
+        } else if (!initializedRef.current) {
+            // inicializa defaults apenas uma vez no modo criação
+            setFormDados((prev) => initializeMemberDefaults({ ...prev }));
+            initializedRef.current = true;
         }
-    }, [initialData, editMode]);
+        // Dependência mínima estável (usa um identificador do initialData, ex.: cpf)
+    }, [editMode, initialData?.cpf]);
 
     const atualizarDadosEtapa = (novosDados) => {
         setFormDados((prev) => ({ ...prev, ...novosDados }));
@@ -132,33 +146,36 @@ export default function AddMemberPage({ initialData = {}, editMode = false, onCl
             referenceHouse: formDados.referenceHouse || "",
         };
 
+        // segurança ao ler sickness
+        const s = formDados.sickness || {};
+
         // Monta o objeto medicalData conforme SaveMedicalDataRequestDto
         const medicalData = {
             cpf: cleanCpf,
             cns: formDados.cns || "000000000000000", // valor default se não preenchido
             agreement: formDados.agreement || "Publico", // valor default se não preenchido
             bloodType: (formDados.blood_type || "").toUpperCase(),
-            catapora: formDados.sickness.catapora ?? false,
-            meningite: formDados.sickness.meningite ?? false,
-            hepatite: formDados.sickness.hepatite ?? false,
-            dengue: formDados.sickness.dengue ?? false,
-            pneumonia: formDados.sickness.pneumonia ?? false,
-            malaria: formDados.sickness.malaria ?? false,
-            febreAmarela: formDados.sickness.febreAmarela ?? false,
-            sarampo: formDados.sickness.sarampo ?? false,
-            tetano: formDados.sickness.tetano ?? false,
-            variola: formDados.sickness.variola ?? false,
-            coqueluche: formDados.sickness.coqueluche ?? false,
-            difteria: formDados.sickness.difteria ?? false,
-            rinite: formDados.sickness.rinite ?? false,
-            bronquite: formDados.sickness.bronquite ?? false,
-            asma: formDados.sickness.asma ?? false,
-            rubeola: formDados.sickness.rubeola ?? false,
-            colera: formDados.sickness.colera ?? false,
-            covid19: formDados.sickness.covid19 ?? false,
-            h1n1: formDados.sickness.h1n1 ?? false,
-            caxumba: formDados.sickness.caxumba ?? false,
-            others: formDados.sickness.others || "",
+            catapora: s.catapora ?? false,
+            meningite: s.meningite ?? false,
+            hepatite: s.hepatite ?? false,
+            dengue: s.dengue ?? false,
+            pneumonia: s.pneumonia ?? false,
+            malaria: s.malaria ?? false,
+            febreAmarela: s.febreAmarela ?? false,
+            sarampo: s.sarampo ?? false,
+            tetano: s.tetano ?? false,
+            variola: s.variola ?? false,
+            coqueluche: s.coqueluche ?? false,
+            difteria: s.difteria ?? false,
+            rinite: s.rinite ?? false,
+            bronquite: s.bronquite ?? false,
+            asma: s.asma ?? false,
+            rubeola: s.rubeola ?? false,
+            colera: s.colera ?? false,
+            covid19: s.covid19 ?? false,
+            h1n1: s.h1n1 ?? false,
+            caxumba: s.caxumba ?? false,
+            others: s.others || "",
             heartProblems: formDados.heartProblems || "",
             drugAllergy: formDados.drugAllergy || "",
             lactoseAllergy: formDados.lactoseAllergy ?? false,
@@ -314,6 +331,14 @@ export default function AddMemberPage({ initialData = {}, editMode = false, onCl
         }
     };
 
+    const handleClose = () => {
+        try {
+            if (onClose) onClose();
+        } finally {
+            navigate("/admin", { replace: true });
+        }
+    };
+
     return (
         <div className="flex flex-col items-center w-full">
             <div className="flex flex-col justify-center align-center h-[73vh] w-[70vw] p-6 bg-[#EDEDED] shadow rounded">
@@ -357,22 +382,27 @@ export default function AddMemberPage({ initialData = {}, editMode = false, onCl
                 </div>
 
                 <div className="flex justify-between mt-6">
-                    <button
-                        onClick={handleVoltar}
-                        disabled={etapaAtual === 1}
-                        className={`px-4 py-2 rounded ${
-                            etapaAtual === 1
-                                ? "bg-gray-300 cursor-not-allowed"
-                                : "bg-gray-600 text-white hover:bg-gray-700"
-                        }`}
-                    >
-                        Voltar
-                    </button>
+                    {etapaAtual === 1 ? (
+                        <button
+                            type="button"
+                            onClick={handleClose}
+                            className="px-4 py-2 rounded bg-red-500 text-white hover:bg-red-600 cursor-pointer flex items-center gap-2"
+                        >
+                            <span>✕</span> Fechar
+                        </button>
+                    ) : (
+                        <button
+                            onClick={handleVoltar}
+                            className="px-4 py-2 rounded bg-gray-600 text-white hover:bg-gray-700 cursor-pointer"
+                        >
+                            Voltar
+                        </button>
+                    )}
 
                     {etapaAtual < 6 ? (
                         <button
                             onClick={handleProximo}
-                            className="px-4 py-2 rounded bg-yellow-500 text-white hover:bg-yellow-600"
+                            className="px-4 py-2 rounded bg-yellow-500 text-white hover:bg-yellow-600 cursor-pointer"
                         >
                             Próximo
                         </button>
@@ -380,7 +410,7 @@ export default function AddMemberPage({ initialData = {}, editMode = false, onCl
                         <button
                             onClick={handleEnviar}
                             disabled={loading}
-                            className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700"
+                            className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700 cursor-pointer disabled:cursor-not-allowed"
                         >
                             {loading ? "Salvando..." : "Enviar"}
                         </button>
@@ -539,4 +569,45 @@ function normalizeMemberToForm(member) {
 	console.log("Membro normalizado:", normalizedMember);
 
 	return normalizedMember;
+}
+
+function initializeMemberDefaults(data = {}) {
+    const defaultSickness = {
+        catapora: false, meningite: false, hepatite: false, dengue: false,
+        pneumonia: false, malaria: false, febreAmarela: false, sarampo: false,
+        tetano: false, variola: false, coqueluche: false, difteria: false,
+        rinite: false, bronquite: false, asma: false, rubeola: false,
+        colera: false, covid19: false, h1n1: false, caxumba: false,
+        others: "",
+    };
+
+    const defaultMedical = {
+        heartProblems: "",
+        drugAllergy: "",
+        lactoseAllergy: false,
+        deficiency: "",
+        bloodTransfusion: false,
+        skinAllergy: false,
+        skinAllergyMedications: "",
+        faintingOrConvulsion: false,
+        faintingOrSeizuresMedications: "",
+        psychologicalDisorder: "",
+        allergy: false,
+        allergyMedications: "",
+        diabetic: false,
+        diabeticMedications: "",
+        recentSeriousInjury: false,
+        recentFracture: "",
+        surgeries: "",
+        hospitalizationReasonLast5Years: "",
+    };
+
+    const defaultMedicalAnswers = Array(14).fill(0).map(() => ({ value: false, extra: "" }));
+
+    return {
+        ...defaultMedical,
+        ...data,
+        sickness: { ...defaultSickness, ...(data.sickness || {}) },
+        medicalAnswers: data.medicalAnswers || defaultMedicalAnswers,
+    };
 }
