@@ -36,6 +36,7 @@ const SecretaryPage = () => {
 	};
 
 	const classes = [
+		{ id: "NONE", name: "Nenhum" }, // antes: id: "", name: "Nenhuma"
 		{ id: "Amigo", name: "Amigo" },
 		{ id: "Companheiro", name: "Companheiro" },
 		{ id: "Pesquisador", name: "Pesquisador" },
@@ -50,6 +51,7 @@ const SecretaryPage = () => {
 	];
 
 	const unities = [
+		{ id: "NONE", name: "Nenhum" }, // antes: id: "", name: "Nenhum"
 		{ id: "PANDA", name: "Panda" },
 		{ id: "FALCAO", name: "Falcão" },
 		{ id: "LINCE", name: "Lince" },
@@ -253,7 +255,7 @@ const SecretaryPage = () => {
 				{ value: "CAPELAO", label: "Capelão" },
 				{ value: "ALMOXARIFADO", label: "Almoxarifado" },
 				{ value: "MEMBRO", label: "Membro" },
-				{ value: "NENHUMA", label: "Nenhuma" },
+				{ value: "NENHUMA", label: "Nenhum" },
 			],
 			isRequired: false,
 		},
@@ -637,15 +639,15 @@ const SecretaryPage = () => {
 
 	const [filters, setFilters] = useState({
 		name: "",
-		unidade: "",
-		classe: "",
+		unidade: "",   // antes: "NONE"
+		classe: "",    // antes: "NONE"
 	});
 
 	const handleFilterMembers = async () => {
 		const params = {
 			name: filters.name || null,
-			classCategory: filters.classe || null,
-			unit: filters.unidade || null,
+			classCategory: filters.classe === "NONE" ? null : (filters.classe || null),
+			unit: filters.unidade === "NONE" ? null : (filters.unidade || null),
 		};
 
 		if (!params.name && !params.classCategory && !params.unit) {
@@ -687,8 +689,8 @@ const SecretaryPage = () => {
 	const handleClearFilters = async () => {
 		setFilters({
 			name: "",
-			classe: "",
-			unidade: "",
+			classe: "",    
+			unidade: "",   
 		});
 
 		const response = await api.get("/members/filter", {
@@ -734,23 +736,29 @@ const SecretaryPage = () => {
 			<div className="flex justify-center">
 				<div className="w-full max-w-10xl">
 					<div className="flex space-x-4 bg-[#7C7C7C] p-4 rounded-md mb-6 h-24 items-center">
-						<Dropdown
-							label="Unidade"
-							options={unities}
-							handleFilters={setFilters}
-							filters={filters}
-						/>
-						<Dropdown
-							label="Classe"
-							options={classes}
-							handleFilters={setFilters}
-							filters={filters}
-						/>
-						<div>
+						{/* selects menores */}
+						<div className="w-40 md:w-48">
+							<Dropdown
+								label="Unidade"
+								options={unities}
+								handleFilters={setFilters}
+								filters={filters}
+							/>
+						</div>
+						<div className="w-40 md:w-48">
+							<Dropdown
+								label="Classe"
+								options={classes}
+								handleFilters={setFilters}
+								filters={filters}
+							/>
+						</div>
+
+						<div className="flex-1">
 							<label className="text-white font-semibold">
 								Nome
 							</label>
-							<div className="flex-1 relative flex items-center">
+							<div className="relative flex items-center">
 								<FaSearch
 									size={20}
 									className="absolute left-3 text-gray-400 pointer-events-none"
@@ -758,7 +766,7 @@ const SecretaryPage = () => {
 								<input
 									type="text"
 									className="w-full rounded shadow-inner bg-white h-12 pl-10 pr-4 text-gray-700 outline-none"
-									placeholder="Pesquisar..."
+									placeholder="Pesquisar por nome..."
 									value={filters.name}
 									onChange={(e) =>
 										setFilters({
@@ -769,16 +777,17 @@ const SecretaryPage = () => {
 								/>
 							</div>
 						</div>
+
 						<div className="flex gap-2 mt-2 md:mt-6">
 							<button
 								onClick={handleFilterMembers}
-								className="flex items-center justify-center h-10 px-2 border-2 rounded border-[#FCAE2D]"
+								className="flex items-center justify-center h-10 px-2 border-2 rounded border-[#FCAE2D] cursor-pointer hover:bg-[#FCAE2D] hover:bg-opacity-10 transition-colors"
 							>
 								<IoIosSearch size={24} color="#FCAE2D" />
 							</button>
 							<button
 								onClick={handleClearFilters}
-								className="flex items-center justify-center h-10 px-2 border-2 rounded border-[#f85858]"
+								className="flex items-center justify-center h-10 px-2 border-2 rounded border-[#f85858] cursor-pointer hover:bg-[#f85858] hover:bg-opacity-10 transition-colors"
 							>
 								<GiBroom size={24} color="#f85858" />
 							</button>
@@ -786,6 +795,14 @@ const SecretaryPage = () => {
 					</div>
 
 					<div className="bg-gray-100 p-4 rounded-md">
+						<div className="flex items-center w-full h-12 px-4 bg-gray-200 rounded-t-md font-semibold text-gray-700 border-b">
+							<div className="min-w-[60px] max-w-[80px] w-[10%] text-center">Foto</div>
+							<div className="w-[30%] pl-4">Nome e Nascimento</div>
+							<div className="min-w-[120px] max-w-[180px] w-[25%] text-left pl-3">Unidade</div>
+							<div className="min-w-[120px] max-w-[180px] w-[25%] text-left pl-3">Classe</div>
+							<div className="min-w-[60px] max-w-[80px] w-[10%] text-center">Ações</div>
+						</div>
+
 						{/* Members Section */}
 						<div className="flex flex-col gap-2 w-[98%] h-[47vh] p-4 overflow-y-auto">
 							{members.length > 0 ? (

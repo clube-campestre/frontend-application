@@ -59,11 +59,14 @@ const AddTransport = () => {
   };
 
   return (
-    <FormRegister
-      formTitle="Cadastrar Transporte"
-      fields={transportFields}
-      onSubmit={handleSubmit}
-    />
+    <>
+      <FormRegister
+        formTitle="Cadastrar Transporte"
+        fields={transportFields}
+        onSubmit={handleSubmit}
+        onCancel={() => navigate("/admin")}
+      />
+    </>
   );
 };
 

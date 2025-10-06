@@ -1,14 +1,17 @@
-import { useState, useEffect } from "react";
+import React, { useEffect } from "react";
+import { useState } from "react";
 import { FaRegStar, FaStar } from "react-icons/fa";
 import { maskCpf, maskBirthCertificate, maskPhone, maskCep } from "../../utils/validators/addMemberValidator";
 
-export default function EditModal({
+const EditModal = ({
 	onClose,
 	onSubmit,
 	editingItem,
-	fields,
 	title,
-}) {
+	fields,
+	containerClassName = "",   // <— novo
+	...props
+}) => {
 	const [form, setForm] = useState({});
 	const [hoveredNota, setHoveredNota] = useState(0);
 
@@ -130,15 +133,34 @@ export default function EditModal({
 		console.log("Form submitted:", cleanedForm);
 	};
 
+	// Fechar com ESC
+	useEffect(() => {
+		const handleEsc = (e) => {
+			if (e.key === "Escape") onClose && onClose();
+		};
+		document.addEventListener("keydown", handleEsc);
+		return () => document.removeEventListener("keydown", handleEsc);
+	}, [onClose]);
+
 	return (
-		<div className="fixed inset-0 z-50 flex items-center overflow-y-auto justify-center bg-[#000000da]">
-			<div className="bg-[#f3f3f3] p-10 rounded-xl shadow-lg min-w-[500px] relative">
+		<div
+			className="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
+			onClick={onClose} // clique no fundo fecha
+		>
+			<div
+				className={`bg-white rounded-xl shadow-lg p-6 max-w-[90vw] relative ${containerClassName}`}
+				onClick={(e) => e.stopPropagation()} // impede fechar ao clicar dentro
+			>
+				{/* Botão X para fechar */}
 				<button
+					type="button"
+					aria-label="Fechar"
 					onClick={onClose}
-					className="absolute top-1 right-3 text-3xl"
+					className="absolute top-3 right-3 text-2xl leading-none text-gray-500 hover:text-gray-700 cursor-pointer"
 				>
 					×
 				</button>
+
 				<h2 className="text-xl font-semibold mb-4">
 					<span className="border-l-4 border-[#FCAE2D] mr-3"></span>
 					{title}
@@ -364,4 +386,6 @@ export default function EditModal({
 			</div>
 		</div>
 	);
-}
+};
+
+export default EditModal;
