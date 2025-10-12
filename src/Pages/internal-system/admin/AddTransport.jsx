@@ -5,6 +5,9 @@ import { useNavigate } from "react-router";
 
 const transportFields = [
   { id: "empresa", type: "text", label: "Empresa", isRequired: true },
+  { id: "telefone", type: "text", label: "Telefone", isRequired: true },
+  { id: "nomeMotorista", type: "text", label: "Nome do Motorista", isRequired: true },
+  { id: "whatsapp", type: "text", label: "WhatsApp", isRequired: false },
   { id: "cotacao", type: "text", label: "Cotação (R$)", isRequired: true },
   {
     id: "distanciaHistorica",
@@ -13,8 +16,6 @@ const transportFields = [
     isRequired: true,
   },
   { id: "capacidade", type: "number", label: "Capacidade", isRequired: true },
-  { id: "telefone", type: "text", label: "Telefone", isRequired: true },
-  { id: "whatsapp", type: "text", label: "WhatsApp", isRequired: false },
 ];
 
 const AddTransport = () => {
@@ -23,12 +24,13 @@ const AddTransport = () => {
   const handleSubmit = async (formData) => {
     try {
       const body = {
-        enterprise: formData.empresa,
+        companyName: formData.empresa,
+        companyNumber: formData.telefone,
+        driverName: formData.nomeMotorista,
+        driverNumber: formData.whatsapp,
         price: Number(formData.cotacao),
         travelDistance: Number(formData.distanciaHistorica),
         capacity: Number(formData.capacidade),
-        companyContact: formData.telefone,
-        driverContact: formData.whatsapp,
         rating: Number(formData.nota),
       };
 
@@ -47,12 +49,12 @@ const AddTransport = () => {
       if (error.status === 409) {
         Toast.fire({
           icon: "error",
-          title: `Já existe transporte com o nome '${formData.empresa}' cadastrado.`,
+          title: error.response?.data?.message || `Já existe transporte com o nome '${formData.empresa}' cadastrado.`,
         });
       } else {
         Toast.fire({
           icon: "error",
-          title: "Erro ao cadastrar transporte.",
+          title: error.response?.data?.message || "Erro ao cadastrar transporte.",
         });
       }
     }

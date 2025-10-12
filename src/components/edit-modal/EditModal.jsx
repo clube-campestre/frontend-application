@@ -60,14 +60,14 @@ export default function EditModal({
 			const priceStr = String(newData.price);
 			newData.price = priceStr.replace(/[^\d,]/g, "").replace(",", ".");
 		}
-		if (newData.contact) {
-			newData.contact = newData.contact.replace(/\D/g, "");
+		if (newData.contactCellphoneNumber) {
+			newData.contactCellphoneNumber = newData.contactCellphoneNumber.replace(/\D/g, "");
 		}
-		if (newData.driverContact) {
-			newData.driverContact = newData.driverContact.replace(/\D/g, "");
+		if (newData.driverNumber) {
+			newData.driverNumber = newData.driverNumber.replace(/\D/g, "");
 		}
-		if (newData.companyContact) {
-			newData.companyContact = newData.companyContact.replace(/\D/g, "");
+		if (newData.companyNumber) {
+			newData.companyNumber = newData.companyNumber.replace(/\D/g, "");
 		}
 		if (newData.cep) {
 			newData.cep = newData.cep.replace(/\D/g, "");
@@ -87,7 +87,9 @@ export default function EditModal({
 			return maskBirthCertificate(valor);
 		}
 		if (
-			name === "contact" ||
+			name === "contactCellphoneNumber" ||
+			name === "driverNumber" ||
+			name === "companyNumber" ||
 			name === "fatherContact" ||
 			name === "motherContact" ||
 			name === "responsibleContact"
@@ -102,7 +104,7 @@ export default function EditModal({
 	}
 
 	const handleChange = (e) => {
-		const { name, value } = e.target;
+		const { name, value } = e.target;	
 		let newValue = value;
 
 		if (name === "cep") {
@@ -110,9 +112,9 @@ export default function EditModal({
 		} else if (name === "price") {
 			newValue = formatBRL(value);
 		} else if (
-			name === "driverContact" ||
-			name === "companyContact" ||
-			name === "contact"
+			name === "driverNumber" ||
+			name === "companyNumber" ||
+			name === "contactCellphoneNumber"
 		) {
 			newValue = formatPhone(value);
 		}

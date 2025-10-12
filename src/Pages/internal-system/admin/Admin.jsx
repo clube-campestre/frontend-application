@@ -27,10 +27,12 @@ const Admin = () => {
   const transportLabels = {
     enterprise: "Empresa",
     price: "Cotação (R$)",
+    companyName: "Empresa",
+    companyNumber: "Telefone",
+    driverName: "Nome do Motorista",
+    driverNumber: "WhatsApp",
     travelDistance: "Distância Histórica (KM)",
     capacity: "Capacidade",
-    companyContact: "Telefone",
-    driverContact: "WhatsApp",
     rating: "Avaliação",
   };
 
@@ -38,7 +40,8 @@ const Admin = () => {
     name: "Nome do Local",
     price: "Cotação (R$)",
     capacity: "Capacidade",
-    contact: "Telefone",
+    contactName: "Nome do Contato",
+    contactCellphoneNumber: "Telefone",
     houseNumber: "Número",
     district: "Bairro",
     city: "Cidade",
@@ -54,19 +57,24 @@ const Admin = () => {
       const response = await api.get("/transports");
       setTransports(response.data);
     } catch (error) {
-      Toast.fire({ icon: "error", title: "Erro ao buscar transportes!" });
+      Toast.fire({ icon: "error", title: error.response?.data?.message || "Erro ao buscar transportes!" });
     }
   };
 
   const getPlaces = async () => {
     try {
       const response = await api.get("/places");
+      if (!response.data || response.data.length === 0) {
+        setPlaces([]);
+        return;
+      }
       const adaptedPlaces = response.data.map((place) => ({
         id: place.id,
         name: place.name,
         price: place.price,
         capacity: place.capacity,
-        contact: place.contact,
+        contactName: place.contactName,
+        contactCellphoneNumber: place.contactCellphoneNumber,
         rating: place.rating,
         houseNumber: place.address.houseNumber,
         district: place.address.district,
@@ -76,9 +84,10 @@ const Admin = () => {
         cep: place.address.cep,
         referenceHouse: place.address.referenceHouse,
       }));
+      console.log("Adapted Places: ", response.data);
       setPlaces(adaptedPlaces);
     } catch (error) {
-      Toast.fire({ icon: "error", title: "Erro ao buscar locais!" });
+      Toast.fire({ icon: "error", title: error.response?.data?.message || "Erro ao buscar locais!" });
     }
   };
 
@@ -109,7 +118,7 @@ const Admin = () => {
       setShowTransportModal(false);
       getTransports();
     } catch (error) {
-      Toast.fire({ icon: "error", title: "Erro ao atualizar transporte!" });
+      Toast.fire({ icon: "error", title: error.response?.data?.message || "Erro ao atualizar transporte!" });
     }
   };
 
@@ -133,7 +142,7 @@ const Admin = () => {
       setShowPlaceModal(false);
       getPlaces();
     } catch (error) {
-      Toast.fire({ icon: "error", title: "Erro ao atualizar local!" });
+      Toast.fire({ icon: "error", title: error.response?.data?.message || "Erro ao atualizar local!" });
     }
   };
 
@@ -155,7 +164,7 @@ const Admin = () => {
         Toast.fire({ icon: "success", title: "Transporte deletado com sucesso!" });
         getTransports();
       } catch (error) {
-        Toast.fire({ icon: "error", title: "Erro ao deletar transporte!" });
+        Toast.fire({ icon: "error", title: error.response?.data?.message || "Erro ao deletar transporte!" });
       }
     }
   };
@@ -178,7 +187,7 @@ const Admin = () => {
         Toast.fire({ icon: "success", title: "Local deletado com sucesso!" });
         getPlaces();
       } catch (error) {
-        Toast.fire({ icon: "error", title: "Erro ao deletar local!" });
+        Toast.fire({ icon: "error", title: error.response?.data?.message || "Erro ao deletar local!" });
       }
     }
   };
@@ -199,7 +208,7 @@ const Admin = () => {
               transports.map((transport, index) => (
                 <div key={index} className="bg-white p-3 rounded mb-2 shadow-sm flex justify-between items-center">
                   <div>
-                    <p className="font-medium">{transport.enterprise}</p>
+                    <p className="font-medium">{transport.companyName}</p>
                     <p className="text-sm text-gray-600">Capacidade: {transport.capacity} passageiros</p>
                     <p className="text-sm text-gray-600 flex flex-row items-center">
                       Nota:
@@ -300,12 +309,13 @@ const Admin = () => {
           onSubmit={handleEditTransport}
           title="Editar Transporte"
           fields={[
-            { name: "enterprise", label: "Empresa", placeholder: "Digite o nome da empresa", type: "text", isRequired: true },
+            { name: "companyName", label: "Empresa", placeholder: "Digite o nome da empresa", type: "text", isRequired: true },
             { name: "price", label: "Cotação (R$)", placeholder: "Digite o valor da cotação", type: "text", isRequired: true },
             { name: "travelDistance", label: "Distância Histórica (KM)", placeholder: "Digite a distância histórica", type: "number", isRequired: true },
             { name: "capacity", label: "Capacidade", placeholder: "Digite a capacidade", type: "number", isRequired: true },
-            { name: "companyContact", label: "Telefone", placeholder: "Digite o telefone", type: "text", isRequired: true },
-            { name: "driverContact", label: "WhatsApp", placeholder: "Digite o WhatsApp", type: "text", isRequired: true },
+            { name: "companyNumber", label: "Telefone", placeholder: "Digite o telefone", type: "text", isRequired: true },
+            { name: "driverNumber", label: "WhatsApp", placeholder: "Digite o WhatsApp", type: "text", isRequired: true },
+            { name: "driverName", label: "Nome do Motorista", placeholder: "Digite o nome do motorista", type: "text", isRequired: true },
             { name: "rating", label: "Avaliação", isRequired: true },
           ]}
         />
@@ -321,7 +331,8 @@ const Admin = () => {
             { name: "name", label: "Nome do Local", placeholder: "Digite o nome do local", type: "text", isRequired: true },
             { name: "price", label: "Cotação (R$)", placeholder: "Digite a cotação", type: "text", isRequired: true },
             { name: "capacity", label: "Capacidade", placeholder: "Digite a capacidade", type: "number", isRequired: true },
-            { name: "contact", label: "Telefone", placeholder: "Digite o telefone", type: "text", isRequired: true },
+            { name: "contactName", label: "Nome do Contato", placeholder: "Digite o nome do contato", type: "text", isRequired: true },
+            { name: "contactCellphoneNumber", label: "Telefone", placeholder: "Digite o telefone", type: "text", isRequired: true },
             { name: "houseNumber", label: "Número", placeholder: "Digite o número", type: "text", isRequired: true },
             { name: "district", label: "Bairro", placeholder: "Digite o bairro", type: "text", isRequired: true },
             { name: "city", label: "Cidade", placeholder: "Digite a cidade", type: "text", isRequired: true },
