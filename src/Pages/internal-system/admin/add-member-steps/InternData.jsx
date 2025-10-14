@@ -15,22 +15,22 @@ function InternData({ dados, setDados }) {
 						id="unit"
 						type="select"
 						options={[
-							{ value: "1", label: "Panda" },
-							{ value: "2", label: "Falção" },
-							{ value: "3", label: "Lince" },
-							{ value: "4", label: "Leão" },
-							{ value: "5", label: "Águia Real" },
-							{ value: "6", label: "Tigre" },
-							{ value: "7", label: "Raposa" },
-							{ value: "8", label: "Urso" },
-							{ value: "9", label: "Pantera" },
-							{ value: "10", label: "Lobo" },
-							{ value: "", label: "Nenhuma" },
+							{ value: "Panda", label: "Panda" },
+							{ value: "Falcão", label: "Falcão" },
+							{ value: "Lince", label: "Lince" },
+							{ value: "Leão", label: "Leão" },
+							{ value: "Águia Real", label: "Águia Real" },
+							{ value: "Tigre", label: "Tigre" },
+							{ value: "Raposa", label: "Raposa" },
+							{ value: "Urso", label: "Urso" },
+							{ value: "Pantera", label: "Pantera" },
+							{ value: "Lobo", label: "Lobo" },
+							{ value: null, label: "Nenhuma"},
 						]}
 						label="Unidade"
 						value={dados.unit ?? ""}
 						onChange={(e) =>
-							setDados({ ...dados, unit: e.target.value === "" ? "" : Number(e.target.value) })
+							setDados({ ...dados, unit: e.target.value === "" ? "" : e.target.value })
 						}
 						className="h-[8vh] w-[20vw]"
 					/>
