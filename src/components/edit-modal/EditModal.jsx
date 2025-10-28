@@ -2,15 +2,17 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { FaRegStar, FaStar } from "react-icons/fa";
 import { maskCpf, maskBirthCertificate, maskPhone, maskCep } from "../../utils/validators/addMemberValidator";
+import AddMemberInput from "../add-member-input/AddMemberInput"; // <— novo
 
 const EditModal = ({
-	onClose,
-	onSubmit,
-	editingItem,
-	title,
-	fields,
-	containerClassName = "",   // <— novo
-	...props
+    onClose,
+    onSubmit,
+    editingItem,
+    title,
+    fields,
+    containerClassName = "",   // <— existente
+    floatingLabels = false,     // <— novo
+    ...props
 }) => {
 	const [form, setForm] = useState({});
 	const [hoveredNota, setHoveredNota] = useState(0);
@@ -169,61 +171,78 @@ const EditModal = ({
 				<form
 					onSubmit={(e) => {
 						e.preventDefault();
-						// onSubmit(form); // formData = dados editados
-						onSubmit(handleSubmit(e));
+						onSubmit(form);
 					}}
-					className="space-y-5"
+					className="space-y-4"
 				>
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-						{fields.map((field) => {
-							if (field.type === "radio") {
-								return (
-									<div key={field.name}>
-										<p className="font-semibold">
-											{field.label}
-										</p>
-										<div className="grid grid-cols-2 gap-2 mt-2">
-											{field.options.map((option) => (
+					<div className="grid grid-cols-1 gap-4">
+						{fields?.map((field) => {
+                            const { name, label, type = "text", options } = field;
+                            const value = form?.[name] ?? "";
+
+                            if (
+                                floatingLabels &&
+                                ["text", "number"].includes(String(type).toLowerCase())
+                            ) {
+                                return (
+                                    <div key={name}>
+                                        <AddMemberInput
+                                            id={name}
+                                            name={name}
+                                            type={String(type).toLowerCase()}
+                                            label={label}
+                                            value={applyFieldsMasks(name, value)}
+                                            onChange={handleChange}
+                                            className="w-full"
+                                        />
+                                    </div>
+                                );
+                            }
+
+                            return (
+                                <div key={name} className="flex flex-col">
+                                    <label htmlFor={name} className="font-medium text-gray-700 mb-1">
+                                        {label}
+                                    </label>
+                                    {type === "radio" ? (
+										<div className="flex gap-4">
+											{options.map((option) => (
 												<label
 													key={option}
 													className="flex items-center gap-2 cursor-pointer"
 												>
 													<input
 														type="radio"
-														name={field.name}
+														name={name}
 														value={option}
 														checked={
 															form[
-																field.name
+																name
 															]?.toLowerCase?.() ===
 															option.toLowerCase()
 														}
 														onChange={() =>
 															setForm({
 																...form,
-																[field.name]:
+																[name]:
 																	option,
 															})
 														}
+														className="accent-[#FCAE2D]"
 													/>
-													<span>{option}</span>
+													<span className="text-gray-700">
+														{option}
+													</span>
 												</label>
 											))}
 										</div>
-									</div>
-								);
-							} else if (field.type === "color") {
-								return (
-									<div key={field.name}>
-										<label>
-											{field.label}
-										</label>
+									) : type === "color" ? (
 										<div className="flex items-center gap-4">
 											<input
 												type="color"
-												name={field.name}
+												name={name}
 												value={
-													form[field.name] ||
+													form[name] ||
 													"#000000"
 												}
 												onChange={handleChange}
@@ -231,32 +250,25 @@ const EditModal = ({
 												className="w-24 h-11 rounded cursor-pointer"
 												style={{
 													backgroundColor:
-														form[field.name],
+														form[name],
 												}}
 											/>
 											<span className="text-sm">
-												{form[field.name]}
+												{form[name]}
 											</span>
 										</div>
-									</div>
-								);
-							} else if (field.type === "select") {
-								return (
-									<div key={field.name}>
-										<label htmlFor={field.name}>
-											{field.label}
-										</label>
+									) : type === "select" ? (
 										<select
 											className="w-full px-3 py-2 rounded border"
-											name={field.name}
-											value={form[field.name] || ""}
+											name={name}
+											value={form[name] || ""}
 											onChange={handleChange}
 											required={field.required}
 										>
 											<option value="">
 												{field.selectedOption || "Selecione uma opção"}
 											</option>
-											{field.options.map((option) => (
+											{options.map((option) => (
 												<option
 													key={option.value}
 													value={option.value}
@@ -265,21 +277,14 @@ const EditModal = ({
 												</option>
 											))}
 										</select>
-									</div>
-								);
-							} else if (field.type === "date") {
-								return (
-									<div key={field.name}>
-										<label htmlFor={field.name}>
-											{field.label}
-										</label>
+									) : type === "date" ? (
 										<input
 											className="w-full px-3 py-2 rounded border"
-											type={field.type}
-											name={field.name}
+											type={type}
+											name={name}
 											value={
-												form[field.name]
-													? new Date(form[field.name])
+												form[name]
+													? new Date(form[name])
 															.toISOString()
 															.slice(0, 10)
 													: ""
@@ -287,80 +292,69 @@ const EditModal = ({
 											onChange={handleChange}
 											required={field.required}
 										/>
-									</div>
-								);
-							} else if (field.name === "rating") {
-								return (
-									<div key={field.name}>
-										<label className="block mb-1 font-medium">
-											Nota
-										</label>
-										<div className="flex space-x-1">
-											{[1, 2, 3, 4, 5].map((valor) => (
-												<button
-													key={valor}
-													type="button"
-													onClick={() =>
-														setForm({
-															...form,
-															rating: valor,
-														})
-													}
-													onMouseEnter={() =>
-														setHoveredNota(valor)
-													}
-													onMouseLeave={() =>
-														setHoveredNota(0)
-													}
-													className="w-8 h-8 rounded-full cursor-pointer"
-												>
-													{valor <=
-													(hoveredNota ||
-														form.rating ||
-														0) ? (
-														<FaStar color="#FCAE2D" />
-													) : (
-														<FaRegStar color="#FCAE2D" />
-													)}
-												</button>
-											))}
+									) : name === "rating" ? (
+										<div>
+											<label className="block mb-1 font-medium">
+												Nota
+											</label>
+											<div className="flex space-x-1">
+												{[1, 2, 3, 4, 5].map((valor) => (
+													<button
+														key={valor}
+														type="button"
+														onClick={() =>
+															setForm({
+																...form,
+																rating: valor,
+															})
+														}
+														onMouseEnter={() =>
+															setHoveredNota(valor)
+														}
+														onMouseLeave={() =>
+															setHoveredNota(0)
+														}
+														className="w-8 h-8 rounded-full cursor-pointer"
+													>
+														{valor <=
+														(hoveredNota ||
+															form.rating ||
+															0) ? (
+															<FaStar color="#FCAE2D" />
+														) : (
+															<FaRegStar color="#FCAE2D" />
+														)}
+													</button>
+												))}
+											</div>
 										</div>
-									</div>
-								);
-							} else if (field.type === "checkbox") {
-								return (
-									<div key={field.name} className="flex items-center gap-2 mb-4">
-										<input
-											type="checkbox"
-											id={field.name}
-											name={field.name}
-											checked={!!form[field.name]}
-											onChange={(e) =>
-												setForm({
-													...form,
-													[field.name]: e.target.checked,
-												})
-											}
-											className="accent-[#FCAE2D] w-5 h-5 rounded border-gray-300"
-										/>
-										<label htmlFor={field.name} className="text-gray-700 font-medium">
-											{field.label}
-										</label>
-									</div>
-								);
-							} else {
-								return (
-									<div key={field.name}>
-										<label htmlFor={field.name}>
-											{field.label}
-										</label>
+									) : type === "checkbox" ? (
+										<div className="flex items-center gap-2 mb-4">
+											<input
+												type="checkbox"
+												id={name}
+												name={name}
+												checked={!!form[name]}
+												onChange={(e) =>
+													setForm({
+														...form,
+														[name]: e.target.checked,
+													})
+												}
+												className="accent-[#FCAE2D] w-5 h-5 rounded border-gray-300"
+											/>
+											<label htmlFor={name} className="text-gray-700 font-medium">
+												{label}
+											</label>
+										</div>
+									) : (
 										<input
 											className="w-full px-3 py-2 rounded border"
-											type={field.type}
-											name={field.name}
+											type={type}
+											name={name}
 											value={applyFieldsMasks(
-												field.name,
-												form[field.name] || ""
+												name,
+												form[name] || ""
 											)}
 											onChange={handleChange}
 											placeholder={
@@ -368,9 +362,9 @@ const EditModal = ({
 											}
 											required={field.required}
 										/>
-									</div>
-								);
-							}
+									)}
+								</div>
+							);
 						})}
 					</div>
 
