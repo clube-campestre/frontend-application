@@ -5,6 +5,9 @@ const InfoMember = ({ member, onClose }) => {
 	if (!member) return null;
 
 	console.log("Member Info:", member);
+	console.log("IMAGE FORMAT:", member.imageFormat);
+	console.log("IMAGE DATA:", member.image.slice(0, 100)); // mostra os primeiros 100 caracteres
+
 	return (
 		<div className="fixed inset-0 bg-[#000000da] bg-opacity-40 flex items-center justify-center z-50 font-sans">
 			<div className="bg-white rounded-lg w-[90%] h-[90%] shadow-lg p-6 overflow-y-auto relative">
@@ -28,7 +31,7 @@ const InfoMember = ({ member, onClose }) => {
 				>
 					<div className="flex items-center space-x-3 col-span-1">
 						<img
-							src={avatarImage}
+							src={`data:${member.imageFormat};base64,${member.image}` || avatarImage}
 							alt="Foto"
 							className="rounded-full w-16 h-16"
 						/>

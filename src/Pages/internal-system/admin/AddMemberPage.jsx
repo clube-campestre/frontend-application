@@ -399,6 +399,15 @@ export default function AddMemberPage({ initialData = {}, editMode = false, onCl
             return;
         }
 
+        // Verifica se o usuário aceitou os termos (marcado via modal em InternData)
+        if (!formDados.acceptTerms) {
+            Toast.fire({
+                icon: "error",
+                title: "É necessário aceitar os termos de uso para cadastrar o membro.",
+            });
+            return;
+        }
+
         // ✅ Monta o objeto address conforme SaveAddressRequestDto
         const address = {
             houseNumber: formDados.houseNumber,
@@ -459,14 +468,12 @@ export default function AddMemberPage({ initialData = {}, editMode = false, onCl
 
         // ✅ Monta o payload principal
         const payload = {
-            idImage: formDados.idImage || "",
-            imagePath: formDados.imagePath || "",
             username: formDados.username,
             birthCertificate: cleanBirthCertificate,
             cpf: cleanCpf,
             issuingAuthority: formDados.issuingAuthority,
             contact: cleanContact,
-            birthDate: new Date(formDados.birthDate).toISOString() || "",
+            birthDate: new Date(formDados.birthDate).toISOString().split("T")[0] || "",
             sex: (formDados.sex || "").toUpperCase(),
             tshirtSize: (formDados.tshirtSize || "").toUpperCase(),
             baptized: formDados.isBaptized == "true" ? true : false,
@@ -501,7 +508,7 @@ export default function AddMemberPage({ initialData = {}, editMode = false, onCl
 
             if (editMode) {
                 // 🔁 Atualização de membro
-                const response = await api.put(`/members/${formDados.cpf}`, formData, {
+                const response = await api.put(`/members`, formData, {
                     headers: { "Content-Type": "multipart/form-data" },
                 });
 
@@ -529,7 +536,7 @@ export default function AddMemberPage({ initialData = {}, editMode = false, onCl
             console.error("Erro ao enviar membro:", error);
             Toast.fire({
                 icon: "error",
-                title: editMode ? "Erro ao editar membro." : "Erro ao cadastrar membro.",
+                title: editMode ? error.response?.data?.message || "Erro ao editar membro." : error.response?.data?.message || "Erro ao cadastrar membro.",
             });
         } finally {
             setLoading(false);
@@ -696,9 +703,8 @@ function normalizeMemberToForm(member) {
 
     // FOTO: só gera a URL se houver idImage
     let foto = null;
-    if (member.imagePath && typeof member.imagePath === "string" && member.imagePath.trim() !== "") {
-        // foto = `https://drive.google.com/thumbnail?id=${member.idImage}`;
-        foto = `${member.imagePath}`;
+    if (member.image && typeof member.image === "string" && member.image.trim() !== "") {
+        foto = `data:${member.imageFormat};base64,${member.image}`;
     }
 
     const normalizedMember = {

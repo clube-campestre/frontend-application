@@ -65,14 +65,18 @@ function PersonalData({ dados, setDados }) {
 				</div>
 				<div className="flex flex-row justify-between items-center w-[85%]">
 					<AddMemberInput
-						id="birthDate"
-						type="date"
-						label="Data de Nascimento"
-						value={dados.birthDate || ""}
-						onChange={(e) =>
-							setDados({ ...dados, birthDate: e.target.value })
-						}
-						className="h-[8vh] w-[22vw]"
+					id="birthDate"
+					type="date"
+					label="Data de Nascimento"
+					value={
+						typeof dados.birthDate === "string"
+						? dados.birthDate.split("T")[0]
+						: dados.birthDate instanceof Date
+						? dados.birthDate.toISOString().split("T")[0]
+						: ""
+					}
+					onChange={(e) => setDados({ ...dados, birthDate: e.target.value })}
+					className="h-[8vh] w-[22vw]"
 					/>
 					<AddMemberInput
 						id="contact"

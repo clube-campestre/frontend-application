@@ -61,10 +61,7 @@ function MemberModal({
 		// Atualiza os membros selecionados com o ID da unidade
 		const updatedMembers = selectedMembers.map((member) => ({
 			...member,
-			unit: {
-				id: unitId || member.unit.id,
-			},
-
+			unitName: unitName || member.unit.name,
 			classCategory: className || member.classCategory,
 			className,
 		}));

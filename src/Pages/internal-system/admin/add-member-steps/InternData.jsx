@@ -1,7 +1,10 @@
+import React, { useState } from "react";
 import AddMemberInput from "../../../../components/add-member-input/AddMemberInput";
 
 // Etapa 6 - InternData
 function InternData({ dados, setDados }) {
+	const [showTermsModal, setShowTermsModal] = useState(false);
+	console.log("EDITANDO", dados);
 	return (
 		<div className="flex flex-col w-full justify-center items-center">
 			<div className="flex align-center self-start items-center ml-20 gap-2">
@@ -15,22 +18,25 @@ function InternData({ dados, setDados }) {
 						id="unit"
 						type="select"
 						options={[
-							{ value: "Panda", label: "Panda" },
-							{ value: "Falcão", label: "Falcão" },
-							{ value: "Lince", label: "Lince" },
-							{ value: "Leão", label: "Leão" },
-							{ value: "Águia Real", label: "Águia Real" },
-							{ value: "Tigre", label: "Tigre" },
-							{ value: "Raposa", label: "Raposa" },
-							{ value: "Urso", label: "Urso" },
-							{ value: "Pantera", label: "Pantera" },
-							{ value: "Lobo", label: "Lobo" },
-							{ value: null, label: "Nenhuma"},
+							{ value: "PANDA", label: "Panda" },
+							{ value: "FALCAO", label: "Falcão" },
+							{ value: "LINCE", label: "Lince" },
+							{ value: "LEAO", label: "Leão" },
+							{ value: "AGUIA_REAL", label: "Águia Real" },
+							{ value: "TIGRE", label: "Tigre" },
+							{ value: "RAPOSA", label: "Raposa" },
+							{ value: "URSO", label: "Urso" },
+							{ value: "PANTERA", label: "Pantera" },
+							{ value: "LOBO", label: "Lobo" },
+							{ value: null, label: "Nenhuma" },
 						]}
 						label="Unidade"
 						value={dados.unit ?? ""}
 						onChange={(e) =>
-							setDados({ ...dados, unit: e.target.value === "" ? "" : e.target.value })
+							setDados({
+								...dados,
+								unit: e.target.value === "" ? "" : e.target.value,
+							})
 						}
 						className="h-[8vh] w-[20vw]"
 					/>
@@ -55,7 +61,7 @@ function InternData({ dados, setDados }) {
 							{ value: "CAPELAO", label: "Capelão" },
 							{ value: "ALMOXARIFADO", label: "Almoxarifado" },
 							{ value: "MEMBRO", label: "Membro" },
-							{ value: "NENHUMA", label: "Nenhuma"} // NO BACK NÂO ESTA PRONTO
+							{ value: "NENHUMA", label: "Nenhuma" }, // NO BACK NÂO ESTA PRONTO
 						]}
 						label="Função na Unidade"
 						value={dados.unitRole || ""}
@@ -132,16 +138,14 @@ function InternData({ dados, setDados }) {
 							onChange={(e) => {
 								const file = e.target.files[0];
 								if (file) {
-									setDados({ ...dados, foto: file });
+									setDados({ ...dados, image: file });
 								}
 							}}
 						/>
-						{dados.foto ? (
+						{dados.image ? (
 							<img
 								src={
-									typeof dados.foto === "string"
-										? dados.foto
-										: URL.createObjectURL(dados.foto)
+									`data:${dados.imageFormat};base64,${dados.image}` 
 								}
 								alt="Pré-visualização"
 								className="object-cover w-full h-full rounded"
@@ -156,6 +160,73 @@ function InternData({ dados, setDados }) {
 					</label>
 				</div>
 			</div>
+
+			{/* Checkbox e termo de uso */}
+			<div className="w-[85%] mt-4 mb-6 flex items-center gap-3 self-start ml-20">
+				<input
+					type="checkbox"
+					checked={!!dados.acceptTerms}
+					onChange={() => {
+						/* não permitir marcar manualmente — só via modal de aceite */
+					}}
+					className="w-4 h-4"
+					aria-label="Aceito os termos de uso"
+				/>
+				<span className="text-sm">
+					Aceito e tenho ciência dos{" "}
+					<button
+						type="button"
+						onClick={() => setShowTermsModal(true)}
+						className="underline text-blue-600 hover:text-blue-700"
+					>
+						termos de uso
+					</button>
+				</span>
+			</div>
+
+			{/* Modal de termos */}
+			{showTermsModal && (
+				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+					<div className="bg-white rounded-lg max-w-3xl w-full max-h-[80vh] overflow-y-auto p-6 relative">
+						<button
+							className="absolute top-3 right-3 text-2xl"
+							onClick={() => setShowTermsModal(false)}
+							aria-label="Fechar termos"
+						>
+							×
+						</button>
+						<h3 className="text-xl font-bold mb-4">Termos de Uso</h3>
+						<div className="text-sm text-gray-700 space-y-3">
+							<p>
+								{/* Cole aqui os termos de uso reais. Abaixo há um placeholder. */}
+							</p>
+							<p>
+								Ao aceitar, declaro que li e estou ciente dos termos e
+								condições aplicáveis ao cadastro e uso dos serviços.
+							</p>
+							{/* ... conteúdo dos termos ... */}
+						</div>
+						<div className="flex justify-end gap-3 mt-6">
+							<button
+								onClick={() => setShowTermsModal(false)}
+								className="px-4 py-2 rounded bg-gray-200"
+							>
+								Fechar
+							</button>
+							<button
+								onClick={() => {
+									// Marca aceite no estado do formulário (permite envio)
+									setDados({ ...dados, acceptTerms: true });
+									setShowTermsModal(false);
+								}}
+								className="px-4 py-2 rounded bg-green-600 text-white"
+							>
+								Aceitar e fechar
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 }
