@@ -457,7 +457,8 @@ const Statement = () => {
 											editingItem={null}
 											title="Adicionar Nova Tag"
 											fields={tagFields}
-											containerClassName="w-[320px] md:w-[380px] lg:w-[420px]"  // <— menor ~25%
+											containerClassName="w-[320px] md:w-[380px] lg:w-[420px]"
+											floatingLabels={true} // habilita placeholder flutuante só aqui
 										/>
 									)}
 									</div>
@@ -532,6 +533,7 @@ const Statement = () => {
 								editingItem={{ transactionDate: getTodayDateTimeLocal() }}
 								title="Adicionar Transação"
 								fields={statementFields}
+								floatingLabels={true}
 							/>
 						)}
 					</div>
