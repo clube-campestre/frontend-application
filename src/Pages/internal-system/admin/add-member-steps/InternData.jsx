@@ -138,7 +138,16 @@ function InternData({ dados, setDados }) {
 							onChange={(e) => {
 								const file = e.target.files[0];
 								if (file) {
-									setDados({ ...dados, image: file });
+								const reader = new FileReader();
+								reader.onloadend = () => {
+									const base64String = reader.result.split(",")[1]; // remove "data:image/png;base64,"
+									setDados({
+									...dados,
+									image: base64String,
+									imageFormat: file.type, // ex: image/png
+									});
+								};
+								reader.readAsDataURL(file);
 								}
 							}}
 						/>

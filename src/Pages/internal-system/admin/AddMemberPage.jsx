@@ -499,8 +499,8 @@ export default function AddMemberPage({ initialData = {}, editMode = false, onCl
         // ✅ Cria o FormData com o JSON + arquivo
         const formData = new FormData();
         formData.append("data", JSON.stringify(payload));
-        if (formDados.foto && formDados.foto instanceof File) {
-            formData.append("file", formDados.foto);
+        if (formDados.image && formDados.image instanceof File) {
+            formData.append("file", formDados.image);
         }
 
         try {
