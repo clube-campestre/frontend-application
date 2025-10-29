@@ -58,9 +58,9 @@ export default function ViewModal({ onClose, item, title, labels }) {
             }
 
             if (
-              key === "companyContact" ||
-              key === "driverContact" ||
-              key === "contact"
+              key === "companyNumber" ||
+              key === "driverNumber" ||
+              key === "contactCellphoneNumber"
             ) {
               displayValue = formatPhone(value);
             }

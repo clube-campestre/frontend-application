@@ -1,9 +1,35 @@
 import React from "react";
 import { IoIosArrowBack } from "react-icons/io";
 import { FaUser, FaUsers, FaNotesMedical } from "react-icons/fa";
+import avatarImage from "../../../assets/images/avatar.png"; // novo
 
 const InfoMember = ({ member, onClose }) => {
 	if (!member) return null;
+
+	const resolveImageSrc = (m) => {
+		const preview = (m?.imagePreview || "").trim();
+		if (preview && preview.startsWith("data:")) return preview;
+
+		const raw = (m?.image || m?.imageMostrar || "").trim();
+		const fmt = (m?.imageFormat || "").trim(); // ex: image/png
+		if (raw) {
+			if (raw.startsWith("data:")) return raw; // já vem completo
+			const mime = fmt && fmt.includes("/") ? fmt : "image/jpeg";
+			return `data:${mime};base64,${raw}`;
+		}
+
+		const path = (m?.imagePath || "").trim();
+		if (path) {
+			if (path.startsWith("http") || path.startsWith("data:")) return path;
+			const looksBase64 = /^[A-Za-z0-9+/]+=*$/.test(path) && path.length > 100;
+			if (looksBase64) return `data:image/jpeg;base64,${path}`;
+		}
+
+		if (m?.idImage && /^[\w-]{20,}$/.test(m.idImage)) {
+			return `https://drive.google.com/thumbnail?id=${m.idImage}`;
+		}
+		return avatarImage;
+	};
 
 	return (
 		<div className="fixed inset-0 bg-white z-50 overflow-y-auto flex items-center justify-center p-10 font-sans">
@@ -42,9 +68,9 @@ const InfoMember = ({ member, onClose }) => {
 
 				<div className="flex flex-col items-center space-y-4 w-1/3">
 					<img
-						src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSIEaBVDfj_YlWbHCteGTaLBQu8aYMC2o2LBuOHEkjC-GqXCnRoTrnd7fBF-bdjLK89Lv4&usqp=CAU"
-						alt="Foto do Russell"
-						className="w-40 h-40 rounded-full object-cover shadow-lg"
+						src={resolveImageSrc(member)}
+						alt="Foto do membro"
+						className="w-32 h-32 rounded-full object-cover"
 					/>
 
 					<h3 className="text-2xl font-bold text-gray-800">

@@ -19,6 +19,7 @@ const placeFields = [
   },
   { id: "cotacao", type: "text", label: "Cotação (R$)", isRequired: true },
   { id: "capacidade", type: "number", label: "Capacidade", isRequired: true },
+  { id: "nomeContato", type: "text", label: "Nome do Contato", isRequired: true },
   { id: "telefone", type: "text", label: "Telefone", isRequired: true },
 ];
 
@@ -32,7 +33,8 @@ const AddPlace = () => {
         price: Number(formData.cotacao),
         capacity: Number(formData.capacidade),
         rating: Number(formData.nota),
-        contact: formData.telefone,
+        contactCellphoneNumber: formData.telefone,
+        contactName: formData.nomeContato,
         address: {
           street: formData.rua,
           houseNumber: formData.numero,
@@ -53,27 +55,11 @@ const AddPlace = () => {
       setTimeout(() => {
         navigate("/admin");
       }, 2500);
-    } catch (error) {
-      if (error.response.data.message === "Place with existing name") {
-        Toast.fire({
-          icon: "error",
-          title: `Local com nome '${formData.nome}' já cadastrado.`,
-        });
-      } else if (
-        error.response.data.message ===
-        "Address already found for provided CEP."
-      ) {
-        Toast.fire({
-          icon: "error",
-          title: `Já existe um local cadastrado com o CEP '${formData.cep}'.`,
-        });
-      } else {
-        console.error("Erro ao cadastrar local:", error);
-        Toast.fire({
-          icon: "error",
-          title: "Erro ao cadastrar local. Tente novamente mais tarde.",
-        });
-      }
+    } catch (error) {  
+      Toast.fire({
+        icon: "error",
+        title: error.response?.data?.message ||`Erro ao cadastrar Local!`,
+      });
     }
   };
 

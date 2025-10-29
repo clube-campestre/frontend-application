@@ -67,7 +67,7 @@ const Statement = () => {
 			],
 		},
 		{
-			name: "tagName",
+			name: "tagSurname",
 			placeholder: "Tag",
 			type: "select",
 			label: "Tag",
@@ -77,8 +77,7 @@ const Statement = () => {
 					tags.map((tag) => ({
 						value: tag.surname,
 						label:
-							tag.surname.toUpperCase().charAt(0) +
-							tag.surname.toLowerCase().slice(1),
+							tag.surname
 					}))
 				) : (
 					<option value="">Nenhuma tag foi encontrada</option>
@@ -284,7 +283,7 @@ const Statement = () => {
 				setShowManageTagsModal(true);
 			}
 		} catch (error) {
-			Toast.fire({ icon: "error", title: "Erro ao editar tag." });
+			Toast.fire({ icon: "error", title: error.response?.data?.message || "Erro ao editar tag." });
 		}
 	};
 
@@ -307,7 +306,7 @@ const Statement = () => {
 					Toast.fire({ icon: "success", title: "Tag deletada com sucesso!" });
 					getTags();
 				} catch (err) {
-					Toast.fire({ icon: "error", title: "Erro ao deletar tag." });
+					Toast.fire({ icon: "error", title: err.response?.data?.message || "Ocorreu um erro ao deletar a tag." });
 				}
 			}
 		});
@@ -320,14 +319,6 @@ const Statement = () => {
 
 	const handleCreateTransaction = async (data) => {
 		try {
-			// Remove tudo exceto dígitos, vírgula, ponto e sinal
-			let cleanPrice = String(data.price || "")
-				.replace(/[^\d.,-]/g, "") // remove tudo exceto dígitos, vírgula, ponto e sinal
-				.replace(/\./g, "")       // remove pontos de milhar
-				.replace(",", ".");       // troca vírgula decimal por ponto
-
-			cleanPrice = cleanPrice ? Number(cleanPrice) : 0;
-
 			// Ajuste: datetime-local já vem no formato correto para o Date
 			const isoDate = data.transactionDate
 				? new Date(data.transactionDate).toISOString()
@@ -335,7 +326,6 @@ const Statement = () => {
 
 			const payload = {
 				...data,
-				price: cleanPrice,
 				transactionDate: isoDate,
 			};
 
@@ -623,12 +613,7 @@ const Statement = () => {
 									{tags.length > 0 ? (
 										tags.map((tag) => (
 											<option key={tag.id} value={tag.id}>
-												{tag.surname
-													.charAt(0)
-													.toUpperCase() +
-													tag.surname
-														.slice(1)
-														.toLowerCase()}
+												{tag.surname}
 											</option>
 										))
 									) : (
@@ -680,7 +665,7 @@ const Statement = () => {
 											setShowEditModal(true);
 											setEditingItem({
 												...transaction,
-												tagName:
+												tagSurname:
 													transaction.tag?.surname,
 												tagColor: transaction.tag?.color,
 											});

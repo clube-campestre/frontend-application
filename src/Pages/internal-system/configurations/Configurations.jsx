@@ -9,6 +9,7 @@ import AddUserModal from "./AddUserModal";
 import { getUser } from "../../../utils/authStorage";
 import Toast from "../../../utils/Toast";
 import { api } from "../../../provider/api";
+import Swal from "sweetalert2";
 
 const Configurations = () => {
 	const [editingUser, setEditingUser] = useState(null);
@@ -18,8 +19,6 @@ const Configurations = () => {
 	useEffect(() => {
 		setEditingUser(getUser());
 	}, []);
-
-	console.log("User:", editingUser);
 
 	const handleAddUser = async (user) => {
 		if (editingUser) {
@@ -76,7 +75,23 @@ const Configurations = () => {
 				<LabelButton
 					label="Sair"
 					icon={exitIcon}
-					onClick={() => navigate("/")}
+					onClick={() => {
+						Swal.fire({
+							title: "Tem certeza?",
+							text: "Você deseja sair do sistema?",
+							icon: "warning",
+							iconColor: "#d33",
+							showCancelButton: true,
+							confirmButtonColor: "#5ccb5f",
+							cancelButtonColor: "#d33",
+							confirmButtonText: "Sim, sair",
+							cancelButtonText: "Cancelar",
+						}).then((result) => {
+							if (result.isConfirmed) {
+								navigate("/");
+							}
+						});
+					}}
 				/>
 			</div>
 

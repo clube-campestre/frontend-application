@@ -37,91 +37,375 @@ export default function AddMemberPage({ initialData = {}, editMode = false, onCl
         console.log("✅ dados atualizados:", formDados);
     };
 
-    const handleEnviar = async () => {
+    // const handleEnviar = async () => {
+    //     const cleanCpf = (formDados.cpf || "").replace(/\D/g, "");
+    //     const cleanContact = (formDados.contact || "").replace(/\D/g, "");
+    //     const cleanBirthCertificate = (formDados.birthCertificate || "").slice(0,32);
+
+
+	// 	const camposObrigatorios = [
+	// 		"username",
+	// 		"birthCertificate",
+	// 		"cpf",
+	// 		"issuingAuthority",
+	// 		"contact",
+	// 		"birthDate",
+	// 		"sex",
+	// 		"tshirtSize",
+	// 		"isBaptized",
+	// 		"cep",
+	// 		"houseNumber",
+	// 		"street",
+	// 		"district",
+	// 		"city",
+	// 		"state",
+	// 		"cns",
+	// 		"blood_type",
+	// 	];
+
+	// 	// Tradução dos campos para mensagens amigáveis
+	// 	const nomesCampos = {
+	// 		username: "Nome",
+	// 		birthCertificate: "Certidão de Nascimento",
+	// 		cpf: "CPF",
+	// 		issuingAuthority: "Órgão Expedidor",
+	// 		contact: "Contato",
+	// 		birthDate: "Data de Nascimento",
+	// 		sex: "Sexo",
+	// 		tshirtSize: "Tamanho da Camiseta",
+	// 		isBaptized: "Batizado",
+	// 		cep: "CEP",
+	// 		houseNumber: "Número",
+	// 		street: "Rua",
+	// 		district: "Bairro",
+	// 		city: "Cidade",
+	// 		state: "Estado",
+	// 		cns: "CNS",
+	// 		blood_type: "Tipo Sanguíneo",
+	// 	};
+
+	// 	function validarCamposObrigatorios(dados) {
+	// 		for (const campo of camposObrigatorios) {
+	// 			if (!dados[campo] || dados[campo].toString().trim() === "") {
+	// 				return `O campo "${nomesCampos[campo] || campo}" é obrigatório.`;
+	// 			}
+	// 		}
+
+	// 		// Função auxiliar para checar se todos os campos de um grupo estão preenchidos
+	// 		function grupoCompleto(prefix) {
+	// 			return (
+	// 				dados[`${prefix}Name`] && dados[`${prefix}Name`].trim() !== "" &&
+	// 				dados[`${prefix}Email`] && dados[`${prefix}Email`].trim() !== "" &&
+	// 				dados[`${prefix}Contact`] && dados[`${prefix}Contact`].trim() !== ""
+	// 			);
+	// 		}
+
+	// 		const paiCompleto = grupoCompleto("father");
+	// 		const maeCompleta = grupoCompleto("mother");
+	// 		const responsavelCompleto = grupoCompleto("responsible");
+
+	// 		if (!paiCompleto && !maeCompleta && !responsavelCompleto) {
+	// 			return "Preencha todos os campos (nome, e-mail e contato) do pai, mãe ou responsável legal.";
+	// 		}
+
+	// 		return null; // Tudo ok
+	// 	}
+
+	// 	// No handleEnviar, antes de enviar:
+	// 	const erroValidacao = validarCamposObrigatorios(formDados);
+	// 	if (erroValidacao) {
+	// 		Toast.fire({
+	// 			icon: "error",
+	// 			title: erroValidacao,
+	// 		});
+	// 		return;
+	// 	}
+
+    //     // Monta o objeto address conforme SaveAddressRequestDto
+    //     const address = {
+    //         houseNumber: formDados.houseNumber,
+    //         district: formDados.district,
+    //         city: formDados.city,
+    //         state: formDados.state,
+    //         street: formDados.street,
+    //         cep: (formDados.cep || "").replace(/\D/g, ""),
+    //         referenceHouse: formDados.referenceHouse || "",
+    //     };
+
+    //     // Monta o objeto medicalData conforme SaveMedicalDataRequestDto
+    //     const medicalData = {
+    //         cpf: cleanCpf,
+    //         cns: formDados.cns || "000000000000000", // valor default se não preenchido
+    //         agreement: formDados.agreement || "Publico", // valor default se não preenchido
+    //         bloodType: (formDados.blood_type || "").toUpperCase(),
+    //         catapora: formDados.sickness.catapora ?? false,
+    //         meningite: formDados.sickness.meningite ?? false,
+    //         hepatite: formDados.sickness.hepatite ?? false,
+    //         dengue: formDados.sickness.dengue ?? false,
+    //         pneumonia: formDados.sickness.pneumonia ?? false,
+    //         malaria: formDados.sickness.malaria ?? false,
+    //         febreAmarela: formDados.sickness.febreAmarela ?? false,
+    //         sarampo: formDados.sickness.sarampo ?? false,
+    //         tetano: formDados.sickness.tetano ?? false,
+    //         variola: formDados.sickness.variola ?? false,
+    //         coqueluche: formDados.sickness.coqueluche ?? false,
+    //         difteria: formDados.sickness.difteria ?? false,
+    //         rinite: formDados.sickness.rinite ?? false,
+    //         bronquite: formDados.sickness.bronquite ?? false,
+    //         asma: formDados.sickness.asma ?? false,
+    //         rubeola: formDados.sickness.rubeola ?? false,
+    //         colera: formDados.sickness.colera ?? false,
+    //         covid19: formDados.sickness.covid19 ?? false,
+    //         h1n1: formDados.sickness.h1n1 ?? false,
+    //         caxumba: formDados.sickness.caxumba ?? false,
+    //         others: formDados.sickness.others || "",
+    //         heartProblems: formDados.heartProblems || "",
+    //         drugAllergy: formDados.drugAllergy || "",
+    //         lactoseAllergy: formDados.lactoseAllergy ?? false,
+    //         deficiency: formDados.deficiency || "",
+    //         bloodTransfusion: formDados.bloodTransfusion ?? false,
+    //         skinAllergy: formDados.skinAllergy ?? false,
+    //         skinAllergyMedications: formDados.skinAllergyMedications || "",
+    //         faintingOrConvulsion: formDados.faintingOrConvulsion ?? false,
+    //         faintingOrSeizuresMedications:
+    //             formDados.faintingOrSeizuresMedications || "",
+    //         psychologicalDisorder: formDados.psychologicalDisorder || "",
+    //         allergy: formDados.allergy ?? false,
+    //         allergyMedications: formDados.allergyMedications || "",
+    //         diabetic: formDados.diabetic ?? false,
+    //         diabeticMedications: formDados.diabeticMedications || "",
+    //         recentSeriousInjury: formDados.recentSeriousInjury ?? false,
+    //         recentFracture: formDados.recentFracture || "",
+    //         surgeries: formDados.surgeries || "",
+    //         hospitalizationReasonLast5Years:
+    //             formDados.hospitalizationReasonLast5Years || "",
+    //     };
+
+    //     // Monta o objeto unit conforme esperado (id e surname)
+    //     // const unit = {
+    //     //     id: Number(formDados.unit),
+    //     //     surname: formDados.unitSurname || "", // ajuste conforme sua lógica
+    //     // };
+
+    //     // Monta o payload principal conforme MemberDataDtoRequest
+    //     const payload = {
+    //         idImage: formDados.idImage || "",
+    //         imagePath: formDados.imagePath || "",
+    //         username: formDados.username,
+    //         birthCertificate: cleanBirthCertificate,
+    //         cpf: cleanCpf,
+    //         issuingAuthority: formDados.issuingAuthority,
+    //         contact: cleanContact,
+    //         birthDate: new Date(formDados.birthDate).toISOString() || "",
+    //         sex: (formDados.sex || "").toUpperCase(),
+    //         tshirtSize: (formDados.tshirtSize || "").toUpperCase(),
+    //         baptized: formDados.isBaptized == "true" ? true : false,
+    //         address,
+    //         medicalData,
+    //         fatherName: formDados.fatherName || "",
+    //         fatherContact: formDados.fatherContact || "",
+    //         fatherEmail: formDados.fatherEmail || "",
+    //         motherName: formDados.motherName || "",
+    //         motherContact: formDados.motherContact || "",
+    //         motherEmail: formDados.motherEmail || "",
+    //         responsibleName: formDados.responsibleName || "",
+    //         responsibleContact: formDados.responsibleContact || "",
+    //         responsibleEmail: formDados.responsibleEmail || "",
+    //         unitRole: (formDados.unitRole || "").toUpperCase(),
+    //         unitName: formDados.unit,
+    //         // unit,
+    //         classCategory: (formDados.classCategory || "").toUpperCase(),
+    //         classRole: (formDados.classRole || "").toUpperCase(),
+    //     };
+    //     console.log("FormDados: ", formDados);
+    //     console.log("Payload enviado:", payload);
+		
+
+    //     if (editMode) {
+    //         setLoading(true);
+    //         try {
+    //             // Atualiza os dados do membro
+    //             const response = await api.put(`/members/${formDados.cpf}`, payload);
+
+    //             if (response.status === 200) {
+    //                 // Se o usuário selecionou uma nova imagem
+    //                 if (formDados.foto && formDados.foto instanceof File) {
+    //                     const formDataImg = new FormData();
+    //                     formDataImg.append("file", formDados.foto);
+
+    //                     if (formDados.idImage) {
+    //                         // PUT para atualizar imagem existente
+    //                         await api.put(
+    //                             `/drive/update?fileId=${formDados.idImage}&cpf=${formDados.cpf}`,
+    //                             formDataImg,
+    //                             {
+    //                                 headers: {
+    //                                     "Content-Type": "multipart/form-data",
+    //                                 },
+    //                             }
+    //                         );
+    //                     } else {
+    //                         // POST para adicionar nova imagem
+    //                         await api.post(
+    //                             `/drive/upload?cpf=${formDados.cpf}`,
+    //                             formDataImg,
+    //                             {
+    //                                 headers: {
+    //                                     "Content-Type": "multipart/form-data",
+    //                                 },
+    //                             }
+    //                         );
+    //                     }
+    //                 }
+
+    //                 Toast.fire({
+    //                     icon: "success",
+    //                     title: "Membro editado com sucesso!",
+    //                 });
+    //                 setTimeout(() => {
+    //                     setLoading(false);
+    //                     if (onSave) onSave();
+    //                     if (onClose) onClose();
+    //                     navigate("/secretary"); // Redireciona para secretary ao editar
+    //                 }, 3000);
+    //             }
+    //         } catch (error) {
+    //             setLoading(false);
+    //             Toast.fire({
+    //                 icon: "error",
+    //                 title: "Erro ao editar membro.",
+    //             });
+    //             console.error("Error editing member:", error);
+    //         }
+    //         return;
+    //     } else {
+    //         await api.post("/members", payload);
+    //         Toast.fire({
+    //             icon: "success",
+    //             title: "Membro cadastrado com sucesso!",
+    //         });
+
+    //         if (formDados.foto != null) {
+    //             const formData = new FormData();
+    //             // Era: formData.append("image", formDados.foto);
+    //             formData.append("file", formDados.foto); // alinhar com o PUT de edição
+    //             try {
+    //                 const response = await api.post(
+    //                     `/drive/upload?cpf=${formDados.cpf}`,
+    //                     formData,
+    //                     {
+    //                         headers: { "Content-Type": "multipart/form-data" },
+    //                     }
+    //                 );
+    //                 // opcional: atualizar formDados com retorno
+    //                 // setFormDados((p) => ({ ...p, imagePath: response.data?.imagePath, idImage: response.data?.id }));
+    //             } catch (error) {
+    //                 console.error("Erro no upload:", error);
+    //             }
+    //         } else {
+    //             console.log("TA NULL");
+    //         }
+    //         setTimeout(() => {
+    //             navigate("/admin"); // Redireciona para admin ao cadastrar
+    //         }, 2500);
+    //     }
+    // };
+
+        const handleEnviar = async () => {
         const cleanCpf = (formDados.cpf || "").replace(/\D/g, "");
         const cleanContact = (formDados.contact || "").replace(/\D/g, "");
-        const cleanBirthCertificate = (formDados.birthCertificate || "").slice(0,32);
+        const cleanBirthCertificate = (formDados.birthCertificate || "").slice(0, 32);
 
+        // Campos obrigatórios
+        const camposObrigatorios = [
+            "username",
+            "birthCertificate",
+            "cpf",
+            "issuingAuthority",
+            "contact",
+            "birthDate",
+            "sex",
+            "tshirtSize",
+            "isBaptized",
+            "cep",
+            "houseNumber",
+            "street",
+            "district",
+            "city",
+            "state",
+            "cns",
+            "blood_type",
+        ];
 
-		const camposObrigatorios = [
-			"username",
-			"birthCertificate",
-			"cpf",
-			"issuingAuthority",
-			"contact",
-			"birthDate",
-			"sex",
-			"tshirtSize",
-			"isBaptized",
-			"cep",
-			"houseNumber",
-			"street",
-			"district",
-			"city",
-			"state",
-			"cns",
-			"blood_type",
-		];
+        // Tradução dos campos para mensagens amigáveis
+        const nomesCampos = {
+            username: "Nome",
+            birthCertificate: "Certidão de Nascimento",
+            cpf: "CPF",
+            issuingAuthority: "Órgão Expedidor",
+            contact: "Contato",
+            birthDate: "Data de Nascimento",
+            sex: "Sexo",
+            tshirtSize: "Tamanho da Camiseta",
+            isBaptized: "Batizado",
+            cep: "CEP",
+            houseNumber: "Número",
+            street: "Rua",
+            district: "Bairro",
+            city: "Cidade",
+            state: "Estado",
+            cns: "CNS",
+            blood_type: "Tipo Sanguíneo",
+        };
 
-		// Tradução dos campos para mensagens amigáveis
-		const nomesCampos = {
-			username: "Nome",
-			birthCertificate: "Certidão de Nascimento",
-			cpf: "CPF",
-			issuingAuthority: "Órgão Expedidor",
-			contact: "Contato",
-			birthDate: "Data de Nascimento",
-			sex: "Sexo",
-			tshirtSize: "Tamanho da Camiseta",
-			isBaptized: "Batizado",
-			cep: "CEP",
-			houseNumber: "Número",
-			street: "Rua",
-			district: "Bairro",
-			city: "Cidade",
-			state: "Estado",
-			cns: "CNS",
-			blood_type: "Tipo Sanguíneo",
-		};
+        // ✅ Função para validar campos obrigatórios
+        function validarCamposObrigatorios(dados) {
+            for (const campo of camposObrigatorios) {
+                if (!dados[campo] || dados[campo].toString().trim() === "") {
+                    return `O campo "${nomesCampos[campo] || campo}" é obrigatório.`;
+                }
+            }
 
-		function validarCamposObrigatorios(dados) {
-			for (const campo of camposObrigatorios) {
-				if (!dados[campo] || dados[campo].toString().trim() === "") {
-					return `O campo "${nomesCampos[campo] || campo}" é obrigatório.`;
-				}
-			}
+            // Verifica se pelo menos um grupo (pai, mãe ou responsável) está completo
+            function grupoCompleto(prefix) {
+                return (
+                    dados[`${prefix}Name`] && dados[`${prefix}Name`].trim() !== "" &&
+                    dados[`${prefix}Email`] && dados[`${prefix}Email`].trim() !== "" &&
+                    dados[`${prefix}Contact`] && dados[`${prefix}Contact`].trim() !== ""
+                );
+            }
 
-			// Função auxiliar para checar se todos os campos de um grupo estão preenchidos
-			function grupoCompleto(prefix) {
-				return (
-					dados[`${prefix}Name`] && dados[`${prefix}Name`].trim() !== "" &&
-					dados[`${prefix}Email`] && dados[`${prefix}Email`].trim() !== "" &&
-					dados[`${prefix}Contact`] && dados[`${prefix}Contact`].trim() !== ""
-				);
-			}
+            const paiCompleto = grupoCompleto("father");
+            const maeCompleta = grupoCompleto("mother");
+            const responsavelCompleto = grupoCompleto("responsible");
 
-			const paiCompleto = grupoCompleto("father");
-			const maeCompleta = grupoCompleto("mother");
-			const responsavelCompleto = grupoCompleto("responsible");
+            if (!paiCompleto && !maeCompleta && !responsavelCompleto) {
+                return "Preencha todos os campos (nome, e-mail e contato) do pai, mãe ou responsável legal.";
+            }
 
-			if (!paiCompleto && !maeCompleta && !responsavelCompleto) {
-				return "Preencha todos os campos (nome, e-mail e contato) do pai, mãe ou responsável legal.";
-			}
+            return null; // Tudo ok
+        }
 
-			return null; // Tudo ok
-		}
+        // ✅ Executa a validação
+        const erroValidacao = validarCamposObrigatorios(formDados);
+        if (erroValidacao) {
+            Toast.fire({
+                icon: "error",
+                title: erroValidacao,
+            });
+            return;
+        }
 
-		// No handleEnviar, antes de enviar:
-		const erroValidacao = validarCamposObrigatorios(formDados);
-		if (erroValidacao) {
-			Toast.fire({
-				icon: "error",
-				title: erroValidacao,
-			});
-			return;
-		}
+        // Verifica se o usuário aceitou os termos (marcado via modal em InternData)
+        if (!formDados.acceptTerms) {
+            Toast.fire({
+                icon: "error",
+                title: "É necessário aceitar os termos de uso para cadastrar o membro.",
+            });
+            return;
+        }
 
-        // Monta o objeto address conforme SaveAddressRequestDto
+        // ✅ Monta o objeto address conforme SaveAddressRequestDto
         const address = {
             houseNumber: formDados.houseNumber,
             district: formDados.district,
@@ -132,11 +416,11 @@ export default function AddMemberPage({ initialData = {}, editMode = false, onCl
             referenceHouse: formDados.referenceHouse || "",
         };
 
-        // Monta o objeto medicalData conforme SaveMedicalDataRequestDto
+        // ✅ Monta o objeto medicalData conforme SaveMedicalDataRequestDto
         const medicalData = {
             cpf: cleanCpf,
-            cns: formDados.cns || "000000000000000", // valor default se não preenchido
-            agreement: formDados.agreement || "Publico", // valor default se não preenchido
+            cns: formDados.cns || "000000000000000",
+            agreement: formDados.agreement || "Publico",
             bloodType: (formDados.blood_type || "").toUpperCase(),
             catapora: formDados.sickness.catapora ?? false,
             meningite: formDados.sickness.meningite ?? false,
@@ -167,8 +451,7 @@ export default function AddMemberPage({ initialData = {}, editMode = false, onCl
             skinAllergy: formDados.skinAllergy ?? false,
             skinAllergyMedications: formDados.skinAllergyMedications || "",
             faintingOrConvulsion: formDados.faintingOrConvulsion ?? false,
-            faintingOrSeizuresMedications:
-                formDados.faintingOrSeizuresMedications || "",
+            faintingOrSeizuresMedications: formDados.faintingOrSeizuresMedications || "",
             psychologicalDisorder: formDados.psychologicalDisorder || "",
             allergy: formDados.allergy ?? false,
             allergyMedications: formDados.allergyMedications || "",
@@ -177,29 +460,20 @@ export default function AddMemberPage({ initialData = {}, editMode = false, onCl
             recentSeriousInjury: formDados.recentSeriousInjury ?? false,
             recentFracture: formDados.recentFracture || "",
             surgeries: formDados.surgeries || "",
-            hospitalizationReasonLast5Years:
-                formDados.hospitalizationReasonLast5Years || "",
+            hospitalizationReasonLast5Years: formDados.hospitalizationReasonLast5Years || "",
         };
 
-        // Monta o objeto unit conforme esperado (id e surname)
-        const unit = {
-            id: Number(formDados.unit),
-            surname: formDados.unitSurname || "", // ajuste conforme sua lógica
-        };
-
-        // Monta o payload principal conforme MemberDataDtoRequest
+        // ✅ Monta o payload principal
         const payload = {
-            idImage: formDados.idImage || "",
-            imagePath: formDados.imagePath || "",
             username: formDados.username,
             birthCertificate: cleanBirthCertificate,
             cpf: cleanCpf,
             issuingAuthority: formDados.issuingAuthority,
             contact: cleanContact,
-            birthDate: new Date(formDados.birthDate).toISOString() || "",
+            birthDate: new Date(formDados.birthDate).toISOString().split("T")[0] || "",
             sex: (formDados.sex || "").toUpperCase(),
             tshirtSize: (formDados.tshirtSize || "").toUpperCase(),
-            isBaptized: formDados.isBaptized == "true" ? true : false,
+            baptized: formDados.isBaptized == "true" ? true : false,
             address,
             medicalData,
             fatherName: formDados.fatherName || "",
@@ -212,105 +486,64 @@ export default function AddMemberPage({ initialData = {}, editMode = false, onCl
             responsibleContact: formDados.responsibleContact || "",
             responsibleEmail: formDados.responsibleEmail || "",
             unitRole: (formDados.unitRole || "").toUpperCase(),
-            // unit: formDados.unit,
-            unit,
+            unitName: formDados.unit,
             classCategory: (formDados.classCategory || "").toUpperCase(),
             classRole: (formDados.classRole || "").toUpperCase(),
         };
-        console.log("FormDados: ", formDados);
-        console.log("Payload enviado:", payload);
-		
 
-        if (editMode) {
+        console.log("Payload enviado:", payload);
+
+        // ✅ Cria o FormData com o JSON + arquivo
+        const formData = new FormData();
+        formData.append("data", JSON.stringify(payload));
+
+        // Envia a foto: prioriza File; senão converte base64 -> Blob -> File
+        if (formDados.imageFile instanceof File) {
+            formData.append("file", formDados.imageFile);
+        } else if (formDados.image && typeof formDados.image === "string" && formDados.image.trim() !== "") {
+            const mime = (formDados.imageFormat && String(formDados.imageFormat)) || "image/jpeg";
+            const blob = b64ToBlob(formDados.image, mime);
+            const ext = mime.split("/")[1] || "jpg";
+            formData.append("file", new File([blob], `foto.${ext}`, { type: mime }));
+        }
+
+        try {
             setLoading(true);
-            try {
-                // Atualiza os dados do membro
-                const response = await api.put(`/members/${formDados.cpf}`, payload);
+
+            if (editMode) {
+                // 🔁 Atualização de membro
+                const response = await api.put(`/members`, formData, {
+                    headers: { "Content-Type": "multipart/form-data" },
+                });
 
                 if (response.status === 200) {
-                    // Se o usuário selecionou uma nova imagem
-                    if (formDados.foto && formDados.foto instanceof File) {
-                        const formDataImg = new FormData();
-                        formDataImg.append("file", formDados.foto);
-
-                        if (formDados.idImage) {
-                            // PUT para atualizar imagem existente
-                            await api.put(
-                                `/drive/update?fileId=${formDados.idImage}&cpf=${formDados.cpf}`,
-                                formDataImg,
-                                {
-                                    headers: {
-                                        "Content-Type": "multipart/form-data",
-                                    },
-                                }
-                            );
-                        } else {
-                            // POST para adicionar nova imagem
-                            await api.post(
-                                `/drive/upload?cpf=${formDados.cpf}`,
-                                formDataImg,
-                                {
-                                    headers: {
-                                        "Content-Type": "multipart/form-data",
-                                    },
-                                }
-                            );
-                        }
-                    }
-
-                    Toast.fire({
-                        icon: "success",
-                        title: "Membro editado com sucesso!",
-                    });
+                    Toast.fire({ icon: "success", title: "Membro editado com sucesso!" });
                     setTimeout(() => {
                         setLoading(false);
                         if (onSave) onSave();
                         if (onClose) onClose();
-                        navigate("/secretary"); // Redireciona para secretary ao editar
+                        navigate("/secretary");
                     }, 3000);
                 }
-            } catch (error) {
-                setLoading(false);
-                Toast.fire({
-                    icon: "error",
-                    title: "Erro ao editar membro.",
-                });
-                console.error("Error editing member:", error);
-            }
-            return;
-        } else {
-            await api.post("/members", payload);
-            Toast.fire({
-                icon: "success",
-                title: "Membro cadastrado com sucesso!",
-            });
-
-            if (formDados.foto != null) {
-                const formData = new FormData();
-                formData.append("image", formDados.foto); // nome esperado no backend
-                console.log("ENVIANDO IMAGEM");
-                try {
-                    const response = await api.post(
-                        `/drive/upload?cpf=${formDados.cpf}`,
-                        formData,
-                        {
-                            headers: {
-                                "Content-Type": "multipart/form-data",
-                            },
-                        }
-                    );
-                    console.log("Upload realizado com sucesso!");
-                    console.log(response.data);
-                } catch (error) {
-                    console.error("Erro no upload:", error);
-                    console.log("Falha no upload");
-                }
             } else {
-                console.log("TA NULL");
+                // 🆕 Cadastro de novo membro
+                const response = await api.post("/members", formData, {
+                    headers: { "Content-Type": "multipart/form-data" },
+                });
+
+                if (response.status === 200 || response.status === 201) {
+                    Toast.fire({ icon: "success", title: "Membro cadastrado com sucesso!" });
+                    setTimeout(() => navigate("/admin"), 2500);
+                }
             }
-            setTimeout(() => {
-                navigate("/admin"); // Redireciona para admin ao cadastrar
-            }, 2500);
+        } catch (error) {
+            console.error("Erro ao enviar membro:", error);
+            Toast.fire({
+                icon: "error",
+                title: editMode ? error.response?.data?.message || "Erro ao editar membro." : error.response?.data?.message || "Erro ao cadastrar membro.",
+            });
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -473,9 +706,10 @@ function normalizeMemberToForm(member) {
 
     // FOTO: só gera a URL se houver idImage
     let foto = null;
-    if (member.imagePath && typeof member.imagePath === "string" && member.imagePath.trim() !== "") {
-        // foto = `https://drive.google.com/thumbnail?id=${member.idImage}`;
-        foto = `${member.imagePath}`;
+    console.log(member.image, "aaaaa")
+        console.log(member.image.image, "bbb")
+    if (member.image && typeof member.image === "string" && member.image.trim() !== "") {
+        foto = `data:${member.imageFormat};base64,${member.image}`;
     }
 
     const normalizedMember = {
