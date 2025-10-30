@@ -77,6 +77,7 @@ const FormRegister = ({ formTitle, fields, onSubmit }) => {
       telefone: unmaskPhone(formData.telefone),
       whatsapp: unmaskPhone(formData.whatsapp),
       // cep: formData.cep.replace(/\D/g, ""),
+      
     };
 
     onSubmit(updatedFormData);
