@@ -270,7 +270,7 @@ const InternalHome = () => {
 				</div>
 				<div className="overflow-hidden rounded-md border border-gray-300 max-h-[400px] overflow-y-auto">
 					<div className="grid grid-cols-2 bg-gray-500 text-white font-semibold text-sm sticky top-0 z-10">
-						<div className="py-3 px-4 text-center">Unidade</div>
+						<div className="py-3 px-4 ml-4 ">Unidade</div>
 						<div className="py-3 px-4 text-center">Pontos</div>
 					</div>
 					{points.map((point, index) => {

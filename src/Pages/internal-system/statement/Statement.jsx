@@ -10,7 +10,6 @@ import { GiBroom } from "react-icons/gi";
 import Toast from "../../../utils/Toast";
 import { FaPencilAlt, FaTrash } from "react-icons/fa";
 
-
 const Statement = () => {
 	const [showAddModal, setShowAddModal] = useState(false);
 	const [showEditModal, setShowEditModal] = useState(false);
@@ -417,15 +416,10 @@ const Statement = () => {
 		<div className="flex items-center justify-center w-full h-[82vh]">
 			<div className="flex flex-col items-center justify-start w-[80vw] h-[82vh]">
 				{/* Header Section */}
-				<header className="flex items-center justify-between w-full h-16">
+				<header className="flex items-center justify-end w-full h-16">
 					<div className="flex items-center gap-2">
-						<div className="h-8 w-2 bg-yellow-400 rounded"></div>
-						<h2 className="text-xl font-normal">Lançar Receita</h2>
-					</div>
-					<div className="flex items-center gap-2">
-						{/* Botão ÚNICO para Gerenciar Tags */}
 						<button
-							className="flex items-center gap-2 px-4 py-2 bg-[#D9D9D9] text-[#021C4F] rounded hover:bg-gray-400"
+							className="flex items-center gap-2 px-4 py-2 bg-[#D9D9D9] text-[#021C4F] rounded hover:bg-gray-400 cursor-pointer"
 							onClick={() => setShowManageTagsModal(true)}
 						>
 							Gerenciar Tags <LuCirclePlus />
@@ -436,7 +430,7 @@ const Statement = () => {
 								<div className="bg-[#f3f3f3] p-8 rounded-xl shadow-lg min-w-[400px] max-h-[80vh] overflow-y-auto relative">
 									<button
 										onClick={() => { setShowManageTagsModal(false); setEditingTag(null); }}
-										className="absolute top-3 right-2 text-2xl"
+										className="absolute top-3 right-2 text-2xl cursor-pointer"
 									>
 										×
 									</button>
@@ -448,13 +442,13 @@ const Statement = () => {
 										{/* Botão para abrir modal de cadastro de tag */}
 										{!editingTag && (
 											<button
-												className="mb-4 px-4 py-2 bg-[#FCAE2D] text-white rounded hover:bg-[#e2961e] font-semibold"
+												className="mb-4 px-4 py-2 bg-[#FCAE2D] text-white rounded hover:bg-[#e2961e] font-semibold cursor-pointer"
 												onClick={() => setShowTagModal(true)}
 											>
-											 <LuCirclePlus />
+												<LuCirclePlus className="cursor-pointer" />
 											</button>
 										)}
-									{/* Modal para cadastrar nova tag */}
+									{/* Modal para cadastrar nova tag (menor) */}
 									{showTagModal && (
 										<EditModal
 											onClose={() => setShowTagModal(false)}
@@ -462,6 +456,8 @@ const Statement = () => {
 											editingItem={null}
 											title="Adicionar Nova Tag"
 											fields={tagFields}
+											containerClassName="w-[320px] md:w-[380px] lg:w-[420px]"
+											floatingLabels={true} // habilita placeholder flutuante só aqui
 										/>
 									)}
 									</div>
@@ -479,43 +475,52 @@ const Statement = () => {
 											{tags.length === 0 && (
 												<p className="text-gray-500">Nenhuma tag cadastrada.</p>
 											)}
-											{tags.map((tag) => (
-												<div key={tag.id} className="flex items-center justify-between bg-white p-3 rounded shadow">
-													<div className="flex items-center gap-3">
-														<div className="w-5 h-5 rounded-full" style={{ background: tag.color }}></div>
-														<span className="font-normal">{tag.surname}</span>
-														{tag.goal && (
-															<span className="text-xs text-gray-500 ml-2">Meta: {tag.goal}</span>
-														)}
-														{tag.privateGoal && (
-															<span className="text-xs text-gray-500 ml-2">Privada</span>
-														)}
+											{tags.map((tag) => {
+												const isDefault = String(tag.surname || "").trim().toLowerCase() === "outros";
+												return (
+													<div key={tag.id} className="flex items-center justify-between bg-white p-3 rounded shadow">
+														<div className="flex items-center gap-3">
+															<div className="w-5 h-5 rounded-full" style={{ background: tag.color }}></div>
+															<span className="font-normal">{tag.surname}</span>
+															{tag.goal && (
+																<span className="text-xs text-gray-500 ml-2">Meta: {tag.goal}</span>
+															)}
+															{tag.privateGoal && (
+																<span className="text-xs text-gray-500 ml-2">Privada</span>
+															)}
+														</div>
+														<div className="flex gap-2">
+															{isDefault ? (
+																<span className="text-xs text-gray-400 italic select-none">Padrão</span>
+															) : (
+																<>
+																	<button
+																		onClick={() => setEditingTag(tag)}
+																		className="text-amber-500 hover:text-amber-600 cursor-pointer"
+																		title="Editar"
+																	>
+																		<FaPencilAlt size={18} className="cursor-pointer" />
+																	</button>
+																	<button
+																		onClick={() => handleDeleteTag(tag.id)}
+																		className="text-gray-400 hover:text-gray-600 cursor-pointer"
+																		title="Excluir"
+																	>
+																		<FaTrash size={18} className="cursor-pointer" />
+																	</button>
+																</>
+															)}
+														</div>
 													</div>
-													<div className="flex gap-2">
-														<button
-															onClick={() => setEditingTag(tag)}
-															className="text-amber-500 hover:text-amber-600"
-															title="Editar"
-														>
-															<FaPencilAlt size={18} className="cursor-pointer" />
-														</button>
-														<button
-															onClick={() => handleDeleteTag(tag.id)}
-															className="text-gray-400 hover:text-gray-600"
-															title="Excluir"
-														>
-															<FaTrash size={18} className="cursor-pointer" />
-														</button>
-													</div>
-												</div>
-											))}
+												);
+											})}
 										</div>
 									)}
 								</div>
 							</div>
 						)}
 						<button
-							className="flex items-center gap-2 px-4 py-2 bg-[#D9D9D9] text-[#021C4F] rounded hover:bg-gray-400"
+							className="flex items-center gap-2 px-4 py-2 bg-[#D9D9D9] text-[#021C4F] rounded hover:bg-gray-400 cursor-pointer"
 							onClick={() => setShowAddModal(true)}
 						>
 							Adicionar Transação <LuCirclePlus />
@@ -527,6 +532,7 @@ const Statement = () => {
 								editingItem={{ transactionDate: getTodayDateTimeLocal() }}
 								title="Adicionar Transação"
 								fields={statementFields}
+								floatingLabels={true}
 							/>
 						)}
 					</div>
@@ -534,7 +540,7 @@ const Statement = () => {
 
 				{/* Filter Section */}
 				<section className="flex flex-col lg:flex-row w-full p-4 rounded justify-around shadow mb-6 bg-[#7C7C7C] gap-4">
-					<div className="flex flex-col w-full lg:w-[65%] h-full">
+					<div className="flex flex-col w-full lg:w-[73%] h-full">
 						<div className="relative w-full mb-4">
 							<input
 								type="text"
@@ -552,37 +558,43 @@ const Statement = () => {
 
 						<div className="flex flex-col md:flex-row w-full items-center justify-between gap-4">
 							<div className="flex flex-col w-full gap-2">
-								<h4 className="text-white">Período</h4>
-								<div className="flex flex-col sm:flex-row items-center gap-4">
-									<input
-										type="date"
-										value={filters.startDate}
-										onChange={(e) =>
-											setFilters({
-												...filters,
-												startDate: e.target.value,
-											})
-										}
-										className="w-full p-2 border border-gray-300 rounded bg-[#EDEDED]"
-									/>
-									<input
-										type="date"
-										value={filters.endDate}
-										onChange={(e) =>
-											setFilters({
-												...filters,
-												endDate: e.target.value,
-											})
-										}
-										className="w-full p-2 border border-gray-300 rounded bg-[#EDEDED]"
-									/>
+								<div className="flex flex-col sm:flex-row items-end gap-4">
+									<div className="flex w-full sm:w-auto flex-col">
+										<span className="text-white text-sm mb-1">Início</span>
+										<input
+											type="date"
+											value={filters.startDate}
+											onChange={(e) =>
+												setFilters({
+													...filters,
+													startDate: e.target.value,
+												})
+											}
+											className="w-full sm:w-44 h-10 px-3 border border-gray-300 rounded bg-[#EDEDED]"
+										/>
+									</div>
+
+									<div className="flex w-full sm:w-auto flex-col">
+										<span className="text-white text-sm mb-1">Fim</span>
+										<input
+											type="date"
+											value={filters.endDate}
+											onChange={(e) =>
+												setFilters({
+													...filters,
+													endDate: e.target.value,
+												})
+											}
+											className="w-full sm:w-44 h-10 px-3 border border-gray-300 rounded bg-[#EDEDED]"
+										/>
+									</div>
 								</div>
 							</div>
 
 							<div className="flex flex-col w-full gap-2">
 								<h4 className="text-white">Transação</h4>
 								<select
-									className="w-full p-2 border border-gray-300 rounded bg-[#EDEDED]"
+									className="w-full md:w-22 h-10 px-3 border border-gray-300 rounded bg-[#EDEDED] cursor-pointer"
 									value={filters.type}
 									onChange={(e) =>
 										setFilters({
@@ -591,7 +603,7 @@ const Statement = () => {
 										})
 									}
 								>
-									<option value="">Selecione o tipo</option>
+									<option value="">Selecione</option>
 									<option value="entrada">Entrada</option>
 									<option value="saida">Saída</option>
 								</select>
@@ -627,13 +639,13 @@ const Statement = () => {
 							<div className="flex gap-2 mt-2 md:mt-6">
 								<button
 									onClick={handleFilterTransactions}
-									className="flex items-center justify-center h-10 px-2 border-2 rounded border-[#FCAE2D]"
+									className="flex items-center justify-center h-10 px-2 border-2 rounded border-[#FCAE2D] cursor-pointer"
 								>
 									<IoIosSearch size={24} color="#FCAE2D" />
 								</button>
 								<button
 									onClick={handleClearFilters}
-									className="flex items-center justify-center h-10 px-2 border-2 rounded border-[#f85858]"
+									className="flex items-center justify-center h-10 px-2 border-2 rounded border-[#f85858] cursor-pointer"
 								>
 									<GiBroom size={24} color="#f85858"/>
 								</button>
@@ -641,7 +653,7 @@ const Statement = () => {
 						</div>
 					</div>
 
-					<div className="flex flex-col items-center justify-start w-full lg:w-[30%] bg-[#EDEDED] rounded p-4">
+					<div className="flex flex-col items-center justify-start w-full lg:w-[22%] bg-[#EDEDED] rounded p-4">
 						<div className="flex items-start w-full h-10">
 							<span>Valor Total:</span>
 						</div>
@@ -699,15 +711,13 @@ const Statement = () => {
 						<section className="flex items-center justify-center gap-4 w-full mt-4">
 							<button
 								onClick={() =>
-									setPageNumber((prev) =>
-										Math.max(prev - 1, 0)
-									)
+									setPageNumber((prev) => Math.max(prev - 1, 0))
 								}
 								disabled={pageNumber === 0}
 								className={`px-4 py-2 rounded transition-colors duration-200 ${
 									pageNumber === 0
 										? "bg-gray-300 text-gray-600 cursor-not-allowed"
-										: "bg-[#FCAE2D] text-white hover:bg-[#e2961e]"
+										: "bg-[#FCAE2D] text-white hover:bg-[#e2961e] cursor-pointer"
 								}`}
 							>
 								<FaChevronLeft />
@@ -720,14 +730,12 @@ const Statement = () => {
 								de {totalPages}
 							</span>
 							<button
-								onClick={() =>
-									setPageNumber((prev) => prev + 1)
-								}
+								onClick={() => setPageNumber((prev) => prev + 1)}
 								disabled={pageNumber + 1 === totalPages}
 								className={`px-4 py-2 rounded transition-colors duration-200 ${
 									pageNumber + 1 === totalPages
 										? "bg-gray-300 text-gray-600 cursor-not-allowed"
-										: "bg-[#FCAE2D] text-white hover:bg-[#e2961e]"
+										: "bg-[#FCAE2D] text-white hover:bg-[#e2961e] cursor-pointer"
 								}`}
 							>
 								<FaChevronRight />

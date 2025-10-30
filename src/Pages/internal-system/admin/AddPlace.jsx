@@ -64,11 +64,14 @@ const AddPlace = () => {
   };
 
   return (
-    <FormRegister
-      formTitle="Cadastrar Local"
-      fields={placeFields}
-      onSubmit={handleSubmit}
-    />
+    <>
+      <FormRegister
+        formTitle="Cadastrar Local"
+        fields={placeFields}
+        onSubmit={handleSubmit}
+        onCancel={() => navigate("/admin")}
+      />
+    </>
   );
 };
 

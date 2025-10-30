@@ -78,7 +78,7 @@ function MemberGuardian({ dados, setDados }) {
             </div>
             <div className="flex flex-row justify-between items-center w-[85%]">
               <button
-                className="text-[#022C81] italic hover:underline"
+                className="text-[#022C81] italic hover:underline cursor-pointer"
                 type="button"
                 onClick={() => setResponsavelUnico(true)}
               >

@@ -117,7 +117,9 @@ export const registerService = async (
 
 export const forgotPasswordService = async (email) => {
     try {
+
         const response = await api.post("/reset-password/reset", null, {
+
             params: { email }
         });
         Swal.fire({
