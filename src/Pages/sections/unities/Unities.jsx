@@ -81,16 +81,26 @@ const Unities = () => {
 	};
 
 	return (
-		<div id="unities" className="bg-black text-white h-screen py-10 px-4 flex flex-col items-center justify-center relative">
+		<div id="unities" className="bg-black hidden text-white h-screen py-10 px-4 lg:flex flex-col items-center justify-center relative overflow-x-hidden">
 			<h2 className="text-4xl font-bold mb-20 absolute top-20">Nossas Unidades</h2>
 			<div className="flex items-center gap-16">
-				<button
-					onClick={previous}
-					className="text-[#FCAE2D] hover:scale-110 transition-transform "
-				>
-					<GoChevronLeft size={96} />
-				</button>
-
+			<button
+                    onClick={previous}
+                    className="
+                        text-[#FCAE2D] hover:scale-110 transition-transform z-10
+                        
+                        {/* Mobile: absolute, no meio, à esquerda */}
+                        absolute top-1/2 left-1 -translate-y-1/2
+                        
+                        {/* Desktop ('lg:'): Volta ao normal (static) */}
+                        lg:static lg:top-auto lg:left-auto lg:-translate-y-0
+                    "
+                >
+                    {/*                      * Ícone Responsivo: 48px (w-12) no mobile, 96px (lg:w-24) no desktop
+                     * Se usarmos 96px no mobile, a seta não caberá!
+                    */}
+                    <GoChevronLeft className="w-12 h-12 lg:w-24 lg:h-24" />
+                </button>
 				<UnityItem
 					imagePath={getItem(-1).imagePath}
 					description={getItem(-1).description}
