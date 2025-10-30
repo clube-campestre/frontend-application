@@ -287,23 +287,20 @@ export default function AddMemberPage({ initialData = {}, editMode = false, onCl
 
     //         if (formDados.foto != null) {
     //             const formData = new FormData();
-    //             formData.append("image", formDados.foto); // nome esperado no backend
-    //             console.log("ENVIANDO IMAGEM");
+    //             // Era: formData.append("image", formDados.foto);
+    //             formData.append("file", formDados.foto); // alinhar com o PUT de edição
     //             try {
     //                 const response = await api.post(
     //                     `/drive/upload?cpf=${formDados.cpf}`,
     //                     formData,
     //                     {
-    //                         headers: {
-    //                             "Content-Type": "multipart/form-data",
-    //                         },
+    //                         headers: { "Content-Type": "multipart/form-data" },
     //                     }
     //                 );
-    //                 console.log("Upload realizado com sucesso!");
-    //                 console.log(response.data);
+    //                 // opcional: atualizar formDados com retorno
+    //                 // setFormDados((p) => ({ ...p, imagePath: response.data?.imagePath, idImage: response.data?.id }));
     //             } catch (error) {
     //                 console.error("Erro no upload:", error);
-    //                 console.log("Falha no upload");
     //             }
     //         } else {
     //             console.log("TA NULL");
@@ -499,8 +496,15 @@ export default function AddMemberPage({ initialData = {}, editMode = false, onCl
         // ✅ Cria o FormData com o JSON + arquivo
         const formData = new FormData();
         formData.append("data", JSON.stringify(payload));
-        if (formDados.image && formDados.image instanceof File) {
-            formData.append("file", formDados.image);
+
+        // Envia a foto: prioriza File; senão converte base64 -> Blob -> File
+        if (formDados.imageFile instanceof File) {
+            formData.append("file", formDados.imageFile);
+        } else if (formDados.image && typeof formDados.image === "string" && formDados.image.trim() !== "") {
+            const mime = (formDados.imageFormat && String(formDados.imageFormat)) || "image/jpeg";
+            const blob = b64ToBlob(formDados.image, mime);
+            const ext = mime.split("/")[1] || "jpg";
+            formData.append("file", new File([blob], `foto.${ext}`, { type: mime }));
         }
 
         try {
@@ -542,7 +546,6 @@ export default function AddMemberPage({ initialData = {}, editMode = false, onCl
             setLoading(false);
         }
     };
-
 
     return (
         <div className="flex flex-col items-center w-full">
@@ -703,6 +706,8 @@ function normalizeMemberToForm(member) {
 
     // FOTO: só gera a URL se houver idImage
     let foto = null;
+    console.log(member.image, "aaaaa")
+        console.log(member.image.image, "bbb")
     if (member.image && typeof member.image === "string" && member.image.trim() !== "") {
         foto = `data:${member.imageFormat};base64,${member.image}`;
     }
