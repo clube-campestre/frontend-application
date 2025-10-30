@@ -2,9 +2,33 @@ import { IoMdClose } from "react-icons/io";
 import avatarImage from "../../../assets/images/avatar.png";
 
 const InfoMember = ({ member, onClose }) => {
-	if (!member) return null;
+    if (!member) return null;
 
-	console.log("Member Info:", member);
+    const resolveImageSrc = (m) => {
+        const preview = (m?.imagePreview || "").trim();
+        if (preview && preview.startsWith("data:")) return preview;
+
+        const raw = (m?.image || m?.imageMostrar || "").trim();
+        const fmt = (m?.imageFormat || "").trim();
+        if (raw) {
+            if (raw.startsWith("data:")) return raw;
+            const mime = fmt && fmt.includes("/") ? fmt : "image/jpeg";
+            return `data:${mime};base64,${raw}`;
+        }
+
+        const src = (m?.imagePath || "").trim();
+        if (src) {
+            if (src.startsWith("http") || src.startsWith("data:")) return src;
+            const looksBase64 = /^[A-Za-z0-9+/]+=*$/.test(src) && src.length > 100;
+            if (looksBase64) return `data:image/jpeg;base64,${src}`;
+        }
+
+        if (m?.idImage && /^[\w-]{20,}$/.test(m.idImage)) {
+            return `https://drive.google.com/thumbnail?id=${m.idImage}`;
+        }
+        return avatarImage;
+    };
+
 	return (
 		<div className="fixed inset-0 bg-[#000000da] bg-opacity-40 flex items-center justify-center z-50 font-sans">
 			<div className="bg-white rounded-lg w-[90%] h-[90%] shadow-lg p-6 overflow-y-auto relative">
@@ -28,10 +52,10 @@ const InfoMember = ({ member, onClose }) => {
 				>
 					<div className="flex items-center space-x-3 col-span-1">
 						<img
-							src={avatarImage}
-							alt="Foto"
-							className="rounded-full w-16 h-16"
-						/>
+                            src={resolveImageSrc(member)}
+                            alt="Foto"
+                            className="rounded-full w-16 h-16"
+                        />
 						<div>
 							<p className="font-bold">{member.username}</p>
 							<p>

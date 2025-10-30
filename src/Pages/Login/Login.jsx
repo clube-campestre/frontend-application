@@ -284,24 +284,28 @@ const Login = () => {
                     </div>
                 )}
                 {recoveryStep === 3 && (
-                    <div className="w-full flex flex-col items-center">
+
+                    <div className="w-full  flex flex-col items-center">
                         <h2 className="text-xl font-semibold mb-6">Defina sua nova senha</h2>
-                        <FloatingInput
+                        <div className="w-[23vw] flex flex-col gap-4">
+                          <FloatingInput
                             id="newPassword"
                             type="password"
                             label="Nova senha"
                             value={newPassword}
                             onChange={(e) => setNewPassword(e.target.value)}
                             icon={FaKey}
-                        />
-                        <FloatingInput
+                          />
+                          <FloatingInput
                             id="confirmNewPassword"
                             type="password"
                             label="Confirmar nova senha"
                             value={confirmNewPassword}
                             onChange={(e) => setConfirmNewPassword(e.target.value)}
                             icon={FaKey}
-                        />
+                          />  
+                        </div>
+
                         <button
                             className="w-[23vw] py-[14px] bg-[#FCAE2D] text-white rounded-full font-semibold mt-6"
                             onClick={handleResetPassword}

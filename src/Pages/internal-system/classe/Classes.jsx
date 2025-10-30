@@ -190,10 +190,28 @@ const Classes = () => {
 	const handleUpdateMemberUnit = async (members) => {
 		try {
 			await Promise.all(
+				// members.map(async (member) => {
+				// 	const response = await api.put(
+				// 		`/members/${member.cpf}`,
+				// 		member
+				// 	);
+				// 	if (response.status === 200) {
+				// 		Toast.fire({
+				// 			icon: "success",
+				// 			title: `Membro adicionado com sucesso na classe ${selectedClassName}!`,
+				// 		});
+				// 	}
+				// 	handleShowAddMemberModal();
+				// })
 				members.map(async (member) => {
 					const response = await api.put(
-						`/members/${member.cpf}`,
-						member
+						`/members/unit-and-class/${member.cpf}`,
+						{
+							classCategory: selectedClassName.toUpperCase(),
+							classRole: member.classRole,
+							unitRole: member.unitRole,
+							unitName: member.unit.surname,
+						}
 					);
 					if (response.status === 200) {
 						Toast.fire({

@@ -161,7 +161,7 @@ const Unities = () => {
 		{
 			name: "birthDate",
 			label: "Data de Nascimento",
-			placeholder: "DD/M	M/AAAA",
+			placeholder: "DD/MM/AAAA",
 			type: "date",
 			isRequired: true,
 		},
@@ -233,7 +233,7 @@ const Unities = () => {
 			} else {
 				const response = await api.get(`/members/unit`, {
 					params: {
-						unitId: selectedUnit,
+						unitName: selectedUnitName,
 						page: pageNumber,
 						size: pageSize,
 					},
@@ -262,9 +262,15 @@ const Unities = () => {
 		fetchMembers();
 	}, [selectedUnit, pageNumber]);
 
+	
+	
 	const handleEditMember = async (member) => {
+		const formData = new FormData();
+		formData.append("data", JSON.stringify(member));
+
 		try {
-			const response = await api.put(`/members/${member.cpf}`, member);
+			console.log("Editing member with data:", formData);
+			const response = await api.put(`/members`, formData);
 			if (response.status === 200) {
 				Toast.fire({
 					icon: "success",
@@ -285,10 +291,32 @@ const Unities = () => {
 	const handleUpdateMemberUnit = async (members) => {
 		try {
 			await Promise.all(
+				// members.map(async (member) => {
+				// 	const formData = new FormData();
+				// 	formData.append("data", JSON.stringify(member));
+				// 	const response = await api.put(
+				// 		`/members`,
+				// 		formData
+				// 	);
+				// 	if (response.status === 200) {
+				// 		Toast.fire({
+				// 			icon: "success",
+				// 			title: `Membro adicionado com sucesso na unidade ${selectedUnitName}!`,
+				// 		});
+				// 	}
+				// 	handleShowAddMemberModal();
+				// 	fetchMembers();
+				// })
+
 				members.map(async (member) => {
 					const response = await api.put(
-						`/members/${member.cpf}`,
-						member
+						`members/unit-and-class/${member.cpf}`,
+						{
+							unitName: selectedUnitName,
+							unitRole: member.unitRole,
+							classRole: member.classRole,
+							classCategory: member.classCategory,
+						},
 					);
 					if (response.status === 200) {
 						Toast.fire({
@@ -298,8 +326,7 @@ const Unities = () => {
 					}
 					handleShowAddMemberModal();
 					fetchMembers();
-				})
-			);
+				}));
 		} catch (error) {
 			Toast.fire({
 				icon: "error",

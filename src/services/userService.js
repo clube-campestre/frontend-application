@@ -117,7 +117,9 @@ export const registerService = async (
 
 export const forgotPasswordService = async (email) => {
     try {
-        const response = await api.post("/auth/forgot-password", null, {
+
+        const response = await api.post("/reset-password/reset", null, {
+
             params: { email }
         });
         Swal.fire({
@@ -126,7 +128,7 @@ export const forgotPasswordService = async (email) => {
             icon: "success",
             confirmButtonColor: "#FCAE2D",
         });
-        return response.data;
+        return true; // <-- retornar true explicitamente
     } catch (error) {
         Swal.fire({
             title: "Erro ao enviar código!",
@@ -135,22 +137,22 @@ export const forgotPasswordService = async (email) => {
             confirmButtonColor: "#FCAE2D",
         });
         console.error(error);
-        return null;
+        return false;
     }
 };
 
 export const verifyCodeService = async (email, code) => {
     try {
-        const response = await api.post("/auth/verify-code", null, {
+        const response = await api.post("/reset-password/verify-code", null, {
             params: { email, code }
         });
-		Swal.fire({
+        Swal.fire({
             title: "Código verificado!",
             text: "Você pode agora definir uma nova senha.",
             icon: "success",
             confirmButtonColor: "#FCAE2D",
         });
-        return response.data;
+        return true; // <-- retornar true explicitamente
     } catch (error) {
         Swal.fire({
             title: "Código inválido!",
@@ -159,13 +161,13 @@ export const verifyCodeService = async (email, code) => {
             confirmButtonColor: "#FCAE2D",
         });
         console.error(error);
-        return null;
+        return false;
     }
 };
 
 export const resetPasswordService = async (email, code, newPassword) => {
     try {
-        const response = await api.post("/auth/reset-password", null, {
+        const response = await api.post("/reset-password/update-password", null, {
             params: { email, code, newPassword }
         });
         Swal.fire({
@@ -174,7 +176,7 @@ export const resetPasswordService = async (email, code, newPassword) => {
             icon: "success",
             confirmButtonColor: "#FCAE2D",
         });
-        return response.data;
+        return true; // <-- retornar true explicitamente
     } catch (error) {
         Swal.fire({
             title: "Erro ao redefinir senha!",
@@ -183,6 +185,6 @@ export const resetPasswordService = async (email, code, newPassword) => {
             confirmButtonColor: "#FCAE2D",
         });
         console.error(error);
-        return null;
+        return false;
     }
 };

@@ -66,20 +66,6 @@ const SecretaryPage = () => {
 
 	const membersFields = [
 		{
-			name: "idImage",
-			label: "ID da Imagem",
-			placeholder: "ID da imagem",
-			type: "text",
-			isRequired: false,
-		},
-		{
-			name: "imagePath",
-			label: "Caminho da Imagem",
-			placeholder: "URL ou caminho da imagem",
-			type: "text",
-			isRequired: false,
-		},
-		{
 			name: "username",
 			label: "Nome do Membro",
 			placeholder: "Digite o nome do membro",

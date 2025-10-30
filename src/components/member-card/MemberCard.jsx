@@ -45,8 +45,44 @@ export const MemberCard = ({ item, editFields, onEdit, onDelete }) => {
     }
   };
 
+  const resolveImageSrc = (m) => {
+    const preview = (m?.imagePreview || "").toString().trim();
+    if (preview && preview.startsWith("data:")) return preview;
+
+    const raw = (m?.image || m?.imageMostrar || "").toString().trim();
+    const fmt = (m?.imageFormat || "").toString().trim();
+    if (raw) {
+      if (raw.startsWith("data:")) return raw;
+      const mime = fmt && fmt.includes("/") ? fmt : "image/jpeg";
+      return `data:${mime};base64,${raw}`;
+    }
+    const path = (m?.imagePath || "").toString().trim();
+    if (path) {
+      if (path.startsWith("http") || path.startsWith("data:")) return path;
+      const looksBase64 = /^[A-Za-z0-9+/]+=*$/.test(path) && path.length > 100;
+      if (looksBase64) return `data:image/jpeg;base64,${path}`;
+    }
+    if (m?.idImage && /^[\w-]{20,}$/.test(String(m.idImage))) {
+      return `https://drive.google.com/thumbnail?id=${m.idImage}`;
+    }
+    return avatarImage;
+  };
+
+  const photoSrc = resolveImageSrc(item);
+
   return (
     <div className="flex flex-row items-center justify-between w-full min-h-[10vh] max-h-[10vh] bg-[#FAFAFA] rounded hover:bg-[#D9D9D9] shadow-md transition-all duration-200 ease-in-out">
+      {/* FOTO */}
+      <div className="flex items-center justify-center min-w-[60px] w-[10%] h-full">
+        <img
+          src={photoSrc}
+          alt="Foto"
+          className="w-12 h-12 rounded-full object-cover"
+        />
+      </div>
+
+      <div className="h-[90%] w-0.5 bg-[#EDEDED]"></div>
+
       {/* Nome e Data de Aniversário */}
       <div className="flex flex-col items-start justify-center min-w-[160px] max-w-[200px] w-[20%] h-full pl-3 pr-3">
         <div className="text-[16px] font-bold truncate w-full">
