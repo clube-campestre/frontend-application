@@ -77,16 +77,26 @@ function Sickness({ dados, setDados }) {
   };
 
   return (
-    <div className="flex flex-col w-full ">
-      <div className="flex align-center items-center ml-20 gap-2 mb-4">
-        <div className="border-3 h-10 border-amber-400 rounded"></div>
-        <h2 className="font-semibold text-xl">Doenças</h2>
+    // Container principal: Removemos ml-20 fixo e usamos mx-auto para centralizar
+    // Adicionamos padding (p-4) para mobile e aumentamos (md:p-8) em telas maiores
+    <div className="flex flex-col w-full max-w-screen-xl mx-auto p-4 md:p-8">
+      
+      {/* Header do componente */}
+      <div className="flex items-center gap-2 mb-6">
+        <div className="border-[3px] h-10 border-amber-400 rounded"></div>
+        <h2 className="font-semibold text-xl text-gray-800">Doenças</h2>
       </div>
-      <div className="flex flex-col align-center justify-center items-center h-[90%]">
-        <div className="flex flex-row justify-between items-start w-[85%] gap-4 ">
-          {sicknessGroups.map((group, idx) => (
+
+      {/* GRID LAYOUT:
+          - Mobile (padrão): grid-cols-1 (uma coluna, cards empilhados)
+          - Desktop (lg): grid-cols-3 (três colunas, cards lado a lado)
+          - gap-6: Espaçamento uniforme entre os cards
+      */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full">
+        {sicknessGroups.map((group, idx) => (
+          // Wrapper para cada card para garantir que ele ocupe a célula do grid
+          <div key={idx} className="w-full">
             <SicknessCard
-              key={idx}
               sicknessList={group.map((key) => ({
                 key,
                 label: sicknessLabels[key] || key,
@@ -94,8 +104,8 @@ function Sickness({ dados, setDados }) {
               values={dados.sickness || {}}
               onChange={handleSicknessChange}
             />
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     </div>
   );

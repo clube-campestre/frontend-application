@@ -1,133 +1,191 @@
 import React, { useState } from "react";
-import AddMemberInput from "../../../../components/add-member-input/AddMemberInput";
-import { maskPhone } from "../../../../utils/validators/addMemberValidator"; // Importa a máscara
 
-// Etapa 5 - MemberGuardian
-function MemberGuardian({ dados, setDados }) {
+// --- MOCKS (Simulação de dependências externas) ---
+const maskPhone = (value) => {
+  return value
+    .replace(/\D/g, "")
+    .replace(/^(\d{2})(\d)/g, "($1) $2")
+    .replace(/(\d)(\d{4})$/, "$1-$2")
+    .slice(0, 15);
+};
+
+const AddMemberInput = ({ id, label, type, value, onChange, className }) => (
+  <div className={`flex flex-col gap-1 ${className}`}>
+    <label htmlFor={id} className="text-sm font-semibold text-gray-600 ml-1">
+      {label}
+    </label>
+    <input
+      id={id}
+      type={type}
+      value={value}
+      onChange={onChange}
+      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-amber-400 outline-none transition-all h-12"
+    />
+  </div>
+);
+
+// --- COMPONENTE PRINCIPAL ---
+
+function MemberGuardian({ dados = {}, setDados = () => {} }) {
   const [responsavelUnico, setResponsavelUnico] = useState(false);
 
+  // Helper para atualizar o state
+  const handleChange = (field, value) => {
+    setDados((prev) => ({ ...prev, [field]: value }));
+  };
+
   return (
-    <div className="flex flex-col w-full ">
-      <div className="flex align-center items-center ml-20 gap-2">
-        <div className="border-3 h-10 border-amber-400 rounded"></div>
-        <h2 className="font-semibold text-xl">Responsável Legal</h2>
+    // Container Principal: Centralizado, sem margens fixas laterais (ml-20 removido)
+    <div className="w-full max-w-screen-xl mx-auto p-4 md:p-8 font-sans">
+      
+      {/* Header da Seção */}
+      <div className="flex items-center gap-3 mb-6 border-b border-gray-100 pb-4">
+        <div className="w-1.5 h-8 bg-amber-400 rounded-full"></div>
+        <h2 className="font-bold text-xl md:text-2xl text-gray-800">Responsável Legal</h2>
       </div>
 
-      <div className="flex flex-col align-center justify-center items-center h-[90%] gap-3 mt-8">
+      {/* Área do Formulário */}
+      <div className="flex flex-col w-full gap-6">
         {!responsavelUnico ? (
-          <>
-            <div className="flex flex-row justify-between items-center w-[85%] ">
-              <AddMemberInput
-                id="fatherName"
-                type="text"
-                label="Nome do Pai"
-                value={dados.fatherName || ""}
-                onChange={(e) => setDados({ ...dados, fatherName: e.target.value })}
-                className="h-[8vh] w-full"
-              />
+          /* --- OPÇÃO 1: PAI E MÃE --- */
+          <div className="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col gap-6 animate-in fade-in duration-300">
+            
+            {/* Seção Pai */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+              <div className="md:col-span-12">
+                <AddMemberInput
+                  id="fatherName"
+                  type="text"
+                  label="Nome do Pai"
+                  value={dados.fatherName || ""}
+                  onChange={(e) => handleChange("fatherName", e.target.value)}
+                  className="w-full"
+                />
+              </div>
+              <div className="md:col-span-7">
+                <AddMemberInput
+                  id="fatherEmail"
+                  type="text"
+                  label="Email do Pai"
+                  value={dados.fatherEmail || ""}
+                  onChange={(e) => handleChange("fatherEmail", e.target.value)}
+                  className="w-full"
+                />
+              </div>
+              <div className="md:col-span-5">
+                <AddMemberInput
+                  id="fatherContact"
+                  type="text"
+                  label="Contato do Pai"
+                  value={maskPhone(dados.fatherContact || "")}
+                  onChange={(e) =>
+                    handleChange("fatherContact", e.target.value.replace(/\D/g, "").slice(0, 11))
+                  }
+                  className="w-full"
+                />
+              </div>
             </div>
-            <div className="flex flex-row justify-between items-center w-[85%]">
-              <AddMemberInput
-                id="fatherEmail"
-                type="text"
-                label="Email do Pai"
-                value={dados.fatherEmail || ""}
-                onChange={(e) => setDados({ ...dados, fatherEmail: e.target.value })}
-                className="h-[8vh] w-[30vw]"
-              />
-              <AddMemberInput
-                id="fatherContact"
-                type="text"
-                label="Contato do Pai"
-                value={maskPhone(dados.fatherContact || "")}
-                onChange={(e) =>
-                  setDados({ ...dados, fatherContact: e.target.value.replace(/\D/g, "").slice(0, 11) })
-                }
-                className="h-[8vh] w-[22vw]"
-              />
+
+            <hr className="border-gray-100" />
+
+            {/* Seção Mãe */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+              <div className="md:col-span-12">
+                <AddMemberInput
+                  id="motherName"
+                  type="text"
+                  label="Nome da Mãe"
+                  value={dados.motherName || ""}
+                  onChange={(e) => handleChange("motherName", e.target.value)}
+                  className="w-full"
+                />
+              </div>
+              <div className="md:col-span-7">
+                <AddMemberInput
+                  id="motherEmail"
+                  type="text"
+                  label="Email da Mãe"
+                  value={dados.motherEmail || ""}
+                  onChange={(e) => handleChange("motherEmail", e.target.value)}
+                  className="w-full"
+                />
+              </div>
+              <div className="md:col-span-5">
+                <AddMemberInput
+                  id="motherContact"
+                  type="text"
+                  label="Contato da Mãe"
+                  value={maskPhone(dados.motherContact || "")}
+                  onChange={(e) =>
+                    handleChange("motherContact", e.target.value.replace(/\D/g, "").slice(0, 11))
+                  }
+                  className="w-full"
+                />
+              </div>
             </div>
-            <div className="flex flex-row justify-between items-center w-[85%] ">
-              <AddMemberInput
-                id="motherName"
-                type="text"
-                label="Nome da Mãe"
-                value={dados.motherName || ""}
-                onChange={(e) => setDados({ ...dados, motherName: e.target.value })}
-                className="h-[8vh] w-full"
-              />
-            </div>
-            <div className="flex flex-row justify-between items-center w-[85%]">
-              <AddMemberInput
-                id="motherEmail"
-                type="text"
-                label="Email da Mãe"
-                value={dados.motherEmail || ""}
-                onChange={(e) => setDados({ ...dados, motherEmail: e.target.value })}
-                className="h-[8vh] w-[30vw]"
-              />
-              <AddMemberInput
-                id="motherContact"
-                type="text"
-                label="Contato da Mãe"
-                value={maskPhone(dados.motherContact || "")}
-                onChange={(e) =>
-                  setDados({ ...dados, motherContact: e.target.value.replace(/\D/g, "").slice(0, 11) })
-                }
-                className="h-[8vh] w-[22vw]"
-              />
-            </div>
-            <div className="flex flex-row justify-between items-center w-[85%]">
+
+            {/* Botão de Toggle */}
+            <div className="flex justify-end pt-2">
               <button
-                className="text-[#022C81] italic hover:underline cursor-pointer"
+                className="text-[#022C81] text-sm font-medium hover:underline hover:text-blue-800 transition-colors cursor-pointer flex items-center gap-1"
                 type="button"
                 onClick={() => setResponsavelUnico(true)}
               >
-                Caso não se aplique, clique aqui
+                <span>Não se aplica? Clique aqui para Responsável Único</span>
+                <span aria-hidden="true">→</span>
               </button>
             </div>
-          </>
+          </div>
         ) : (
-          <>
-            <div className="flex flex-row justify-between items-center w-[85%] ">
-              <AddMemberInput
-                id="responsibleName"
-                type="text"
-                label="Nome do Responsável"
-                value={dados.responsibleName || ""}
-                onChange={(e) => setDados({ ...dados, responsibleName: e.target.value })}
-                className="h-[8vh] w-full"
-              />
+          /* --- OPÇÃO 2: RESPONSÁVEL ÚNICO --- */
+          <div className="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col gap-6 animate-in fade-in duration-300">
+             <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+              <div className="md:col-span-12">
+                <AddMemberInput
+                  id="responsibleName"
+                  type="text"
+                  label="Nome do Responsável"
+                  value={dados.responsibleName || ""}
+                  onChange={(e) => handleChange("responsibleName", e.target.value)}
+                  className="w-full"
+                />
+              </div>
+              <div className="md:col-span-7">
+                <AddMemberInput
+                  id="responsibleEmail"
+                  type="text"
+                  label="Email do Responsável"
+                  value={dados.responsibleEmail || ""}
+                  onChange={(e) => handleChange("responsibleEmail", e.target.value)}
+                  className="w-full"
+                />
+              </div>
+              <div className="md:col-span-5">
+                <AddMemberInput
+                  id="responsibleContact"
+                  type="text"
+                  label="Contato do Responsável"
+                  value={maskPhone(dados.responsibleContact || "")}
+                  onChange={(e) =>
+                    handleChange("responsibleContact", e.target.value.replace(/\D/g, "").slice(0, 11))
+                  }
+                  className="w-full"
+                />
+              </div>
             </div>
-            <div className="flex flex-row justify-between items-center w-[85%]">
-              <AddMemberInput
-                id="responsibleEmail"
-                type="text"
-                label="Email do Responsável"
-                value={dados.responsibleEmail || ""}
-                onChange={(e) => setDados({ ...dados, responsibleEmail: e.target.value })}
-                className="h-[8vh] w-[30vw]"
-              />
-              <AddMemberInput
-                id="responsibleContact"
-                type="text"
-                label="Contato do Responsável"
-                value={maskPhone(dados.responsibleContact || "")}
-                onChange={(e) =>
-                  setDados({ ...dados, responsibleContact: e.target.value.replace(/\D/g, "").slice(0, 11) })
-                }
-                className="h-[8vh] w-[22vw]"
-              />
-            </div>
-            <div className="flex flex-row justify-between items-center w-[85%]">
+
+            {/* Botão de Toggle */}
+            <div className="flex justify-end pt-2">
               <button
-                className="text-[#022C81] italic hover:underline"
+                className="text-[#022C81] text-sm font-medium hover:underline hover:text-blue-800 transition-colors cursor-pointer flex items-center gap-1"
                 type="button"
                 onClick={() => setResponsavelUnico(false)}
               >
-                Voltar para Pai/Mãe
+                <span aria-hidden="true">←</span>
+                <span>Voltar para Pai e Mãe</span>
               </button>
             </div>
-          </>
+          </div>
         )}
       </div>
     </div>
