@@ -187,7 +187,7 @@ const Unities = () => {
             <div className="flex-shrink-0 bg-white shadow-sm z-20 border-b border-gray-200 relative">
                 <div className="max-w-[1920px] mx-auto py-3">
                     <div className="px-4 mb-2 flex justify-between items-end">
-                        <h2 className="text-gray-500 text-[10px] md:text-xs font-bold uppercase tracking-wider">
+                        <h2 className="text-blue-900 text-[10px] md:text-xs font-bold uppercase tracking-wider">
                             Selecione a unidade desejada
                         </h2>
                         {/* Indicador visual de scroll para UX */}

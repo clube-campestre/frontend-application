@@ -216,7 +216,7 @@ const Admin = () => {
         */}
         <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col lg:flex-row justify-between items-center gap-4">
           <div className="text-center lg:text-left w-full lg:w-auto">
-              <h1 className="text-2xl font-bold text-blue-800">Painel Administrativo</h1>
+              <h1 className="text-2xl font-bold text-blue-900">Painel Administrativo</h1>
             
           </div>
           

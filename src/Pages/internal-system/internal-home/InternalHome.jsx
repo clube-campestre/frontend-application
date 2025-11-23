@@ -4,8 +4,9 @@ import { Doughnut } from "react-chartjs-2";
 import { api } from "../../../provider/api";
 import Swal from "sweetalert2";
 import { getUser } from "../../../utils/authStorage";
+import { Trophy, Target, AlertTriangle, Medal } from "lucide-react"; // Ícones modernos
 
-// Imagens (Mantine o imports originais)
+// Imagens (Mantendo imports originais)
 import loboImage from "../../../assets/images/lobo.png";
 import falcaoImage from "../../../assets/images/falcao.png";
 import pandaImage from "../../../assets/images/panda.png";
@@ -105,6 +106,7 @@ const InternalHome = () => {
 
     const remainingAmount = goalAmount - collectedAmount;
 
+    // Design do Gráfico: Cores mais vibrantes e clean
     const chartData = {
         labels: ["Arrecadado", "Restante"],
         datasets: [
@@ -113,9 +115,11 @@ const InternalHome = () => {
                     collectedAmount,
                     remainingAmount > 0 ? remainingAmount : 0,
                 ],
-                backgroundColor: ["#FCAE2D", "#d1d5db"],
+                backgroundColor: ["#FCAE2D", "#E5E7EB"], // Amarelo vibrante e cinza claro
+                hoverBackgroundColor: ["#fbbf24", "#D1D5DB"],
                 borderWidth: 0,
-                cutout: "70%",
+                cutout: "75%", // Mais fino, mais elegante
+                borderRadius: 20, // Bordas arredondadas nos segmentos
             },
         ],
     };
@@ -127,41 +131,48 @@ const InternalHome = () => {
             legend: { display: false },
             tooltip: {
                 enabled: true,
-                backgroundColor: "#111827",
-                titleColor: "#ffffff",
-                bodyColor: "#d1d5db",
-                padding: 10,
+                backgroundColor: "rgba(0,0,0,0.8)",
+                padding: 12,
+                cornerRadius: 8,
                 callbacks: {
                     label: function (context) {
                         const label = context.label || "";
                         const value = context.parsed || 0;
-                        return `${label}: R$ ${value.toFixed(2)}`;
+                        return ` ${label}: R$ ${value.toFixed(2)}`;
                     },
                 },
             },
         },
-        interaction: {
-            mode: "nearest",
-            intersect: true,
-        },
+        animation: {
+            animateScale: true,
+            animateRotate: true
+        }
     };
 
     const handleResetPoints = async () => {
         const result = await Swal.fire({
-            title: "Tem certeza?",
-            text: "Essa ação irá resetar a pontuação de todas as unidades!",
+            title: "Zerar Ranking?",
+            text: "Isso apagará a pontuação de todas as unidades permanentemente.",
             icon: "warning",
+            iconColor: "#ef4444",
             showCancelButton: true,
-            confirmButtonColor: "#5ccb5f",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Sim, resetar!",
+            confirmButtonColor: "#ef4444",
+            cancelButtonColor: "#6b7280",
+            confirmButtonText: "Sim, zerar tudo",
             cancelButtonText: "Cancelar",
+            background: "#fff",
+            borderRadius: "1rem"
         });
 
         if (result.isConfirmed) {
             try {
                 await api.post("/units/reseted");
-                Swal.fire("Resetado!", "A pontuação foi resetada.", "success");
+                Swal.fire({
+                    title: "Sucesso!",
+                    text: "Pontuação resetada.",
+                    icon: "success",
+                    confirmButtonColor: "#10b981"
+                });
                 const response = await api.get("/units/ranking");
                 setPoints(response.data);
             } catch (error) {
@@ -170,105 +181,118 @@ const InternalHome = () => {
         }
     };
 
+    // Função auxiliar para renderizar ícone de rank
+    const renderRankIcon = (index) => {
+        if (index === 0) return <Trophy className="text-yellow-500 fill-yellow-500" size={20} />;
+        if (index === 1) return <Medal className="text-gray-400 fill-gray-400" size={20} />;
+        if (index === 2) return <Medal className="text-orange-700 fill-orange-700" size={20} />;
+        return <span className="text-gray-400 font-bold text-sm">#{index + 1}</span>;
+    };
+
     return (
-        /* CONTAINER PRINCIPAL:
-           - p-4: Padding confortável para mobile.
-           - max-w-7xl mx-auto: Centraliza em telas grandes.
-           - grid-cols-1 (padrão) -> lg:grid-cols-2: Stacka em mobile, divide em desktops.
-        */
-        <div className="w-full max-w-7xl mx-auto p-4 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        <div className="w-full max-w-7xl mx-auto p-4 md:p-8 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start font-sans">
             
-            {/* --- CARD DA META --- */}
-            <div className="bg-gray-100 rounded-xl p-4 sm:p-6 flex flex-col items-center gap-4 shadow-md w-full">
-                
-                {/* Cabeçalho do Card: Flex-col no mobile para o Select não espremer o título */}
-                <div className="flex flex-col sm:flex-row items-center justify-between w-full gap-3">
-                    <h2 className="text-xl font-bold text-gray-800">
-                        Meta
-                    </h2>
-                    {/* Select estilizado para parecer um input touch-friendly e ocupar 100% no mobile */}
+            {/* --- COLUNA 1: META FINANCEIRA --- */}
+            <div className="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-gray-100 flex flex-col h-full relative overflow-hidden">
+                {/* Efeito de fundo decorativo */}
+                <div className="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 bg-yellow-100 rounded-full blur-3xl opacity-50"></div>
+
+                <div className="flex items-center justify-between mb-6 z-10">
+                    <div className="flex items-center gap-2">
+                        <div className="p-2 bg-yellow-100 rounded-lg text-yellow-600">
+                            <Target size={24} />
+                        </div>
+                        <h2 className="text-xl font-bold text-gray-800">Metas Financeiras</h2>
+                    </div>
+                </div>
+
+                {/* Seletor Customizado */}
+                <div className="relative mb-8 z-10">
                     <select
-                        className="w-full sm:w-auto p-2.5 border border-gray-300 rounded-lg bg-[#EDEDED] text-gray-700 focus:ring-2 focus:ring-[#FCAE2D] outline-none cursor-pointer"
+                        className="w-full appearance-none bg-gray-50 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded-xl leading-tight focus:outline-none focus:bg-white focus:border-yellow-400 focus:ring-4 focus:ring-yellow-100 transition-all font-medium cursor-pointer"
                         value={selectedTagId}
                         onChange={handleTagChange}
                     >
-                        <option value="">Selecione uma Meta</option>
-                        {tags.length > 0 ? (
-                            tags
-                                .filter((tag) => {
-                                    if (tag.privateGoal === true) {
-                                        return ["DIRETOR", "EXECUTIVO", "TESOURARIA"].includes(userRole);
-                                    }
-                                    return true;
-                                })
-                                .map((tag) => (
-                                    <option key={tag.id} value={tag.id}>
-                                        {tag.surname.charAt(0).toUpperCase() + tag.surname.slice(1).toLowerCase()}
-                                    </option>
-                                ))
-                        ) : (
-                            <option value="">Nenhuma tag encontrada</option>
-                        )}
+                        <option value="">Selecione um Objetivo...</option>
+                        {tags.length > 0 && tags
+                            .filter((tag) => !tag.privateGoal || ["DIRETOR", "EXECUTIVO", "TESOURARIA"].includes(userRole))
+                            .map((tag) => (
+                                <option key={tag.id} value={tag.id}>
+                                    {tag.surname}
+                                </option>
+                            ))
+                        }
                     </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                        <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                    </div>
                 </div>
 
                 {/* Área do Gráfico */}
-                <div className="relative w-full h-64 sm:h-72">
-                    <Doughnut data={chartData} options={chartOptions} />
-                    <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                        <span className="text-xs sm:text-sm text-gray-500 flex flex-col items-center">
-                            R$
-                            <span className="text-2xl sm:text-3xl font-bold text-gray-800">
-                                {collectedAmount.toFixed(2)}
+                <div className="relative flex-1 min-h-[300px] flex items-center justify-center">
+                    <div className="w-full h-64 md:h-72 relative z-10">
+                        <Doughnut data={chartData} options={chartOptions} />
+                        
+                        {/* Texto Central Absoluto */}
+                        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                            <span className="text-sm text-gray-400 font-medium mb-1">Arrecadado</span>
+                            <span className="text-3xl md:text-4xl font-extrabold text-gray-800 tracking-tight">
+                                {collectedAmount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                             </span>
-                        </span>
-                        <span className="text-[10px] sm:text-xs text-gray-500 text-center mt-1">
-                            Meta: R$ {goalAmount.toFixed(2)}
-                        </span>
+                            <div className="mt-2 px-3 py-1 bg-gray-100 rounded-full text-xs text-gray-500 font-semibold">
+                                de {goalAmount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                {/* Legenda adaptável */}
-                <div className="flex flex-wrap justify-center gap-4 mt-2 text-sm">
-                    <div className="flex items-center">
-                        <div className="w-3 h-3 rounded-full bg-[#FCAE2D] mr-2" />
-                        <span>Arrecadado</span>
+                {/* Cards de Resumo (Legenda) */}
+                <div className="grid grid-cols-2 gap-4 mt-6">
+                    <div className="bg-yellow-50 p-4 rounded-2xl border border-yellow-100">
+                        <p className="text-yellow-600 text-xs font-bold uppercase tracking-wider mb-1">Conquistado</p>
+                        <p className="text-lg font-bold text-gray-800">
+                            {goalAmount > 0 ? ((collectedAmount / goalAmount) * 100).toFixed(1) : 0}%
+                        </p>
                     </div>
-                    <div className="flex items-center">
-                        <div className="w-3 h-3 rounded-full bg-gray-500 mr-2" />
-                        <span>Restante</span>
+                    <div className="bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                        <p className="text-gray-400 text-xs font-bold uppercase tracking-wider mb-1">Falta</p>
+                        <p className="text-lg font-bold text-gray-600">
+                            {(remainingAmount > 0 ? remainingAmount : 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                        </p>
                     </div>
                 </div>
             </div>
 
-            {/* --- CARD DO RANKING --- */}
-            <div className="bg-gray-100 rounded-xl p-4 sm:p-6 shadow-md w-full flex flex-col h-full">
-                
-                {/* Cabeçalho com Wrap para o botão não quebrar layout em telas pequenas */}
-                <div className="flex flex-col sm:flex-row items-center justify-between mb-4 gap-4">
-                    <h2 className="text-xl font-bold text-gray-800 text-center sm:text-left">
-                        Ranking
-                    </h2>
+            {/* --- COLUNA 2: RANKING / LEADERBOARD --- */}
+            <div className="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-gray-100 flex flex-col h-full relative overflow-hidden">
+                {/* Efeito de fundo decorativo */}
+                <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-40 h-40 bg-blue-50 rounded-full blur-3xl opacity-50"></div>
+
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4 z-10">
+                    <div className="flex items-center gap-2">
+                        <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
+                            <Trophy size={24} />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-bold text-gray-800">Ranking das Unidades</h2>
+                            <p className="text-xs text-gray-400">Atualizado em tempo real</p>
+                        </div>
+                    </div>
+
                     {(userRole === "EXECUTIVO" || userRole === "DIRETOR") && (
                         <button
-                            className="w-full sm:w-auto bg-red-500 text-white px-4 py-2.5 rounded-lg hover:bg-red-600 active:scale-95 transition-all text-sm font-medium shadow-sm"
                             onClick={handleResetPoints}
+                            className="group flex items-center gap-2 px-4 py-2 bg-white border border-red-100 text-red-500 rounded-xl hover:bg-red-50 hover:border-red-200 transition-all text-sm font-semibold shadow-sm"
                         >
-                            Resetar Pontuação
+                            <AlertTriangle size={16} className="group-hover:text-red-600" />
+                            <span>Resetar</span>
                         </button>
                     )}
                 </div>
 
-                {/* Tabela Responsiva */}
-                <div className="overflow-hidden rounded-lg border border-gray-300 flex flex-col h-full max-h-[400px]">
-                    {/* Header da Tabela */}
-                    <div className="grid grid-cols-[1fr_80px] bg-gray-600 text-white font-semibold text-sm sticky top-0 z-10">
-                        <div className="py-3 px-4 text-left">Unidade</div>
-                        <div className="py-3 px-4 text-center">Pontos</div>
-                    </div>
-                    
-                    {/* Corpo da Tabela com Scroll */}
-                    <div className="overflow-y-auto bg-white flex-1">
+                {/* Lista de Ranking (Estilo Leaderboard) */}
+                <div className="flex-1 overflow-hidden flex flex-col z-10">
+                    <div className="overflow-y-auto pr-2 space-y-3 max-h-[500px] custom-scrollbar">
                         {points.map((point, index) => {
                             const normalizedName = normalizeSurname(point.surname);
                             const imageSrc = unitImages[normalizedName] || temporyImage;
@@ -276,25 +300,61 @@ const InternalHome = () => {
                             return (
                                 <div
                                     key={point.id ?? index}
-                                    className="grid grid-cols-[1fr_80px] items-center border-b border-gray-100 hover:bg-gray-50 transition duration-150 text-sm py-2"
+                                    className={`
+                                        relative flex items-center justify-between p-4 rounded-2xl border transition-all duration-300
+                                        ${index === 0 
+                                            ? "bg-gradient-to-r from-yellow-50 to-white border-yellow-200 shadow-sm" 
+                                            : "bg-white border-gray-100 hover:border-gray-200 hover:shadow-md"
+                                        }
+                                    `}
                                 >
-                                    <div className="px-4 flex items-center gap-3 min-w-0">
-                                        <img
-                                            src={imageSrc}
-                                            alt={point.surname}
-                                            className="w-8 h-8 object-contain flex-shrink-0"
-                                        />
-                                        {/* Truncate inteligente: usa min-w-0 do pai para não estourar */}
-                                        <span className="font-medium text-gray-700 truncate block">
-                                            {point.surname}
-                                        </span>
+                                    <div className="flex items-center gap-4">
+                                        {/* Posição / Medalha */}
+                                        <div className="w-8 flex justify-center">
+                                            {renderRankIcon(index)}
+                                        </div>
+
+                                        {/* Imagem da Unidade */}
+                                        <div className="relative">
+                                            <div className="w-12 h-12 rounded-full bg-gray-50 border-2 border-white shadow-sm overflow-hidden flex items-center justify-center">
+                                                <img
+                                                    src={imageSrc}
+                                                    alt={point.surname}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                            {index === 0 && (
+                                                <div className="absolute -top-1 -right-1 bg-yellow-400 text-white text-[10px] px-1.5 rounded-full font-bold border border-white">
+                                                    1º
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Nome */}
+                                        <div>
+                                            <h3 className={`font-bold text-base ${index === 0 ? "text-gray-900" : "text-gray-700"}`}>
+                                                {point.surname}
+                                            </h3>
+                                            {index === 0 && <span className="text-[10px] font-semibold text-yellow-600 uppercase tracking-wide">Líder</span>}
+                                        </div>
                                     </div>
-                                    <div className="px-2 text-center text-gray-900 font-bold bg-gray-50 h-full flex items-center justify-center">
-                                        {point.score}
+
+                                    {/* Pontuação */}
+                                    <div className="flex flex-col items-end">
+                                        <span className={`text-lg font-bold ${index === 0 ? "text-yellow-600" : "text-gray-800"}`}>
+                                            {point.score}
+                                        </span>
+                                        <span className="text-[10px] text-gray-400 font-medium">pontos</span>
                                     </div>
                                 </div>
                             );
                         })}
+                        {points.length === 0 && (
+                            <div className="text-center py-10 text-gray-400">
+                                <Trophy size={48} className="mx-auto mb-2 opacity-20" />
+                                <p>Nenhuma pontuação registrada.</p>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

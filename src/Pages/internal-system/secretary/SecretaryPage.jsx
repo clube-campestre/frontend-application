@@ -129,7 +129,7 @@ const SecretaryPage = () => {
             {/* --- HEADER DE FILTROS --- */}
             <div className="flex-shrink-0 p-4 md:p-6 bg-white shadow-sm z-20 border-b border-gray-200">
                 <div className="max-w-[1920px] mx-auto">
-                    <h1 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <h1 className="text-xl font-bold text-blue-900 mb-4 flex items-center gap-2">
                        
                         Secretaria
                     </h1>

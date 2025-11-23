@@ -265,7 +265,7 @@ const Statement = () => {
                                
                             </div>
                             <div>
-                                <h1 className="text-xl font-bold text-gray-800 leading-tight">Extrato Financeiro</h1>
+                                <h1 className="text-xl font-bold text-blue-900 leading-tight">Extrato Financeiro</h1>
                               
                             </div>
                         </div>
