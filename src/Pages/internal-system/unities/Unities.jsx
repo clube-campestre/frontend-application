@@ -353,13 +353,44 @@ const Unities = () => {
 			return;
 		}
 
+		if (data.unit == 1) {
+			data.unit = "PANDA";
+		}
+		 else if (data.unit == 2) {
+			data.unit = "FALCAO";
+		}
+		 else if (data.unit == 3) {
+			data.unit = "LINCE";
+		}
+		 else if (data.unit == 4) {
+			data.unit = "LEAO";
+		}	
+		 else if (data.unit == 5) {
+			data.unit = "AGUIA_REAL";
+		}
+		 else if (data.unit == 6) {
+			data.unit = "TIGRE";
+		}
+		 else if (data.unit == 7) {
+			data.unit = "RAPOSA";
+		}
+		 else if (data.unit == 8) {
+			data.unit = "URSO";
+		}
+		 else if (data.unit == 9) {
+			data.unit = "PANTERA";
+		}
+		 else if (data.unit == 10) {
+			data.unit = "LOBO";
+		}
+
 		try {
 			const response = await api.post(
-				"/units/score",
+				"/units/score/",
 				{},
 				{
 					params: {
-						id: data.unit,
+						surname: data.unit,
 						score: data.points,
 						isSum: data.isSum,
 					},
