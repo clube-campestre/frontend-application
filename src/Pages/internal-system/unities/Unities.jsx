@@ -379,6 +379,7 @@ const Unities = () => {
 			console.error("Error adding unit point:", error);
 		}
 	};
+	
 
 	return (
 		<div className="flex flex-col items-center justify-self-center justify-around h-[82vh] w-[80vw]">
