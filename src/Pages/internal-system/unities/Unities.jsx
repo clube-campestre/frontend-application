@@ -293,6 +293,7 @@ const Unities = () => {
                         </div>
                     </div>
 
+//<<<<<<< feature/mobile-ruth_v2
                     {/* Botões */}
                     <div className="flex gap-2 w-full xl:w-auto">
                         {selectedUnit && (
@@ -312,6 +313,35 @@ const Unities = () => {
                     </div>
                 </div>
             </div>
+//=======
+		try {
+			const response = await api.post(
+				"/units/score",
+				{},
+				{
+					params: {
+						id: data.unit,
+						score: data.points,
+						isSum: data.isSum,
+					},
+				}
+			);
+			if (response.status === 200) {
+				Toast.fire({
+					icon: "success",
+					title: `Pontuação ${data.isSum ? "adicionada" : "removida"} com sucesso!`,
+				});
+			}
+		} catch (error) {
+			Toast.fire({
+				icon: "error",
+				title: "Erro ao adicionar pontuação.",
+			});
+			console.error("Error adding unit point:", error);
+		}
+	};
+	
+//>>>>>>> develop_v2
 
             {/* --- LISTA (Scroll Interno) --- */}
             <div className="flex-1 overflow-hidden relative max-w-[1920px] w-full mx-auto px-3 md:px-6 pb-3">
