@@ -4,7 +4,6 @@ import AddMemberInput from "../../../../components/add-member-input/AddMemberInp
 function Address({ dados, setDados }) {
     const [isLoadingCep, setIsLoadingCep] = useState(false);
 
-
     // Máscara para CEP
     const formatCep = (value) => {
         let cep = value.replace(/\D/g, "");
@@ -31,14 +30,14 @@ function Address({ dados, setDados }) {
         try {
             const res = await fetch(`https://viacep.com.br/ws/${cepNumerico}/json/`);
             const data = await res.json();
-            
+
             // Depois de receber data da API:
             const novosDados = {
-            street: data.logradouro,
-            district: data.bairro,
-            city: data.localidade,
-            state: data.uf,
-            cep: formatCep(cepNumerico),
+                street: data.logradouro,
+                district: data.bairro,
+                city: data.localidade,
+                state: data.uf,
+                cep: formatCep(cepNumerico),
             };
             console.log("Atualizando dados com:", novosDados);
             setDados(novosDados);
@@ -66,19 +65,29 @@ function Address({ dados, setDados }) {
     // Campos que devem ser bloqueados durante a busca
     const isEndereco = (id) => ["logradouro", "bairro", "cidade", "estado"].includes(id);
 
-
     useEffect(() => {
-       
+
     }, [dados]);
 
     return (
-        <div className="flex flex-col w-full ">
-            <div className="flex align-center items-center ml-20 gap-2">
-                <div className="border-3 h-10 border-amber-400 rounded"></div>
-                <h2 className="font-semibold text-xl">Endereço</h2>
+        // Container Principal: Centralizado, com padding seguro para mobile e largura máxima para desktop
+        <div className="flex flex-col w-full max-w-screen-xl mx-auto p-4 md:p-8">
+            
+            {/* Header: Alinhamento ajustado e margem removida */}
+            <div className="flex items-center gap-2 mb-6">
+                <div className="border-[3px] h-10 border-amber-400 rounded"></div>
+                <h2 className="font-semibold text-xl text-gray-800">Endereço</h2>
             </div>
-            <div className="flex flex-col align-center justify-center items-center h-[90%] gap-3">
-                <div className="flex flex-row justify-between items-center w-[85%] ">
+
+            {/* GRID SYSTEM: 
+                - Mobile (padrão): grid-cols-1 (1 coluna, itens empilhados)
+                - Tablet/Desktop (md): grid-cols-12 (12 colunas para layout complexo)
+                - gap-4: Espaçamento consistente entre os inputs
+            */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-4 w-full">
+                
+                {/* Linha 1: CEP, Número, Complemento */}
+                <div className="md:col-span-3">
                     <AddMemberInput
                         id="cep"
                         type="text"
@@ -86,8 +95,10 @@ function Address({ dados, setDados }) {
                         value={dados.cep || ""}
                         onChange={(e) => handleChange("cep", e.target.value)}
                         onBlur={(e) => handleBlur("cep", e.target.value)}
-                        className="h-[8vh] w-[17vw]"
+                        className="w-full" 
                     />
+                </div>
+                <div className="md:col-span-2">
                     <AddMemberInput
                         id="houseNumber"
                         type="text"
@@ -95,65 +106,77 @@ function Address({ dados, setDados }) {
                         value={dados.houseNumber || ""}
                         onChange={(e) => handleChange("houseNumber", e.target.value)}
                         onBlur={(e) => handleBlur("houseNumber", e.target.value)}
-                        className="h-[8vh] w-[12vw]"
+                        className="w-full"
                     />
+                </div>
+                <div className="md:col-span-7">
                     <AddMemberInput
                         id="complement"
                         type="text"
                         label="Complemento"
                         value={dados.complement || ""}
                         onChange={(e) => handleChange("complement", e.target.value)}
-                        className="h-[8vh] w-[22vw] "
+                        className="w-full"
                     />
                 </div>
-                <div className="flex flex-row justify-between items-center w-[85%]">
+
+                {/* Linha 2: Bairro, Estado */}
+                <div className="md:col-span-8">
                     <AddMemberInput
                         id="district"
                         type="text"
                         label="Bairro"
                         value={dados.district || ""}
                         onChange={(e) => handleChange("district", e.target.value)}
-                        className="h-[8vh] w-[30vw]"
+                        className="w-full"
                         disabled={isEndereco("district") && isLoadingCep}
                     />
+                </div>
+                <div className="md:col-span-4">
                     <AddMemberInput
                         id="state"
                         type="text"
                         label="Estado"
                         value={dados.state || ""}
                         onChange={(e) => handleChange("state", e.target.value)}
-                        className="h-[8vh] w-[22vw]"
+                        className="w-full"
                         disabled={isEndereco("state") && isLoadingCep}
                     />
                 </div>
-                <div className="flex flex-row justify-between items-center w-[85%]">
+
+                {/* Linha 3: Cidade, Logradouro */}
+                <div className="md:col-span-5">
                     <AddMemberInput
                         id="city"
                         type="text"
                         label="Cidade"
                         value={dados.city || ""}
                         onChange={(e) => handleChange("city", e.target.value)}
-                        className="h-[8vh] w-[22vw]"
+                        className="w-full"
                         disabled={isEndereco("city") && isLoadingCep}
                     />
+                </div>
+                <div className="md:col-span-7">
                     <AddMemberInput
                         id="street"
                         type="text"
                         label="Logradouro"
                         value={dados.street || ""}
                         onChange={(e) => handleChange("street", e.target.value)}
-                        className="h-[8vh] w-[30vw]"
+                        className="w-full"
                         disabled={isEndereco("street") && isLoadingCep}
                     />
                 </div>
-                <div className="flex flex-row justify-between items-center w-[85%]">
+
+                {/* Linha 4: Referência */}
+                <div className="md:col-span-12">
                     <AddMemberInput
                         id="referenceHouse"
                         type="text"
                         label="Referência"
-                        value={dados.referenceHouse || ""}  
+                        value={dados.referenceHouse || ""}
                         onChange={(e) => handleChange("referenceHouse", e.target.value)}
-                        className="h-[8vh] w-full"
+                        className="w-full"
                     />
                 </div>
             </div>

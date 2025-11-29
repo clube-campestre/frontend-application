@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { FaEnvelope, FaKey, FaArrowLeft } from "react-icons/fa";
-import anelImagem1 from "../../assets/images/anel1-login-cadastro.png";
-import Logo from "../../assets/images/logo.png";
-import anelImagem2 from "../../assets/images/anel2-login-cadastro.png";
+// Imagens removidas pois pertenciam ao lado azul decorativo, 
+// mas mantive os imports caso queira reincorporar o Logo no futuro.
+// import anelImagem1 from "../../assets/images/anel1-login-cadastro.png";
+// import Logo from "../../assets/images/logo.png";
+// import anelImagem2 from "../../assets/images/anel2-login-cadastro.png";
 import {
     loginService,
     forgotPasswordService,
@@ -115,55 +117,39 @@ const Login = () => {
     };
 
     return (
-        <div className="w-full h-screen flex relative bg-white overflow-hidden font-poppins">
-            {/* <div className="w-1/2 h-full bg-gradient-to-br from-[#022C81] to-[#272727] relative"> */}
-            <div className="w-3/4 h-full bg-gradient-to-br from-[#022C81] to-[#272727] relative"> {/* Se quiser deixar azul maior */}
-                <div className="absolute left-[37vw]">
-                    <img
-                        src={anelImagem1 || "/placeholder.svg"}
-                        className="h-[10vh]"
-                    />
-                </div>
+        // CONTAINER PRINCIPAL
+        // min-h-screen: Garante altura total
+        // flex items-center justify-center: Centraliza vertical e horizontalmente
+        // p-4: Garante espaçamento interno em telas muito pequenas (mobile)
+        <div className="w-full min-h-screen flex items-center justify-center bg-white font-poppins p-4 overflow-y-auto">
+            
+            {/* CONTAINER DO FORMULÁRIO 
+                w-full: Ocupa largura disponível em mobile
+                max-w-md: Trava a largura em 28rem (aprox 448px) em desktop para não esticar demais
+            */}
+            <div className="w-full max-w-md flex flex-col relative">
 
-                <div className="absolute top-1/2 -translate-y-1/2 flex flex-col gap-6 p-8 w-4/5 ml-8">
-                    <h1 className="text-[#FCAE2D] text-4xl font-black w-[50vw]">
-                        Desbravadores Campestre
-                    </h1>
-                    <h5 className="text-white text-xl font-normal mt-8 w-[22vw]">
-                        Coragem para explorar, fé para seguir e serviço para
-                        transformar!
-                    </h5>
-                    <img
-                        src={Logo || "/placeholder.svg"}
-                        className="w-[75px] h-[75px] object-contain mt-20"
-                    />
-                </div>
-
-                <div className="absolute bottom-0 left-0 w-1/2 rotate-2">
-                    <img
-                        src={anelImagem2 || "/placeholder.svg"}
-                        className="w-[25vw] h-[25vh]"
-                    />
-                </div>
-            </div>
-            <div className="p-12 w-1/2 h-full flex items-center flex-col justify-center text-center bg-white hover:border-[#FCAE2D] transition-all duration-800 relative">
+                {/* Botão Voltar - Posicionado no fluxo normal para evitar sobreposição em mobile */}
                 {(recoveryStep === 1 || recoveryStep === 2 || recoveryStep === 3) && (
                     <button
                         type="button"
                         onClick={handleBack}
-                        className="absolute top-8 left-8 flex items-center gap-2 text-[#022C81] hover:text-[#FCAE2D] transition-colors font-semibold"
-                        style={{ zIndex: 10 }}
+                        className="self-start mb-6 flex items-center gap-2 text-[#022C81] hover:text-[#FCAE2D] transition-colors font-semibold"
                     >
                         <FaArrowLeft size={22} />
                         Voltar
                     </button>
                 )}
+
+                {/* --- STEP 0: LOGIN --- */}
                 {recoveryStep === 0 && (
                     <form onSubmit={handleLogin} className="w-full flex flex-col items-center">
-                        <h1 className="text-[#021C4F] mb-8 font-semibold text-3xl">
+                        <h1 className="text-[#021C4F] mb-8 font-semibold text-3xl text-center">
                             Realize o seu login!
                         </h1>
-                        <div className="mb-7 w-[23vw]">
+                        
+                        {/* Substituído w-[23vw] por w-full para responsividade */}
+                        <div className="mb-7 w-full">
                             <FloatingInput
                                 id="email"
                                 type="email"
@@ -173,7 +159,7 @@ const Login = () => {
                                 icon={FaEnvelope}
                             />
                         </div>
-                        <div className="mb-7 w-[23vw]">
+                        <div className="mb-7 w-full">
                             <FloatingInput
                                 id="password"
                                 type="password"
@@ -183,31 +169,43 @@ const Login = () => {
                                 icon={FaKey}
                             />
                         </div>
-                        <button type="submit" className="w-[23vw] py-[14px] bg-[#FCAE2D] text-white border-none rounded-full text-base font-semibold cursor-pointer transition-all duration-300 mt-4 uppercase tracking-wider h-[9vh] hover:bg-[#F18E1E] hover:-translate-y-1 hover:shadow-lg active:translate-y-0" disabled={loading}>
+                        
+                        {/* Botão agora ocupa 100% do container pai */}
+                        <button 
+                            type="submit" 
+                            className="w-full py-[14px] bg-[#FCAE2D] text-white border-none rounded-full text-base font-semibold cursor-pointer transition-all duration-300 mt-4 uppercase tracking-wider hover:bg-[#F18E1E] hover:-translate-y-1 hover:shadow-lg active:translate-y-0" 
+                            disabled={loading}
+                        >
                             {loading ? "Entrando..." : "Entrar"}
                         </button>
+                        
                         <button
                             type="button"
-                            className="mt-4 text-[#022C81] underline hover:text-[#FCAE2D] transition-colors font-semibold"
+                            className="mt-6 text-[#022C81] underline hover:text-[#FCAE2D] transition-colors font-semibold"
                             onClick={() => setRecoveryStep(1)}
                         >
                             Esqueci minha senha
                         </button>
                     </form>
                 )}
+
+                {/* --- STEP 1: EMAIL RECUPERAÇÃO --- */}
                 {recoveryStep === 1 && (
-                    <div className="flex flex-col items-center">
-                        <h2 className="text-xl font-semibold mb-6">Recuperação de senha</h2>
-                        <FloatingInput
-                            id="recoveryEmail"
-                            type="email"
-                            label="Informe seu e-mail"
-                            value={recoveryEmail}
-                            onChange={(e) => setRecoveryEmail(e.target.value)}
-                            icon={FaEnvelope}
-                        />
+                    <div className="w-full flex flex-col items-center">
+                        <h2 className="text-xl font-semibold mb-6 text-center">Recuperação de senha</h2>
+                        <div className="w-full">
+                             <FloatingInput
+                                id="recoveryEmail"
+                                type="email"
+                                label="Informe seu e-mail"
+                                value={recoveryEmail}
+                                onChange={(e) => setRecoveryEmail(e.target.value)}
+                                icon={FaEnvelope}
+                            />
+                        </div>
+                       
                         <button
-                            className="w-[23vw] py-[14px] bg-[#FCAE2D] text-white rounded-full font-semibold mt-6"
+                            className="w-full py-[14px] bg-[#FCAE2D] text-white rounded-full font-semibold mt-6 transition-all hover:bg-[#F18E1E]"
                             onClick={handleSendRecoveryEmail}
                             disabled={loading}
                         >
@@ -215,11 +213,14 @@ const Login = () => {
                         </button>
                     </div>
                 )}
+
+                {/* --- STEP 2: CÓDIGO --- */}
                 {recoveryStep === 2 && (
                     <div className="w-full flex flex-col items-center">
-                        <h2 className="text-xl font-semibold mb-6">Digite o código recebido</h2>
-                        <div className="flex gap-2 mb-6">
-                            {/* Input invisível para copiar/colar todo o código */}
+                        <h2 className="text-xl font-semibold mb-6 text-center">Digite o código recebido</h2>
+                        
+                        {/* Container flexível para os inputs do código */}
+                        <div className="flex justify-center gap-2 mb-6 w-full relative">
                             <input
                                 type="text"
                                 maxLength={6}
@@ -245,11 +246,12 @@ const Login = () => {
                                     key={idx}
                                     type="text"
                                     maxLength={1}
-                                    className="w-12 h-12 text-2xl text-center border rounded"
+                                    // w-12 é fixo, em telas muito pequenas (iPhone SE) pode quebrar. 
+                                    // Adicionei flex-1 e max-w para garantir
+                                    className="w-12 h-12 flex-1 max-w-[3rem] text-2xl text-center border rounded focus:border-[#FCAE2D] focus:outline-none transition-colors"
                                     value={digit}
                                     onChange={e => {
                                         let val = e.target.value.replace(/[^0-9A-Za-z]/, "");
-                                        // Se colar vários dígitos, distribui nos campos
                                         if (val.length > 1) {
                                             const arr = val.slice(0, 6).split("");
                                             while (arr.length < 6) arr.push("");
@@ -275,7 +277,7 @@ const Login = () => {
                             ))}
                         </div>
                         <button
-                            className="w-[23vw] py-[14px] bg-[#FCAE2D] text-white rounded-full font-semibold"
+                            className="w-full py-[14px] bg-[#FCAE2D] text-white rounded-full font-semibold transition-all hover:bg-[#F18E1E]"
                             onClick={handleValidateCode}
                             disabled={loading}
                         >
@@ -283,11 +285,12 @@ const Login = () => {
                         </button>
                     </div>
                 )}
-                {recoveryStep === 3 && (
 
-                    <div className="w-full  flex flex-col items-center">
-                        <h2 className="text-xl font-semibold mb-6">Defina sua nova senha</h2>
-                        <div className="w-[23vw] flex flex-col gap-4">
+                {/* --- STEP 3: NOVA SENHA --- */}
+                {recoveryStep === 3 && (
+                    <div className="w-full flex flex-col items-center">
+                        <h2 className="text-xl font-semibold mb-6 text-center">Defina sua nova senha</h2>
+                        <div className="w-full flex flex-col gap-4">
                           <FloatingInput
                             id="newPassword"
                             type="password"
@@ -307,7 +310,7 @@ const Login = () => {
                         </div>
 
                         <button
-                            className="w-[23vw] py-[14px] bg-[#FCAE2D] text-white rounded-full font-semibold mt-6"
+                            className="w-full py-[14px] bg-[#FCAE2D] text-white rounded-full font-semibold mt-6 transition-all hover:bg-[#F18E1E]"
                             onClick={handleResetPassword}
                             disabled={loading}
                         >

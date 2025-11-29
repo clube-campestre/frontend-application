@@ -3,6 +3,31 @@ import { FaRegStar, FaStar } from "react-icons/fa";
 import Toast from "../../utils/Toast";
 import AddMemberInput from "../add-member-input/AddMemberInput";
 
+// Mantivemos a lógica inteligente de grid
+const getFieldWidthClass = (id) => {
+  switch (id) {
+    case "numero":
+    case "estado":
+    case "uf":
+      return "w-1/2 md:w-1/6"; 
+    case "cep":
+    case "capacidade":
+    case "nota":
+      return "w-full md:w-1/4";
+    case "cidade":
+    case "bairro":
+    case "telefone":
+    case "cotacao":
+      return "w-full md:w-1/3";
+    case "rua":
+    case "nome":
+    case "referencia":
+      return "w-full md:w-1/2 lg:w-2/3";
+    default:
+      return "w-full md:w-1/3"; 
+  }
+};
+
 const FormRegister = ({ formTitle, fields, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState(() =>
     fields.reduce((acc, field) => ({ ...acc, [field.id]: "" }), {
@@ -50,13 +75,10 @@ const FormRegister = ({ formTitle, fields, onSubmit, onCancel }) => {
   const handleChange = (id, valor) => {
     if (id === "cep") {
       let cep = valor.replace(/\D/g, "");
-
       if (cep.length > 5) {
         cep = cep.slice(0, 5) + "-" + cep.slice(5, 8);
       }
-
       cep = cep.slice(0, 9);
-
       setFormData((prev) => ({ ...prev, [id]: cep }));
     } else if (id === "cotacao") {
       const formatted = formatToBRL(valor);
@@ -71,7 +93,6 @@ const FormRegister = ({ formTitle, fields, onSubmit, onCancel }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     const updatedFormData = {
       ...formData,
       cotacao: unmaskBRL(formData.cotacao),
@@ -79,7 +100,6 @@ const FormRegister = ({ formTitle, fields, onSubmit, onCancel }) => {
       whatsapp: unmaskPhone(formData.whatsapp),
       cep: formData.cep.replace(/\D/g, ""),
     };
-
     onSubmit(updatedFormData);
   };
 
@@ -90,23 +110,16 @@ const FormRegister = ({ formTitle, fields, onSubmit, onCancel }) => {
       const data = await response.json();
 
       if (data.erro) {
-        Toast.fire({
-          icon: "error",
-          title: "CEP não encontrado!",
-        });
+        Toast.fire({ icon: "error", title: "CEP não encontrado!" });
         return;
       }
-
       if (data.logradouro) handleChange("rua", data.logradouro);
       if (data.bairro) handleChange("bairro", data.bairro);
       if (data.uf) handleChange("estado", data.uf);
       if (data.localidade) handleChange("cidade", data.localidade);
     } catch (error) {
       console.error("Erro ao buscar CEP:", error);
-      Toast.fire({
-        icon: "error",
-        title: "Erro ao buscar CEP",
-      });
+      Toast.fire({ icon: "error", title: "Erro ao buscar CEP" });
     } finally {
       setIsLoadingCep(false);
     }
@@ -122,43 +135,26 @@ const FormRegister = ({ formTitle, fields, onSubmit, onCancel }) => {
   };
 
   return (
-    <div className="bg-gray-100 rounded-lg p-6 shadow-md max-w-4xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center">
-          <div className="w-1 h-6 bg-[#FCAE2D] mr-2 rounded"></div>
-          <h2 className="text-xl font-semibold text-gray-800">{formTitle}</h2>
-        </div>
-
-        {onCancel && (
-          <button
-            type="button"
-            onClick={onCancel}
-            className="px-4 py-2 rounded bg-red-500 text-white hover:bg-red-600 cursor-pointer flex items-center gap-2"
-          >
-            <span>✕</span> Fechar
-          </button>
-        )}
+    <div className="bg-gray-100 rounded-lg p-4 sm:p-6 shadow-md w-full mx-auto">
+      {/* Cabeçalho Limpo (Sem botão Fechar) */}
+      <div className="flex items-center mb-6">
+        <div className="w-1 h-6 bg-[#FCAE2D] mr-2 rounded"></div>
+        <h2 className="text-xl font-semibold text-gray-800">{formTitle}</h2>
       </div>
 
       <form onSubmit={handleSubmit}>
         <div className="flex flex-wrap -mx-2">
           {fields.map((field) => (
-            <div key={field.id} className="px-2 mb-6 w-1/3">
-              {renderizarCampo(
-                field,
-                formData,
-                handleChange,
-                handleBlur,
-                isLoadingCep
-              )}
+            <div 
+              key={field.id} 
+              className={`px-2 mb-4 sm:mb-6 ${getFieldWidthClass(field.id)}`}
+            >
+              {renderizarCampo(field, formData, handleChange, handleBlur, isLoadingCep)}
             </div>
           ))}
 
-          <div className="px-2 mb-6 w-1/3"> 
-            <label
-              htmlFor="nota"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
+          <div className="px-2 mb-6 w-full md:w-1/3">
+            <label htmlFor="nota" className="block text-sm font-medium text-gray-700 mb-1">
               Nota
             </label>
             <div className="flex space-x-1">
@@ -171,12 +167,12 @@ const FormRegister = ({ formTitle, fields, onSubmit, onCancel }) => {
                     onClick={() => handleChange("nota", valor)}
                     onMouseEnter={() => setHoveredNota(valor)}
                     onMouseLeave={() => setHoveredNota(0)}
-                    className={`w-8 h-8 rounded-full cursor-pointer`}
+                    className="w-8 h-8 rounded-full cursor-pointer focus:outline-none focus:scale-110 transition-transform"
                   >
                     {valor <= (formData.nota || hoveredNota) ? (
-                      <FaStar color="#FCAE2D" />
+                      <FaStar color="#FCAE2D" size={24} />
                     ) : (
-                      <FaRegStar color="#FCAE2D" />
+                      <FaRegStar color="#FCAE2D" size={24} />
                     )}
                   </button>
                 );
@@ -185,10 +181,24 @@ const FormRegister = ({ formTitle, fields, onSubmit, onCancel }) => {
           </div>
         </div>
 
-        <div className="flex justify-end mt-6">
+        {/* --- RODAPÉ COM OS DOIS BOTÕES --- */}
+        {/* flex-col-reverse: No mobile, 'Cadastrar' fica em cima de 'Fechar'. 
+            sm:flex-row: No desktop, ficam lado a lado. */}
+        <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 mt-6 pt-6 border-t border-gray-200">
+          
+          {onCancel && (
+            <button
+              type="button"
+              onClick={onCancel}
+              className="w-full sm:w-auto px-6 py-3 bg-gary-500 text-blue font-medium rounded-md hover:bg-red-600 transition-colors shadow-sm flex items-center justify-center gap-2"
+            >
+              <span>✕</span> Cancelar
+            </button>
+          )}
+
           <button
             type="submit"
-            className="px-6 py-2 bg-[#FCAE2D] text-white rounded-md hover:bg-[#e09a22] focus:outline-none focus:ring-2 focus:ring-[#FCAE2D] focus:ring-opacity-50"
+            className="w-full sm:w-auto px-6 py-3 bg-[#FCAE2D] text-white font-medium rounded-md hover:bg-[#e09a22] focus:outline-none focus:ring-2 focus:ring-[#FCAE2D] focus:ring-opacity-50 transition-all shadow-sm"
           >
             Cadastrar
           </button>
@@ -198,13 +208,7 @@ const FormRegister = ({ formTitle, fields, onSubmit, onCancel }) => {
   );
 };
 
-const renderizarCampo = (
-  campo,
-  formData,
-  handleChange,
-  handleBlur,
-  isLoadingCep
-) => {
+const renderizarCampo = (campo, formData, handleChange, handleBlur, isLoadingCep) => {
   const { id, type, isRequired, label } = campo;
   const isEndereco = ["rua", "bairro", "estado", "cidade"].includes(id);
 
@@ -213,7 +217,7 @@ const renderizarCampo = (
       <AddMemberInput
         id={id}
         type={type}
-        label={label} // Removido o asterisco aqui, pois será tratado no próprio componente
+        label={label}
         value={formData[id] || ""}
         onChange={(e) => handleChange(id, e.target.value)}
         onBlur={(e) => handleBlur(id, e.target.value)}

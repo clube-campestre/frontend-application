@@ -1,757 +1,563 @@
 import { api } from "../../../provider/api";
 import Swal from "sweetalert2";
-import { LuCirclePlus } from "react-icons/lu";
+import { LuCirclePlus, LuTags } from "react-icons/lu"; // Adicionei ícone de Tags
 import { StatementCard } from "../../../components/statement-card/StatementCard";
 import { useState, useEffect } from "react";
 import EditModal from "../../../components/edit-modal/EditModal";
-import { IoIosSearch } from "react-icons/io";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
-import { GiBroom } from "react-icons/gi";
+import { IoMdSearch } from "react-icons/io"; // Ícone de busca moderno
+import { FaChevronLeft, FaChevronRight, FaFileInvoiceDollar } from "react-icons/fa6"; // Ícone de Extrato
+import { FaFilter, FaBroom, FaPencilAlt, FaTrash } from "react-icons/fa";
 import Toast from "../../../utils/Toast";
-import { FaPencilAlt, FaTrash } from "react-icons/fa";
 
 const Statement = () => {
-	const [showAddModal, setShowAddModal] = useState(false);
-	const [showEditModal, setShowEditModal] = useState(false);
-	const [showTagModal, setShowTagModal] = useState(false);
-	const [showManageTagsModal, setShowManageTagsModal] = useState(false);
-	const [editingItem, setEditingItem] = useState(null);
-	const [editingTag, setEditingTag] = useState(null);
-	const [tags, setTags] = useState([]);
-	const [totalAmount, setTotalAmount] = useState(0);
-	const [transactions, setTransactions] = useState([]);
-	const [pageNumber, setPageNumber] = useState(0);
-	const [pageSize, setPageSize] = useState(5);
-	const [totalPages, setTotalPages] = useState(1);
-	const [totalItems, setTotalItems] = useState(0);
-	const [filters, setFilters] = useState({
-		startDate: "",
-		endDate: "",
-		tagId: "",
-		type: "",
-		description: "",
-	});
+    // --- ESTADOS (MANTIDOS) ---
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [showTagModal, setShowTagModal] = useState(false);
+    const [showManageTagsModal, setShowManageTagsModal] = useState(false);
+    const [editingItem, setEditingItem] = useState(null);
+    const [editingTag, setEditingTag] = useState(null);
+    const [tags, setTags] = useState([]);
+    const [totalAmount, setTotalAmount] = useState(0);
+    const [transactions, setTransactions] = useState([]);
+    const [pageNumber, setPageNumber] = useState(0);
+    const [pageSize, setPageSize] = useState(5);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalItems, setTotalItems] = useState(0);
+    const [filters, setFilters] = useState({
+        startDate: "",
+        endDate: "",
+        tagId: "",
+        type: "",
+        description: "",
+    });
 
-	const statementFields = [
-		{
-			name: "information",
-			label: "Descrição",
-			placeholder: "Descrição",
-			type: "text",
-			isRequired: true,
-		},
-		{
-			name: "price",
-			label: "Valor",
-			placeholder: "Valor",
-			type: "text",
-			isRequired: true,
-		},
-		{
-			name: "transactionDate",
-			label: "Data",
-			placeholder: "Data",
-			type: "datetime-local",
-			isRequired: true,
-		},
-		{
-			name: "transactionType",
-			label: "Tipo da Receita",
-			placeholder: "Tipo da Receita",
-			type: "select",
-			isRequired: true,
-			options: [
-				{ value: "ENTRADA", label: "Entrada" },
-				{ value: "SAIDA", label: "Saída" },
-			],
-		},
-		{
-			name: "tagSurname",
-			placeholder: "Tag",
-			type: "select",
-			label: "Tag",
-			isRequired: true,
-			options:
-				tags.length > 0 ? (
-					tags.map((tag) => ({
-						value: tag.surname,
-						label:
-							tag.surname
-					}))
-				) : (
-					<option value="">Nenhuma tag foi encontrada</option>
-				),
-		},
-	];
+    // --- CAMPOS (MANTIDOS) ---
+    const statementFields = [
+        { name: "information", label: "Descrição", placeholder: "Ex: Compra de materiais", type: "text", isRequired: true },
+        { name: "price", label: "Valor", placeholder: "0,00", type: "text", isRequired: true },
+        { name: "transactionDate", label: "Data", placeholder: "Data", type: "datetime-local", isRequired: true },
+        {
+            name: "transactionType", label: "Tipo", placeholder: "Selecione", type: "select", isRequired: true,
+            options: [{ value: "ENTRADA", label: "Entrada" }, { value: "SAIDA", label: "Saída" }],
+        },
+        {
+            name: "tagSurname", placeholder: "Tag", type: "select", label: "Tag", isRequired: true,
+            options: tags.length > 0 ? tags.map((tag) => ({ value: tag.surname, label: tag.surname })) : <option value="">Nenhuma tag</option>,
+        },
+    ];
 
-	const tagFields = [
-		{
-			name: "surname",
-			label: "Nome da Tag",
-			placeholder: "Nome da Tag",
-			type: "text",
-			isRequired: true,
-		},
-		{
-			name: "color",
-			label: "Cor da Tag",
-			placeholder: "Cor da Tag",
-			type: "color",
-			isRequired: true,
-		},
-		{
-			name: "goal",
-			label: "Meta (Opcional)",
-			placeholder: "Meta",
-			type: "Number",
-			isRequired: false,
-		},
-		{
-			name: "privateGoal",
-			label: "Meta Privada",
-			placeholder: "Meta Privada",
-			type: "checkbox",
-			isRequired: false,
-		}
-	];
+    const tagFields = [
+        { name: "surname", label: "Nome da Tag", placeholder: "Ex: Alimentação", type: "text", isRequired: true },
+        { name: "color", label: "Cor", placeholder: "Cor", type: "color", isRequired: true },
+        { name: "goal", label: "Meta (Opcional)", placeholder: "0,00", type: "Number", isRequired: false },
+        { name: "privateGoal", label: "Meta Privada", placeholder: "", type: "checkbox", isRequired: false }
+    ];
 
-	// Campos para edição de tag
-	const tagEditFields = [
-		{ name: "surname", label: "Nome da Tag", placeholder: "Nome da Tag", type: "text", isRequired: true },
-		{ name: "color", label: "Cor da Tag", placeholder: "Cor da Tag", type: "color", isRequired: true },
-		{ name: "goal", label: "Meta (Opcional)", placeholder: "Meta", type: "number", isRequired: false },
-		{ name: "privateGoal", label: "Meta Privada", placeholder: "Meta Privada", type: "checkbox", isRequired: false },
-	];
+    const tagEditFields = [
+        { name: "surname", label: "Nome da Tag", placeholder: "Nome", type: "text", isRequired: true },
+        { name: "color", label: "Cor", placeholder: "Cor", type: "color", isRequired: true },
+        { name: "goal", label: "Meta", placeholder: "0,00", type: "number", isRequired: false },
+        { name: "privateGoal", label: "Meta Privada", placeholder: "", type: "checkbox", isRequired: false },
+    ];
 
-	const handleFilterTransactions = async () => {
-		const params = {
-			...filters,
-			startDate: filters.startDate
-				? new Date(filters.startDate).toISOString()
-				: "",
-			endDate: filters.endDate
-				? new Date(filters.endDate).toISOString()
-				: "",
-			type: filters.type.toUpperCase(),
-		};
+    // --- FUNÇÕES (MANTIDAS) ---
+    const handleFilterTransactions = async () => {
+        const params = {
+            ...filters,
+            startDate: filters.startDate ? new Date(filters.startDate).toISOString() : "",
+            endDate: filters.endDate ? new Date(filters.endDate).toISOString() : "",
+            type: filters.type.toUpperCase(),
+        };
 
-		if (
-			params.startDate == "" &&
-			params.endDate == "" &&
-			params.tagId == "" &&
-			params.type == "" &&
-			params.description == ""
-		) {
-			Toast.fire({
-				icon: "info",
-				title: "Por favor, insira pelo menos um filtro.",
-			});
-			return;
-		}
+        if (params.startDate == "" && params.endDate == "" && params.tagId == "" && params.type == "" && params.description == "") {
+            Toast.fire({ icon: "info", title: "Por favor, insira pelo menos um filtro." });
+            return;
+        }
 
-		try {
-			const response = await api.get("/statements", {
-				params: {
-					...params,
-					page: pageNumber,
-					size: pageSize,
-				},
-			});
+        try {
+            const response = await api.get("/statements", { params: { ...params, page: pageNumber, size: pageSize } });
+            setTransactions(response.data.items);
+            setTotalAmount(response.data.totalPrice);
+            setPageSize(response.data.pageSize);
+            setTotalItems(response.data.totalItems);
+            setTotalPages(response.data.totalPages);
+            Toast.fire({ icon: "success", title: "Filtrado com sucesso!" });
+            setPageNumber(0);
+        } catch (error) {
+            Toast.fire({ icon: "error", title: "Erro ao filtrar." });
+            console.error(error);
+        }
+    };
 
-			setTransactions(response.data.items);
-			setTotalAmount(response.data.totalPrice);
-			setPageSize(response.data.pageSize);
-			setTotalItems(response.data.totalItems);
-			setTotalPages(response.data.totalPages);
-			Toast.fire({
-				icon: "success",
-				title: "Transações filtradas com sucesso!",
-			});
+    const handleClearFilters = async () => {
+        setFilters({ startDate: "", endDate: "", tagId: "", type: "", description: "" });
+        const response = await api.get("/statements", { params: { page: pageNumber, size: pageSize } });
+        setTransactions(response.data.items);
+        setTotalAmount(response.data.totalPrice);
+        setPageSize(response.data.pageSize);
+        setTotalItems(response.data.totalItems);
+        setTotalPages(response.data.totalPages);
+        Toast.fire({ icon: "info", title: "Filtros limpos!" });
+    };
 
-			setPageNumber(0);
-		} catch (error) {
-			Toast.fire({
-				icon: "error",
-				title: "Erro ao filtrar transações.",
-			});
-			console.error("Error fetching filtered transactions:", error);
-		}
-	};
+    const fetchTransactions = async () => {
+        const params = {
+            ...filters,
+            startDate: filters.startDate ? new Date(filters.startDate).toISOString() : "",
+            endDate: filters.endDate ? new Date(filters.endDate).toISOString() : "",
+            type: filters.type.toUpperCase(),
+        };
+        try {
+            const response = await api.get("/statements", { params: { page: pageNumber, size: pageSize, ...params } });
+            setTransactions(response.data.items);
+            setTotalAmount(response.data.totalPrice);
+            setPageSize(response.data.pageSize);
+            setTotalItems(response.data.totalItems);
+            setTotalPages(response.data.totalPages);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
-	const handleClearFilters = async () => {
-		setFilters({
-			startDate: "",
-			endDate: "",
-			tagId: "",
-			type: "",
-			description: "",
-		});
+    const getTags = async () => {
+        try {
+            const response = await api.get("/tags");
+            setTags(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
-		const response = await api.get("/statements", {
-			params: {
-				page: pageNumber,
-				size: pageSize,
-			},
-		});
-		setTransactions(response.data.items);
-		setTotalAmount(response.data.totalPrice);
-		setPageSize(response.data.pageSize);
-		setTotalItems(response.data.totalItems);
-		setTotalPages(response.data.totalPages);
-		Toast.fire({
-			icon: "info",
-			title: "Todos os filtros foram limpos!",
-		});
-	};
+    const handleCreateTag = async (data) => {
+        if (!data.surname || !data.color) {
+            Toast.fire({ icon: "warning", title: "Preencha todos os campos." });
+            return;
+        }
+        try {
+            const response = await api.post("/tags", data);
+            if (response.status === 200) {
+                Toast.fire({ icon: "success", title: "Tag criada!" });
+                setShowTagModal(false);
+                getTags();
+            }
+        } catch (error) {
+            Toast.fire({ icon: "error", title: "Erro ao criar tag." });
+        }
+    };
 
-	const fetchTransactions = async () => {
-		const params = {
-			...filters,
-			startDate: filters.startDate
-				? new Date(filters.startDate).toISOString()
-				: "",
-			endDate: filters.endDate
-				? new Date(filters.endDate).toISOString()
-				: "",
-			type: filters.type.toUpperCase(),
-		};
+    const handleEditTag = async (data) => {
+        try {
+            const response = await api.put(`/tags/${editingTag.id}`, data);
+            if (response.status === 200) {
+                Toast.fire({ icon: "success", title: "Tag editada!" });
+                setEditingTag(null);
+                getTags();
+                setShowManageTagsModal(true);
+            }
+        } catch (error) {
+            Toast.fire({ icon: "error", title: error.response?.data?.message || "Erro ao editar." });
+        }
+    };
 
-		try {
-			const response = await api.get("/statements", {
-				params: {
-					page: pageNumber,
-					size: pageSize,
-					...params,
-				},
-			});
-			setTransactions(response.data.items);
-			setTotalAmount(response.data.totalPrice);
-			setPageSize(response.data.pageSize);
-			setTotalItems(response.data.totalItems);
-			setTotalPages(response.data.totalPages);
-		} catch (error) {
-			console.error("Error fetching transactions:", error);
-		}
-	};
+    const handleDeleteTag = async (id) => {
+        Swal.fire({
+            title: "Deletar tag?",
+            text: "Irreversível.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#5ccb5f",
+            cancelButtonColor: "#d33",
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Deletar",
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await api.delete(`/tags/${id}`);
+                    Toast.fire({ icon: "success", title: "Deletado!" });
+                    getTags();
+                } catch (err) {
+                    Toast.fire({ icon: "error", title: err.response?.data?.message || "Erro ao deletar." });
+                }
+            }
+        });
+    };
 
-	const getTags = async () => {
-		try {
-			const response = await api.get("/tags");
-			setTags(response.data);
-		} catch (error) {
-			console.error("Error fetcFhing tags:", error);
-		}
-	};
+    useEffect(() => {
+        fetchTransactions();
+        getTags();
+    }, [pageNumber]);
 
-	const handleCreateTag = async (data) => {
-		if (!data.surname || !data.color) {
-			Toast.fire({
-				icon: "warning",
-				title: "Por favor, preencha todos os campos.",
-			});
-			return;
-		}
+    const handleCreateTransaction = async (data) => {
+        try {
+            const isoDate = data.transactionDate ? new Date(data.transactionDate).toISOString() : null;
+            const payload = { ...data, transactionDate: isoDate };
+            const response = await api.post("/statements", payload);
+            if (response.status === 201) {
+                Toast.fire({ icon: "success", title: "Transação criada!" });
+                setShowAddModal(false);
+                fetchTransactions();
+                setPageNumber(0);
+            }
+        } catch (error) {
+            Toast.fire({ icon: "error", title: "Erro ao criar." });
+        }
+    };
 
-		try {
-			const response = await api.post("/tags", data);
-			if (response.status === 200) {
-				Toast.fire({
-					icon: "success",
-					title: "Tag criada com sucesso!",
-				});
-				setShowTagModal(false);
-				getTags();
-			}
-		} catch (error) {
-			Toast.fire({
-				icon: "error",
-				title: "Erro ao criar tag.",
-			});
-			console.error("Error creating tag:", error);
-		}
-	};
+    const handleDeleteTransaction = async (id) => {
+        Swal.fire({
+            title: "Deletar transação?",
+            text: "Irreversível.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#5ccb5f",
+            cancelButtonColor: "#d33",
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Deletar",
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await api.delete(`/statements/${id}`);
+                    Toast.fire({ icon: "success", title: "Deletado!" });
+                    fetchTransactions();
+                } catch (err) {
+                    Toast.fire({ icon: "error", title: "Erro ao deletar." });
+                }
+            }
+        });
+    };
 
-	// Editar tag
-	const handleEditTag = async (data) => {
-		try {
-			const response = await api.put(`/tags/${editingTag.id}`, data);
-			if (response.status === 200) {
-				Toast.fire({ icon: "success", title: "Tag editada com sucesso!" });
-				setEditingTag(null);
-				getTags();
-				setShowManageTagsModal(true);
-			}
-		} catch (error) {
-			Toast.fire({ icon: "error", title: error.response?.data?.message || "Erro ao editar tag." });
-		}
-	};
+    const handleEditTransaction = async (data) => {
+        try {
+            const response = await api.put(`/statements/${editingItem.id}`, data);
+            if (response.status === 200) {
+                Toast.fire({ icon: "success", title: "Editado!" });
+                setShowEditModal(false);
+                fetchTransactions();
+                setPageNumber(0);
+            }
+        } catch (error) {
+            Toast.fire({ icon: "error", title: "Erro ao editar." });
+        }
+    };
 
-	// Deletar tag
-	const handleDeleteTag = async (id) => {
-		Swal.fire({
-			title: "Deseja deletar esta tag?",
-			text: "Essa ação não pode ser desfeita.",
-			icon: "warning",
-			iconColor: "#d33",
-			showCancelButton: true,
-			confirmButtonColor: "#5ccb5f",
-			cancelButtonColor: "#d33",
-			cancelButtonText: "Cancelar",
-			confirmButtonText: "Deletar",
-		}).then(async (result) => {
-			if (result.isConfirmed) {
-				try {
-					await api.delete(`/tags/${id}`);
-					Toast.fire({ icon: "success", title: "Tag deletada com sucesso!" });
-					getTags();
-				} catch (err) {
-					Toast.fire({ icon: "error", title: err.response?.data?.message || "Ocorreu um erro ao deletar a tag." });
-				}
-			}
-		});
-	};
+    const getTodayDateTimeLocal = () => {
+        const now = new Date();
+        const yyyy = now.getFullYear();
+        const mm = String(now.getMonth() + 1).padStart(2, "0");
+        const dd = String(now.getDate()).padStart(2, "0");
+        const hh = String(now.getHours()).padStart(2, "0");
+        const min = String(now.getMinutes()).padStart(2, "0");
+        return `${yyyy}-${mm}-${dd}T${hh}:${min}`;
+    };
 
-	useEffect(() => {
-		fetchTransactions();
-		getTags();
-	}, [pageNumber]);
+    return (
+        <div className="h-screen flex flex-col bg-gray-50 overflow-hidden font-sans">
+            
+            {/* --- HEADER SUPERIOR (Ações e Totais) --- */}
+            <div className="flex-shrink-0 bg-white shadow-sm z-20 border-b border-gray-200">
+                <div className="max-w-[1920px] mx-auto p-4 md:px-6 md:py-4">
+                    
+                    {/* Linha 1: Título e Ações */}
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
+                        <div className="flex items-center gap-3 w-full md:w-auto">
+                            <div className="">
+                               
+                            </div>
+                            <div>
+                                <h1 className="text-xl font-bold text-blue-900 leading-tight">Extrato Financeiro</h1>
+                              
+                            </div>
+                        </div>
 
-	const handleCreateTransaction = async (data) => {
-		try {
-			// Ajuste: datetime-local já vem no formato correto para o Date
-			const isoDate = data.transactionDate
-				? new Date(data.transactionDate).toISOString()
-				: null;
+                        {/* Valor Total Destacado */}
+                        <div className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-lg border border-gray-200 w-full md:w-auto justify-between md:justify-center">
+                            <span className="text-sm font-semibold text-gray-600">Saldo Total:</span>
+                            <span className={`text-xl font-bold ${totalAmount < 0 ? "text-red-500" : "text-[#021C4F]"}`}>
+                                {totalAmount ? `R$ ${totalAmount.toFixed(2)}` : "R$ 0.00"}
+                            </span>
+                        </div>
 
-			const payload = {
-				...data,
-				transactionDate: isoDate,
-			};
+                        {/* Botões de Ação */}
+                        <div className="flex gap-2 w-full md:w-auto">
+                            <button
+                                onClick={() => setShowManageTagsModal(true)}
+                                className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:text-[#FCAE2D] hover:border-[#FCAE2D] transition-all font-medium text-sm shadow-sm"
+                            >
+                                <LuTags /> Tags
+                            </button>
+                            <button
+                                onClick={() => setShowAddModal(true)}
+                                className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-[#FCAE2D] text-white rounded-lg hover:bg-[#e0961a] active:scale-95 transition-all font-medium text-sm shadow-md"
+                            >
+                                <LuCirclePlus size={16} /> Nova Transação
+                            </button>
+                        </div>
+                    </div>
 
-			const response = await api.post("/statements", payload);
-			if (response.status === 201) {
-				Toast.fire({
-					icon: "success",
-					title: "Transação criada com sucesso!",
-				});
-				setShowAddModal(false);
-				fetchTransactions();
-				setPageNumber(0);
-			}
-		} catch (error) {
-			Toast.fire({
-				icon: "error",
-				title: "Erro ao criar transação.",
-			});
-		}
-	};
+                    {/* Linha 2: Filtros (Estilo "SecretaryPage") */}
+                    <div className="flex flex-col lg:flex-row gap-3 items-end pt-2 border-t border-gray-100">
+                        {/* Busca por Texto */}
+                        <div className="w-full lg:flex-1">
+                            <label className="text-gray-600 font-semibold text-xs mb-1 block">Descrição</label>
+                            <div className="relative">
+                                <IoMdSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                                <input
+                                    type="text"
+                                    placeholder="Buscar..."
+                                    className="w-full pl-9 pr-3 h-10 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-[#FCAE2D] focus:border-[#FCAE2D] transition-all"
+                                    value={filters.description}
+                                    onChange={(e) => setFilters({ ...filters, description: e.target.value })}
+                                />
+                            </div>
+                        </div>
 
-	const handleDeleteTransaction = async (id) => {
-		Swal.fire({
-			title: "Deseja deletar esta transação?",
-			text: "Essa ação não pode ser desfeita.",
-			icon: "warning",
-			iconColor: "#d33",
-			showCancelButton: true,
-			confirmButtonColor: "#5ccb5f",
-			cancelButtonColor: "#d33",
-			cancelButtonText: "Cancelar",
-			confirmButtonText: "Deletar",
-		}).then(async (result) => {
-			if (result.isConfirmed) {
-				try {
-					await api.delete(`/statements/${id}`);
-					Toast.fire({
-						icon: "success",
-						title: "Transação deletada com sucesso!",
-					});
-					fetchTransactions();
-				} catch (err) {
-					setError("Ocorreu um erro ao deletar a transação.");
-					Toast.fire({
-						icon: "error",
-						title: "Ocorreu um erro ao deletar a transação.",
-					});
-					console.error("Error deleting transaction:", err);
-				}
-			}
-		});
-	};
+                        {/* Datas */}
+                        <div className="flex gap-2 w-full lg:w-auto">
+                            <div className="flex-1 lg:w-36">
+                                <label className="text-gray-600 font-semibold text-xs mb-1 block">Início</label>
+                                <input
+                                    type="date"
+                                    className="w-full h-10 px-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-[#FCAE2D] focus:border-[#FCAE2D]"
+                                    value={filters.startDate}
+                                    onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
+                                />
+                            </div>
+                            <div className="flex-1 lg:w-36">
+                                <label className="text-gray-600 font-semibold text-xs mb-1 block">Fim</label>
+                                <input
+                                    type="date"
+                                    className="w-full h-10 px-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-[#FCAE2D] focus:border-[#FCAE2D]"
+                                    value={filters.endDate}
+                                    onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
+                                />
+                            </div>
+                        </div>
 
-	const handleEditTransaction = async (data) => {
-		try {
-			const response = await api.put(
-				`/statements/${editingItem.id}`,
-				data
-			);
-			if (response.status === 200) {
-				Toast.fire({
-					icon: "success",
-					title: "Transação editada com sucesso!",
-				});
-				setShowEditModal(false);
-				fetchTransactions();
-				setPageNumber(0);
-			}
-		} catch (error) {
-			Toast.fire({
-				icon: "error",
-				title: "Erro ao editar transação.",
-			});
-			console.error("Error editing transaction:", error);
-		}
-	};
+                        {/* Selects */}
+                        <div className="flex gap-2 w-full lg:w-auto">
+                            <div className="flex-1 lg:w-32">
+                                <label className="text-gray-600 font-semibold text-xs mb-1 block">Tipo</label>
+                                <select
+                                    className="w-full h-10 px-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-[#FCAE2D] focus:border-[#FCAE2D]"
+                                    value={filters.type}
+                                    onChange={(e) => setFilters({ ...filters, type: e.target.value })}
+                                >
+                                    <option value="">Todos</option>
+                                    <option value="entrada">Entrada</option>
+                                    <option value="saida">Saída</option>
+                                </select>
+                            </div>
+                            <div className="flex-1 lg:w-40">
+                                <label className="text-gray-600 font-semibold text-xs mb-1 block">Tag</label>
+                                <select
+                                    className="w-full h-10 px-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-[#FCAE2D] focus:border-[#FCAE2D]"
+                                    value={filters.tagId}
+                                    onChange={(e) => setFilters({ ...filters, tagId: e.target.value })}
+                                >
+                                    <option value="">Todas</option>
+                                    {tags.map((tag) => <option key={tag.id} value={tag.id}>{tag.surname}</option>)}
+                                </select>
+                            </div>
+                        </div>
 
-	const getTodayDateTimeLocal = () => {
-		const now = new Date();
-		const yyyy = now.getFullYear();
-		const mm = String(now.getMonth() + 1).padStart(2, "0");
-		const dd = String(now.getDate()).padStart(2, "0");
-		const hh = String(now.getHours()).padStart(2, "0");
-		const min = String(now.getMinutes()).padStart(2, "0");
-		return `${yyyy}-${mm}-${dd}T${hh}:${min}`;
-	};
+                        {/* Botões de Filtro */}
+                        <div className="flex gap-2">
+                            <button
+                                onClick={handleFilterTransactions}
+                                className="h-10 w-10 flex items-center justify-center rounded-lg bg-[#FCAE2D] text-white hover:bg-[#e0961a] active:scale-95 transition-all shadow-sm"
+                                title="Filtrar"
+                            >
+                                <FaFilter size={16} />
+                            </button>
+                            <button
+                                onClick={handleClearFilters}
+                                className="h-10 w-10 flex items-center justify-center rounded-lg bg-red-100 text-red-500 border border-red-200 hover:bg-red-200 active:scale-95 transition-all"
+                                title="Limpar"
+                            >
+                                <FaBroom size={16} />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-	return (
-		<div className="flex items-center justify-center w-full h-[82vh]">
-			<div className="flex flex-col items-center justify-start w-[80vw] h-[82vh]">
-				{/* Header Section */}
-				<header className="flex items-center justify-end w-full h-16">
-					<div className="flex items-center gap-2">
-						<button
-							className="flex items-center gap-2 px-4 py-2 bg-[#D9D9D9] text-[#021C4F] rounded hover:bg-gray-400 cursor-pointer"
-							onClick={() => setShowManageTagsModal(true)}
-						>
-							Gerenciar Tags <LuCirclePlus />
-						</button>
-						{/* Modal de Gerenciar Tags */}
-						{showManageTagsModal && (
-							<div className="fixed inset-0 z-50 flex items-center justify-center bg-[#000000da]">
-								<div className="bg-[#f3f3f3] p-8 rounded-xl shadow-lg min-w-[400px] max-h-[80vh] overflow-y-auto relative">
-									<button
-										onClick={() => { setShowManageTagsModal(false); setEditingTag(null); }}
-										className="absolute top-3 right-2 text-2xl cursor-pointer"
-									>
-										×
-									</button>
-									<div className="flex gap-2 items-center justify-between mb-4">
-										<h2 className="text-xl font-semibold mb-4">
-											<span className="border-l-4 border-[#FCAE2D] mr-3"></span>
-											Gerenciar Tags
-										</h2>
-										{/* Botão para abrir modal de cadastro de tag */}
-										{!editingTag && (
-											<button
-												className="mb-4 px-4 py-2 bg-[#FCAE2D] text-white rounded hover:bg-[#e2961e] font-semibold cursor-pointer"
-												onClick={() => setShowTagModal(true)}
-											>
-												<LuCirclePlus className="cursor-pointer" />
-											</button>
-										)}
-									{/* Modal para cadastrar nova tag (menor) */}
-									{showTagModal && (
-										<EditModal
-											onClose={() => setShowTagModal(false)}
-											onSubmit={handleCreateTag}
-											editingItem={null}
-											title="Adicionar Nova Tag"
-											fields={tagFields}
-											containerClassName="w-[320px] md:w-[380px] lg:w-[420px]"
-											floatingLabels={true} // habilita placeholder flutuante só aqui
-										/>
-									)}
-									</div>
-									{/* Modal para editar tag */}
-									{editingTag ? (
-										<EditModal
-											onClose={() => setEditingTag(null)}
-											onSubmit={handleEditTag}
-											editingItem={editingTag}
-											title="Editar Tag"
-											fields={tagEditFields}
-										/>
-									) : (
-										<div className="space-y-4">
-											{tags.length === 0 && (
-												<p className="text-gray-500">Nenhuma tag cadastrada.</p>
-											)}
-											{tags.map((tag) => {
-												const isDefault = String(tag.surname || "").trim().toLowerCase() === "outros";
-												return (
-													<div key={tag.id} className="flex items-center justify-between bg-white p-3 rounded shadow">
-														<div className="flex items-center gap-3">
-															<div className="w-5 h-5 rounded-full" style={{ background: tag.color }}></div>
-															<span className="font-normal">{tag.surname}</span>
-															{tag.goal && (
-																<span className="text-xs text-gray-500 ml-2">Meta: {tag.goal}</span>
-															)}
-															{tag.privateGoal && (
-																<span className="text-xs text-gray-500 ml-2">Privada</span>
-															)}
-														</div>
-														<div className="flex gap-2">
-															{isDefault ? (
-																<span className="text-xs text-gray-400 italic select-none">Padrão</span>
-															) : (
-																<>
-																	<button
-																		onClick={() => setEditingTag(tag)}
-																		className="text-amber-500 hover:text-amber-600 cursor-pointer"
-																		title="Editar"
-																	>
-																		<FaPencilAlt size={18} className="cursor-pointer" />
-																	</button>
-																	<button
-																		onClick={() => handleDeleteTag(tag.id)}
-																		className="text-gray-400 hover:text-gray-600 cursor-pointer"
-																		title="Excluir"
-																	>
-																		<FaTrash size={18} className="cursor-pointer" />
-																	</button>
-																</>
-															)}
-														</div>
-													</div>
-												);
-											})}
-										</div>
-									)}
-								</div>
-							</div>
-						)}
-						<button
-							className="flex items-center gap-2 px-4 py-2 bg-[#D9D9D9] text-[#021C4F] rounded hover:bg-gray-400 cursor-pointer"
-							onClick={() => setShowAddModal(true)}
-						>
-							Adicionar Transação <LuCirclePlus />
-						</button>
-						{showAddModal && (
-							<EditModal
-								onClose={() => setShowAddModal(false)}
-								onSubmit={handleCreateTransaction}
-								editingItem={{ transactionDate: getTodayDateTimeLocal() }}
-								title="Adicionar Transação"
-								fields={statementFields}
-								floatingLabels={true}
-							/>
-						)}
-					</div>
-				</header>
+            {/* --- LISTA DE TRANSAÇÕES (Área Principal) --- */}
+            <div className="flex-1 overflow-hidden relative max-w-[1920px] w-full mx-auto p-4 md:p-6">
+                <div className="flex flex-col h-full bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    
+                    {/* Container com Scroll */}
+                    <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
+                        <div className="space-y-3">
+                            {transactions.length > 0 ? (
+                                transactions.map((transaction) => (
+                                    <StatementCard
+                                        key={transaction.id}
+                                        item={transaction}
+                                        showModal={() => {
+                                            setShowEditModal(true);
+                                            setEditingItem({
+                                                ...transaction,
+                                                tagSurname: transaction.tag?.surname,
+                                                tagColor: transaction.tag?.color,
+                                            });
+                                        }}
+                                        handleDeleteTransaction={handleDeleteTransaction}
+                                    />
+                                ))
+                            ) : (
+                                <div className="flex flex-col items-center justify-center py-20 text-center">
+                                    <div className="bg-gray-50 p-4 rounded-full mb-4">
+                                        <FaFileInvoiceDollar size={32} className="text-gray-300" />
+                                    </div>
+                                    <h3 className="text-lg font-medium text-gray-900">Nenhuma transação encontrada</h3>
+                                    <p className="text-gray-500 max-w-sm mt-1">Use os filtros acima ou adicione uma nova transação.</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
 
-				{/* Filter Section */}
-				<section className="flex flex-col lg:flex-row w-full p-4 rounded justify-around shadow mb-6 bg-[#7C7C7C] gap-4">
-					<div className="flex flex-col w-full lg:w-[73%] h-full">
-						<div className="relative w-full mb-4">
-							<input
-								type="text"
-								placeholder="Buscar por descrição"
-								className="w-full p-2 pr-10 border border-gray-300 rounded bg-[#EDEDED]"
-								value={filters.description}
-								onChange={(e) =>
-									setFilters({
-										...filters,
-										description: e.target.value,
-									})
-								}
-							/>
-						</div>
+                    {/* Footer / Paginação */}
+                    <div className="flex-shrink-0 bg-gray-50 border-t border-gray-200 px-6 py-3 z-10">
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <span className="text-xs text-gray-600">
+                                Mostrando <span className="font-bold text-gray-900">{transactions.length}</span> de {totalItems} registros
+                            </span>
+                            
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() => setPageNumber((p) => Math.max(p - 1, 0))}
+                                    disabled={pageNumber === 0}
+                                    className="p-2 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-gray-600"
+                                >
+                                    <FaChevronLeft size={14} />
+                                </button>
+                                <span className="text-xs font-medium px-2">
+                                    Pág {pageNumber + 1} de {totalPages}
+                                </span>
+                                <button
+                                    onClick={() => setPageNumber((p) => p + 1)}
+                                    disabled={pageNumber + 1 === totalPages}
+                                    className="p-2 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-gray-600"
+                                >
+                                    <FaChevronRight size={14} />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-						<div className="flex flex-col md:flex-row w-full items-center justify-between gap-4">
-							<div className="flex flex-col w-full gap-2">
-								<div className="flex flex-col sm:flex-row items-end gap-4">
-									<div className="flex w-full sm:w-auto flex-col">
-										<span className="text-white text-sm mb-1">Início</span>
-										<input
-											type="date"
-											value={filters.startDate}
-											onChange={(e) =>
-												setFilters({
-													...filters,
-													startDate: e.target.value,
-												})
-											}
-											className="w-full sm:w-44 h-10 px-3 border border-gray-300 rounded bg-[#EDEDED]"
-										/>
-									</div>
+            {/* --- MODAIS --- */}
+            {showAddModal && (
+                <EditModal
+                    onClose={() => setShowAddModal(false)}
+                    onSubmit={handleCreateTransaction}
+                    editingItem={{ transactionDate: getTodayDateTimeLocal() }}
+                    title="Adicionar Transação"
+                    fields={statementFields}
+                    floatingLabels={true}
+                />
+            )}
 
-									<div className="flex w-full sm:w-auto flex-col">
-										<span className="text-white text-sm mb-1">Fim</span>
-										<input
-											type="date"
-											value={filters.endDate}
-											onChange={(e) =>
-												setFilters({
-													...filters,
-													endDate: e.target.value,
-												})
-											}
-											className="w-full sm:w-44 h-10 px-3 border border-gray-300 rounded bg-[#EDEDED]"
-										/>
-									</div>
-								</div>
-							</div>
+            {showEditModal && (
+                <EditModal
+                    onClose={() => setShowEditModal(false)}
+                    editingItem={editingItem}
+                    onSubmit={handleEditTransaction}
+                    title="Editar Transação"
+                    fields={statementFields}
+                />
+            )}
 
-							<div className="flex flex-col w-full gap-2">
-								<h4 className="text-white">Transação</h4>
-								<select
-									className="w-full md:w-22 h-10 px-3 border border-gray-300 rounded bg-[#EDEDED] cursor-pointer"
-									value={filters.type}
-									onChange={(e) =>
-										setFilters({
-											...filters,
-											type: e.target.value,
-										})
-									}
-								>
-									<option value="">Selecione</option>
-									<option value="entrada">Entrada</option>
-									<option value="saida">Saída</option>
-								</select>
-							</div>
+            {/* Modal de Gerenciamento de Tags (Estilo Modernizado) */}
+            {showManageTagsModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                    <div className="bg-white rounded-xl shadow-2xl w-full max-w-md max-h-[85vh] flex flex-col relative animate-fadeIn">
+                        {/* Header Modal */}
+                        <div className="flex justify-between items-center p-5 border-b border-gray-100">
+                            <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+                                <LuTags className="text-[#FCAE2D]" /> Gerenciar Tags
+                            </h2>
+                            <button
+                                onClick={() => { setShowManageTagsModal(false); setEditingTag(null); }}
+                                className="text-gray-400 hover:text-red-500 transition-colors"
+                            >
+                                <span className="text-2xl leading-none">&times;</span>
+                            </button>
+                        </div>
 
-							<div className="flex flex-col w-full gap-2">
-								<h4 className="text-white">Tag</h4>
-								<select
-									className="w-full p-2 border border-gray-300 rounded bg-[#EDEDED]"
-									value={filters.tagId}
-									onChange={(e) =>
-										setFilters({
-											...filters,
-											tagId: e.target.value,
-										})
-									}
-								>
-									<option value="">Selecione uma tag</option>
-									{tags.length > 0 ? (
-										tags.map((tag) => (
-											<option key={tag.id} value={tag.id}>
-												{tag.surname}
-											</option>
-										))
-									) : (
-										<option value="">
-											Nenhuma tag foi encontrada
-										</option>
-									)}
-								</select>
-							</div>
+                        {/* Body Modal */}
+                        <div className="flex-1 overflow-y-auto p-5 bg-gray-50">
+                            
+                            {!editingTag && !showTagModal && (
+                                <button
+                                    onClick={() => setShowTagModal(true)}
+                                    className="w-full mb-4 py-3 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:border-[#FCAE2D] hover:text-[#FCAE2D] hover:bg-white transition-all font-medium flex items-center justify-center gap-2"
+                                >
+                                    <LuCirclePlus /> Nova Tag
+                                </button>
+                            )}
 
-							<div className="flex gap-2 mt-2 md:mt-6">
-								<button
-									onClick={handleFilterTransactions}
-									className="flex items-center justify-center h-10 px-2 border-2 rounded border-[#FCAE2D] cursor-pointer"
-								>
-									<IoIosSearch size={24} color="#FCAE2D" />
-								</button>
-								<button
-									onClick={handleClearFilters}
-									className="flex items-center justify-center h-10 px-2 border-2 rounded border-[#f85858] cursor-pointer"
-								>
-									<GiBroom size={24} color="#f85858"/>
-								</button>
-							</div>
-						</div>
-					</div>
+                            {showTagModal && (
+                                <div className="bg-white p-4 rounded-lg shadow-sm mb-4 border border-gray-100">
+                                    <h3 className="text-sm font-bold text-gray-700 mb-3">Nova Tag</h3>
+                                    <EditModal
+                                        onClose={() => setShowTagModal(false)}
+                                        onSubmit={handleCreateTag}
+                                        editingItem={null}
+                                        title="" // Título oculto pois já tem header
+                                        fields={tagFields}
+                                        containerClassName="w-full shadow-none p-0 bg-transparent"
+                                        floatingLabels={true}
+                                    />
+                                </div>
+                            )}
 
-					<div className="flex flex-col items-center justify-start w-full lg:w-[22%] bg-[#EDEDED] rounded p-4">
-						<div className="flex items-start w-full h-10">
-							<span>Valor Total:</span>
-						</div>
-						<div className="flex items-center justify-center w-full h-full">
-							<span className={`text-4xl lg:text-5xl font-bold` + (totalAmount < 0 ? " text-red-500" : "")}>
-								<span className="text-2xl">R$</span> {totalAmount  ? totalAmount.toFixed(2) : "0.00"}
-							</span>
-						</div>
-					</div>
-				</section>
-
-				<section className="w-full h-[48.5vh] bg-[#EDEDED] p-4 rounded shadow overflow-y-auto">
-					<div className="flex flex-col gap-2">
-						{transactions.length > 0 ? (
-							transactions.map((transaction) => (
-								<div>
-									<StatementCard
-										key={transaction.id}
-										item={transaction}
-										showModal={() => {
-											setShowEditModal(true);
-											setEditingItem({
-												...transaction,
-												tagSurname:
-													transaction.tag?.surname,
-												tagColor: transaction.tag?.color,
-											});
-										}}
-										handleDeleteTransaction={
-											handleDeleteTransaction
-										}
-									/>
-									{showEditModal && (
-										<EditModal
-											onClose={() =>
-												setShowEditModal(false)
-											}
-											editingItem={editingItem}
-											onSubmit={handleEditTransaction}
-											title="Editar Transação"
-											fields={statementFields}
-										/>
-									)}
-								</div>
-							))
-						) : (
-							<p className="text-gray-500 text-center">
-								Nenhuma transação encontrada.
-							</p>
-						)}
-					</div>
-				</section>
-				{transactions.length > 0 && (
-					<>
-						<section className="flex items-center justify-center gap-4 w-full mt-4">
-							<button
-								onClick={() =>
-									setPageNumber((prev) => Math.max(prev - 1, 0))
-								}
-								disabled={pageNumber === 0}
-								className={`px-4 py-2 rounded transition-colors duration-200 ${
-									pageNumber === 0
-										? "bg-gray-300 text-gray-600 cursor-not-allowed"
-										: "bg-[#FCAE2D] text-white hover:bg-[#e2961e] cursor-pointer"
-								}`}
-							>
-								<FaChevronLeft />
-							</button>
-							<span className="text-gray-800 font-medium">
-								Página{" "}
-								<span className="text-[#FCAE2D] font-bold">
-									{pageNumber + 1}
-								</span>{" "}
-								de {totalPages}
-							</span>
-							<button
-								onClick={() => setPageNumber((prev) => prev + 1)}
-								disabled={pageNumber + 1 === totalPages}
-								className={`px-4 py-2 rounded transition-colors duration-200 ${
-									pageNumber + 1 === totalPages
-										? "bg-gray-300 text-gray-600 cursor-not-allowed"
-										: "bg-[#FCAE2D] text-white hover:bg-[#e2961e] cursor-pointer"
-								}`}
-							>
-								<FaChevronRight />
-							</button>
-						</section>
-						<div className="flex items-center justify-center w-full mt-2">
-							<span className="text-gray-800 font-extralight text-[14px]">
-								Exibindo {transactions.length} de {totalItems}{" "}
-								transações
-							</span>
-						</div>
-					</>
-				)}
-			</div>
-		</div>
-	);
+                            {editingTag ? (
+                                <div className="bg-white p-4 rounded-lg shadow-sm mb-4 border border-gray-100">
+                                    <h3 className="text-sm font-bold text-gray-700 mb-3">Editando: {editingTag.surname}</h3>
+                                    <EditModal
+                                        onClose={() => setEditingTag(null)}
+                                        onSubmit={handleEditTag}
+                                        editingItem={editingTag}
+                                        title=""
+                                        fields={tagEditFields}
+                                        containerClassName="w-full shadow-none p-0 bg-transparent"
+                                    />
+                                </div>
+                            ) : (
+                                <div className="space-y-2">
+                                    {tags.length === 0 && <p className="text-center text-gray-400 text-sm">Nenhuma tag encontrada.</p>}
+                                    {tags.map((tag) => {
+                                        const isDefault = String(tag.surname || "").trim().toLowerCase() === "outros";
+                                        return (
+                                            <div key={tag.id} className="flex items-center justify-between bg-white p-3 rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-all">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-3 h-3 rounded-full" style={{ background: tag.color }}></div>
+                                                    <span className="text-sm font-medium text-gray-700">{tag.surname}</span>
+                                                    {tag.goal && <span className="text-[10px] bg-green-50 text-green-600 px-1.5 py-0.5 rounded border border-green-100">Meta: {tag.goal}</span>}
+                                                    {tag.privateGoal && <span className="text-[10px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded">Privada</span>}
+                                                </div>
+                                                <div className="flex gap-1">
+                                                    {!isDefault && (
+                                                        <>
+                                                            <button onClick={() => setEditingTag(tag)} className="p-1.5 text-gray-400 hover:text-amber-500 hover:bg-amber-50 rounded transition-colors"><FaPencilAlt size={14} /></button>
+                                                            <button onClick={() => handleDeleteTag(tag.id)} className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"><FaTrash size={14} /></button>
+                                                        </>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
 };
 
 export default Statement;

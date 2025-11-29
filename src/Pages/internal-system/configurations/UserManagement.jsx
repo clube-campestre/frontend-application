@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { FaPencilAlt, FaTrash, FaPlusCircle } from "react-icons/fa";
+// Substituindo react-icons por lucide-react para design mais limpo e moderno
+import { Pencil, Trash2, UserPlus, Users, SearchX } from "lucide-react";
 import Toast from "../../../utils/Toast";
 import AddUserModal from "./AddUserModal";
 import { api } from "../../../provider/api";
@@ -7,202 +8,230 @@ import Swal from "sweetalert2";
 import { getUser } from "../../../utils/authStorage";
 
 export default function UserManagement() {
-	const [users, setUsers] = useState([]);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState(null);
-	const [editingUser, setEditingUser] = useState(null);
-	const [showModal, setShowModal] = useState(false);
-	const [isOwnUser, setIsOwnUser] = useState(false);
+    const [users, setUsers] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [editingUser, setEditingUser] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+    const [isOwnUser, setIsOwnUser] = useState(false);
 
-	useEffect(() => {
-		const currentUser = getUser();
-		console.log("Current User:", currentUser);
-		console.log("Editing User:", editingUser);
-		setIsOwnUser(currentUser.userId === editingUser?.id);
-	}, [editingUser]);
+    useEffect(() => {
+        const currentUser = getUser();
+        setIsOwnUser(currentUser.userId === editingUser?.id);
+    }, [editingUser]);
 
-	const fetchUsers = async () => {
-		try {
-			const response = await api.get("/accounts");
-			setUsers(response.data);
-			setError(null);
-			setLoading(false);
-		} catch (err) {
-			setError("Ocorreu um erro ao buscar os usuários.");
-			setLoading(false);
-			console.error("Error fetching users:", err);
-		}
-	};
+    const fetchUsers = async () => {
+        try {
+            const response = await api.get("/accounts");
+            setUsers(response.data);
+            setError(null);
+            setLoading(false);
+        } catch (err) {
+            setError("Ocorreu um erro ao buscar os usuários.");
+            setLoading(false);
+            console.error("Error fetching users:", err);
+        }
+    };
 
-	useEffect(() => {
-		fetchUsers();
-	}, []);
+    useEffect(() => {
+        fetchUsers();
+    }, []);
 
-	const handleAddUser = async (user) => {
-		if (editingUser) {
-			try {
-				await api.put(`/accounts/${editingUser.id}`, user);
-				fetchUsers();
-				setEditingUser(null);
-				Toast.fire({
-					icon: "success",
-					title: "Usuário editado com sucesso!",
-				});
-			} catch (err) {
-				Toast.fire({
-					icon: "error",
-					title: "Ocorreu um erro ao editar usuário.",
-				});
+    const handleAddUser = async (user) => {
+        if (editingUser) {
+            try {
+                await api.put(`/accounts/${editingUser.id}`, user);
+                fetchUsers();
+                setEditingUser(null);
+                Toast.fire({ icon: "success", title: "Usuário editado com sucesso!" });
+            } catch (err) {
+                Toast.fire({ icon: "error", title: "Ocorreu um erro ao editar usuário." });
+                console.error("Error editing user:", err);
+            }
+        } else {
+            try {
+                await api.post("/accounts/register", user);
+                fetchUsers();
+                Toast.fire({ icon: "success", title: "Usuário adicionado com sucesso!" });
+            } catch (err) {
+                Toast.fire({ icon: "error", title: "Ocorreu um erro ao adicionar usuário." });
+                console.error("Error adding user:", err);
+            }
+        }
+        setShowModal(false);
+    };
 
-				console.error("Error editing user:", err);
-			}
-		} else {
-			try {
-				await api.post("/accounts/register", user);
-				fetchUsers();
+    const handleDelete = async (id) => {
+        Swal.fire({
+            title: "Deseja deletar?",
+            text: "Essa ação não pode ser desfeita.",
+            icon: "warning",
+            iconColor: "#ef4444",
+            showCancelButton: true,
+            confirmButtonColor: "#ef4444",
+            cancelButtonColor: "#6b7280",
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Sim, deletar",
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await api.delete(`/accounts/${id}`);
+                    fetchUsers();
+                    Toast.fire({ icon: "success", title: "Usuário deletado!" });
+                } catch (err) {
+                    setError("Ocorreu um erro ao deletar o usuário.");
+                    Toast.fire({ icon: "error", title: "Erro ao deletar usuário." });
+                    console.error("Error deleting user:", err);
+                }
+            }
+        });
+    };
 
-				Toast.fire({
-					icon: "success",
-					title: "Usuário adicionado com sucesso!",
-				});
-			} catch (err) {
-				Toast.fire({
-					icon: "error",
-					title: "Ocorreu um erro ao adicionar usuário.",
-				});
-				console.error("Error adding user:", err);
-			}
-		}
-    
-		setShowModal(false);
-	};
+    const handleShowAddModal = () => {
+        setEditingUser(null);
+        setShowModal(true);
+    };
 
-	const handleDelete = async (id) => {
-		Swal.fire({
-			title: "Deseja deletar este usuário?",
-			text: "Essa ação não pode ser desfeita.",
-			icon: "warning",
-			iconColor: "#d33",
-			showCancelButton: true,
-			confirmButtonColor: "#5ccb5f",
-			cancelButtonColor: "#d33",
-			cancelButtonText: "Cancelar",
-			confirmButtonText: "Deletar",
-		}).then(async (result) => {
-			if (result.isConfirmed) {
-				try {
-					await api.delete(`/accounts/${id}`);
-					fetchUsers();
-					Toast.fire({
-						icon: "success",
-						title: "Usuário deletado com sucesso!",
-					});
-				} catch (err) {
-					setError("Ocorreu um erro ao deletar o usuário.");
-					Toast.fire({
-						icon: "error",
-						title: "Ocorreu um erro ao deletar usuário.",
-					});
-					console.error("Error deleting user:", err);
-				}
-			}
-		});
-	};
+    const handleShowEditModal = (user) => {
+        setEditingUser(user);
+        setShowModal(true);
+    };
 
-	const handleShowAddModal = () => {
-		setEditingUser(null);
-		setShowModal(true);
-	};
+    return (
+        // Container Principal: Ajuste de padding responsivo (p-4 mobile, p-8 desktop)
+        <div className="w-full min-h-screen bg-gray-50 p-4 md:p-8 font-sans">
+            <div className="max-w-6xl mx-auto">
+                
+                {/* Header: Flex Column no Mobile, Row no Desktop */}
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+                    <div>
+                        <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                            <span className="bg-amber-400 w-2 h-8 rounded-full inline-block"></span>
+                            Gestão de Usuários
+                        </h1>
+                        <p className="text-gray-500 text-sm mt-1 ml-4">
+                            Gerencie o acesso e permissões da equipe.
+                        </p>
+                    </div>
 
-	const handleShowEditModal = (user) => {
-		setEditingUser(user);
-		setShowModal(true);
-	};
+                    <button
+                        onClick={handleShowAddModal}
+                        className="
+                            w-full md:w-auto
+                            flex items-center justify-center gap-2 
+                            bg-blue-900 hover:bg-blue-800 text-white 
+                            px-5 py-3 rounded-xl 
+                            shadow-lg shadow-blue-900/20 
+                            transition-all active:scale-95
+                        "
+                    >
+                        <UserPlus size={20} />
+                        <span className="font-semibold">Novo Usuário</span>
+                    </button>
+                </div>
 
-	return (
-		<div className="w-full px-15 py-10">
-			<div className="p-4 bg-[#EDEDED] rounded-lg">
-				<div className="flex justify-between items-center p-4">
-					<h1 className="text-lg font-medium">
-						<span className="border-l-8 border-[#FCAE2D] mr-3"></span>
-						Usuários Cadastrados
-					</h1>
-					<button
-						onClick={handleShowAddModal}
-						className="flex items-center gap-2 bg-[#D9D9D9] hover:bg-gray-400 px-3 py-1 rounded-md transition-colors"
-					>
-						<span>Adicionar Usuário</span>
-						<FaPlusCircle size={18} color="#021C4F" />
-					</button>
-				</div>
+                {/* Área de Conteúdo */}
+                <div className="space-y-4">
+                    {error && (
+                        <div className="p-4 bg-red-50 border border-red-100 text-red-600 rounded-xl flex items-center gap-2">
+                            <SearchX size={20} /> {error}
+                        </div>
+                    )}
 
-				<div className="bg-white">
-					{error && (
-						<div className="p-6 text-center text-red-500">
-							{error}
-						</div>
-					)}
-					{loading ? (
-						<div className="p-6 text-center text-gray-500">
-							Carregando...
-						</div>
-					) : (
-						<ul className="flex flex-col gap-4 bg-[#EDEDED] p-4 rounded-md">
-							{users.length === 0 && !error ? (
-								<p className="text-gray-500 italic">
-									Nenhum usuário foi encontrado
-								</p>
-							) : (
-								users.map((user) => (
-									<li
-										key={user.id}
-										className="flex justify-between items-center p-6 hover:bg-gray-50 rounded-xl bg-white"
-									>
-										<div>
-											<h3 className="font-medium">
-												{user.name}
-											</h3>
-											<p className="text-sm text-gray-600">
-												{user.email}
-											</p>
-											<p className="text-xs text-gray-500">
-												Acesso: {user.access}
-											</p>
-										</div>
-										<div className="flex gap-5">
-											<button
-												onClick={() =>
-													handleShowEditModal(user)
-												}
-												className="text-amber-500 hover:text-amber-600"
-											>
-												<FaPencilAlt size={18} />
-											</button>
-											<button
-												onClick={() =>
-													handleDelete(user.id)
-												}
-												className="text-gray-400 hover:text-gray-600"
-											>
-												<FaTrash size={18} />
-											</button>
-										</div>
-									</li>
-								))
-							)}
-						</ul>
-					)}
-				</div>
-			</div>
+                    {loading ? (
+                        <div className="p-12 text-center text-gray-400 flex flex-col items-center animate-pulse">
+                            <Users size={48} className="mb-4 opacity-20" />
+                            <p>Carregando usuários...</p>
+                        </div>
+                    ) : (
+                        <div className="grid gap-4">
+                            {users.length === 0 && !error ? (
+                                <div className="text-center py-12 bg-white rounded-2xl border border-dashed border-gray-300">
+                                    <Users size={48} className="mx-auto text-gray-300 mb-3" />
+                                    <p className="text-gray-500 font-medium">Nenhum usuário encontrado</p>
+                                </div>
+                            ) : (
+                                users.map((user) => (
+                                    // Card do Usuário: Flex Column (Mobile) -> Flex Row (Desktop)
+                                    <div
+                                        key={user.id}
+                                        className="
+                                            bg-white p-5 rounded-2xl 
+                                            border border-gray-100 shadow-sm hover:shadow-md 
+                                            transition-all duration-300
+                                            flex flex-col md:flex-row md:items-center justify-between
+                                            gap-4
+                                        "
+                                    >
+                                        {/* Informações do Usuário */}
+                                        <div className="flex items-start gap-4">
+                                            {/* Avatar Placeholder estilizado */}
+                                            <div className="hidden sm:flex h-12 w-12 rounded-full bg-blue-50 items-center justify-center text-blue-700 font-bold text-lg shrink-0">
+                                                {user.name.charAt(0).toUpperCase()}
+                                            </div>
 
-			{showModal && (
-				<AddUserModal
-					onClose={() => setShowModal(false)}
-					onUserAdded={handleAddUser}
-					editingUser={editingUser}
-					isOwnUser={isOwnUser}
-				/>
-			)}
-		</div>
-	);
+                                            <div className="flex flex-col">
+                                                <h3 className="font-bold text-gray-800 text-lg leading-tight">
+                                                    {user.name}
+                                                </h3>
+                                                <span className="text-gray-500 text-sm break-all">
+                                                    {user.email}
+                                                </span>
+                                                
+                                                {/* Badge de Acesso */}
+                                                <div className="mt-2">
+                                                    <span className="
+                                                        inline-flex items-center px-2.5 py-0.5 rounded-full 
+                                                        text-xs font-medium bg-gray-100 text-gray-800
+                                                    ">
+                                                        {user.access}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Ações: Botões grandes no mobile (full width se quiser, ou flex row) */}
+                                        <div className="flex items-center gap-3 pt-4 md:pt-0 border-t md:border-t-0 border-gray-100 w-full md:w-auto justify-end">
+                                            <button
+                                                onClick={() => handleShowEditModal(user)}
+                                                className="
+                                                    p-2 rounded-lg 
+                                                    text-amber-500 bg-amber-50 hover:bg-amber-100 
+                                                    transition-colors
+                                                "
+                                                title="Editar"
+                                            >
+                                                <Pencil size={20} />
+                                            </button>
+                                            
+                                            <button
+                                                onClick={() => handleDelete(user.id)}
+                                                className="
+                                                    p-2 rounded-lg 
+                                                    text-red-500 bg-red-50 hover:bg-red-100 
+                                                    transition-colors
+                                                "
+                                                title="Excluir"
+                                            >
+                                                <Trash2 size={20} />
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {showModal && (
+                <AddUserModal
+                    onClose={() => setShowModal(false)}
+                    onUserAdded={handleAddUser}
+                    editingUser={editingUser}
+                    isOwnUser={isOwnUser}
+                />
+            )}
+        </div>
+    );
 }
