@@ -14,8 +14,8 @@ import AddPlace from "./Pages/internal-system/admin/AddPlace"
 import Statement from "./Pages/internal-system/statement/Statement";
 import Classes from "./Pages/internal-system/classe/Classes";
 import Configurations from "./Pages/internal-system/configurations/Configurations";
-import UserManagement from "./Pages/internal-system/configurations/UserManagement";
 import Calendar from "./Pages/internal-system/admin/Calendar";
+import UserManagement from "./Pages/internal-system/configurations/UserManagement";
 import Unities from "./Pages/internal-system/unities/Unities";
 import SecretaryPage from "./Pages/internal-system/secretary/SecretaryPage";
 
