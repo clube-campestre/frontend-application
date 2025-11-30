@@ -1,4 +1,4 @@
-// import Header from "../sections/header/Header.jsx";
+import Header from "../sections/header/Header.jsx";
 import Footer from "../sections/Footer.jsx"
 import AboutUs from "../sections/about-us/AboutUs.jsx"
 import Unities from "../sections/unities/Unities.jsx"
@@ -9,7 +9,7 @@ const Home = () => {
     clearSession();
     return (
         <>
-        {/* <Header/> */}
+        <Header/>
         <AboutUs/>
         <Unities/>
         <OurClassesA></OurClassesA>

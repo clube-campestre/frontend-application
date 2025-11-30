@@ -49,7 +49,7 @@ jobs:
       - name: Deploy via docker-compose (using Bastion)
         run: |
           ssh -o StrictHostKeyChecking=no \
-              -o ProxyJump=ec2-user@${{ secrets.BASTION_PUBLIC_IP }} \
+              -o ProxyJump=ubuntu@${{ secrets.BASTION_PUBLIC_IP }} \
               -i ~/.ssh/private.pem \
-              ec2-user@${{ secrets.FRONT_PRIVATE_IP }} \
+              ubuntu@${{ secrets.FRONT_PRIVATE_IP }} \
               "cd /home/ubuntu/frontend && docker compose pull && docker compose up -d"

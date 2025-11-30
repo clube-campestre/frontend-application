@@ -14,7 +14,7 @@ import AddPlace from "./Pages/internal-system/admin/AddPlace"
 import Statement from "./Pages/internal-system/statement/Statement";
 import Classes from "./Pages/internal-system/classe/Classes";
 import Configurations from "./Pages/internal-system/configurations/Configurations";
-// import Calendar from "./Pages/internal-system/admin/Calendar";
+import Calendar from "./Pages/internal-system/admin/Calendar";
 import UserManagement from "./Pages/internal-system/configurations/UserManagement";
 import Unities from "./Pages/internal-system/unities/Unities";
 import SecretaryPage from "./Pages/internal-system/secretary/SecretaryPage";
@@ -45,7 +45,7 @@ function App() {
           <Route path="/statement" element={<Statement />} />
           <Route path='/configurations' element={<Configurations/>} />
           <Route path="/user-management" element={<UserManagement/>} />
-          {/* <Route path="/events" element={<Calendar />} /> */}
+          <Route path="/events" element={<Calendar />} />
         </Route>
       </Routes>
     </BrowserRouter>
