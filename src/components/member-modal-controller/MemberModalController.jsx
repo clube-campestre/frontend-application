@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import ModalSecretary from "../../pages/internal-system/secretary/ModalSecretary";
-import InfoMember from "../../pages/internal-system/secretary/InfoMember";
+import ModalSecretary from "../../Pages/internal-system/secretary/ModalSecretary";
+import InfoMember from "../../Pages/internal-system/secretary/InfoMember";
 
 const MemberModalController = ({ member, onClose }) => {
   const [showInfo, setShowInfo] = useState(false);

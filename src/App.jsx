@@ -3,19 +3,19 @@ import { BrowserRouter, Routes, Route, Link } from "react-router";
 import Login from "./Pages/Login/Login";
 import Home from "./Pages/home/Home";
 import MainLayout from "./components/main-layout/MainLayout";
-import Admin from "./pages/internal-system/admin/Admin";
+import Admin from "./Pages/internal-system/admin/Admin";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import InternalHome from "./Pages/internal-system/internal-home/InternalHome";
 // import AddMembro from "./pages/internal-system/admin/AddMember"
-import AddMembro from "./pages/internal-system/admin/AddMemberPage"
-import AddEvento from "./pages/internal-system/admin/AddEvent"
+import AddMembro from "./Pages/internal-system/admin/AddMemberPage"
+import AddEvento from "./Pages/internal-system/admin/AddEvent"
 import AddTransport from "./Pages/internal-system/admin/AddTransport"
 import AddPlace from "./Pages/internal-system/admin/AddPlace"
 import Statement from "./Pages/internal-system/statement/Statement";
 import Classes from "./Pages/internal-system/classe/Classes";
 import Configurations from "./Pages/internal-system/configurations/Configurations";
-import UserManagement from "./pages/internal-system/configurations/UserManagement";
-import Calendar from "./pages/internal-system/admin/Calendar";
+import UserManagement from "./Pages/internal-system/configurations/UserManagement";
+import Calendar from "./Pages/internal-system/admin/Calendar";
 import Unities from "./Pages/internal-system/unities/Unities";
 import SecretaryPage from "./Pages/internal-system/secretary/SecretaryPage";
 
