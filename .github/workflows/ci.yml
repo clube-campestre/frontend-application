@@ -46,6 +46,15 @@ jobs:
           chmod 600 ~/.ssh/bastion.pem
           chmod 600 ~/.ssh/private.pem
 
+      # Add bastion and target host keys to known_hosts to avoid host verification errors
+      - name: Add remote hosts to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          touch ~/.ssh/known_hosts
+          ssh-keyscan -H ${{ secrets.BASTION_PUBLIC_IP }} >> ~/.ssh/known_hosts || true
+          ssh-keyscan -H ${{ secrets.FRONT_PRIVATE_IP }} >> ~/.ssh/known_hosts || true
+          chmod 644 ~/.ssh/known_hosts
+
       - name: Deploy via docker-compose (using Bastion)
         run: |
           ssh -o StrictHostKeyChecking=no \
