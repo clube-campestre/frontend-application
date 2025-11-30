@@ -1,5 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
-import { api } from "../../../provider/api";
+import {
+    getAllMembers,
+    getMembersByFilter,
+    getMembersByUnit,
+    updateMemberUnitAndClass,
+} from "../../../services/membersService";
+import { changeUnitScore, getUnitsRanking, resetAllUnitScores } from "../../../services/unitsService";
+import { getUser } from "../../../utils/authStorage";
 import Toast from "../../../utils/Toast";
 
 // Componentes
@@ -100,25 +107,33 @@ const Unities = () => {
         { name: "responsibleContact", label: "Contato Resp.", placeholder: "Contato", type: "text", isRequired: true },
     ];
 
+    // Campos restritos de edição nesta tela (somente unidade/classe/roles)
+    const unitEditFields = [
+        { name: "unitName", label: "Unidade", placeholder: "Selecione", type: "select", isRequired: true, options: unities.map(u => ({ value: u.formatedName || u.name, label: u.name })) },
+        { name: "classCategory", label: "Categoria", placeholder: "Selecione", type: "text", isRequired: false },
+        { name: "unitRole", label: "Função na Unidade", placeholder: "Selecione", type: "select", isRequired: false, options: [{ value: "MEMBRO", label: "Membro" }, { value: "CONSELHEIRO", label: "Conselheiro" }] },
+        { name: "classRole", label: "Função na Classe", placeholder: "Selecione", type: "text", isRequired: false },
+    ];
+
     // --- API ---
     const fetchMembers = async () => {
         try {
-            const allMembersResponse = await api.get("/members");
-            setAllMembers(allMembersResponse.data || []);
-            if (selectedUnit === null) {
-                const response = await api.get(`/members/filter`, { params: { page: pageNumber, size: pageSize } });
-                setMembers(response.data.items || []);
-                setTotalItems(response.data.totalItems);
-                setTotalPages(response.data.totalPages);
-            } else {
-                const response = await api.get(`/members/unit`, { params: { unitName: selectedUnitName, page: pageNumber, size: pageSize } });
-                setMembers(response.data.members || []);
-                setUnitPoints(response.data.score);
-                setUnitCounselor(response.data.counselorName);
-                setTotalItems(response.data.totalItems);
-                setTotalPages(response.data.totalPages);
-            }
-        } catch (error) {
+                const allMembersResponse = await getAllMembers();
+                setAllMembers(allMembersResponse || []);
+                if (selectedUnit === null) {
+                    const response = await getMembersByFilter({ page: pageNumber, size: pageSize });
+                    setMembers(response?.items || []);
+                    setTotalItems(response?.totalItems || 0);
+                    setTotalPages(response?.totalPages || 1);
+                } else {
+                    const response = await getMembersByUnit(selectedUnitName, pageNumber, pageSize);
+                    setMembers(response?.members || []);
+                    setUnitPoints(response?.score || null);
+                    setUnitCounselor(response?.counselorName || null);
+                    setTotalItems(response?.totalItems || 0);
+                    setTotalPages(response?.totalPages || 1);
+                }
+            } catch (error) {
             console.error("Error:", error);
             setMembers([]);
             setUnitCounselor(null);
@@ -132,11 +147,17 @@ const Unities = () => {
     }, [selectedUnit, pageNumber]);
 
     const handleEditMember = async (member) => {
-        const formData = new FormData();
-        formData.append("data", JSON.stringify(member));
+        // Only allow unit/class updates from this screen
         try {
-            const response = await api.put(`/members`, formData);
-            if (response.status === 200) {
+            const payload = {
+                unitName: member.unitName || member.unit?.surname || selectedUnitName,
+                unitRole: member.unitRole,
+                classRole: member.classRole,
+                classCategory: member.classCategory,
+            };
+
+            const response = await updateMemberUnitAndClass(member.cpf, payload);
+            if (response) {
                 Toast.fire({ icon: "success", title: "Editado com sucesso!" });
                 setShowEditMemberModal(false);
                 fetchMembers();
@@ -150,11 +171,9 @@ const Unities = () => {
         try {
             await Promise.all(
                 membersList.map(async (member) => {
-                    const response = await api.put(
-                        `members/unit-and-class/${member.cpf}`,
-                        { unitName: selectedUnitName, unitRole: member.unitRole, classRole: member.classRole, classCategory: member.classCategory }
-                    );
-                    if (response.status === 200) Toast.fire({ icon: "success", title: `Membro adicionado!` });
+                    const payload = { unitName: selectedUnitName, unitRole: member.unitRole, classRole: member.classRole, classCategory: member.classCategory };
+                    const response = await updateMemberUnitAndClass(member.cpf, payload);
+                    if (response) Toast.fire({ icon: "success", title: `Membro adicionado!` });
                     handleShowAddMemberModal();
                     fetchMembers();
                 })
@@ -167,19 +186,19 @@ const Unities = () => {
     const handleAddUnitPoint = async (data) => {
         if (!data.unit || !data.points) return Toast.fire({ icon: "error", title: "Dados inválidos." });
         if (data.points < 0) return Toast.fire({ icon: "error", title: "A pontuação não pode ser negativa." });
-
-        try {
-            const response = await api.post("/units/score", {}, {
-                params: { id: data.unit, score: data.points, isSum: data.isSum }
-            });
-            if (response.status === 200) {
-                Toast.fire({ icon: "success", title: "Pontuação atualizada!" });
-                if (selectedUnit === parseInt(data.unit)) fetchMembers();
-            }
-        } catch (error) {
-            Toast.fire({ icon: "error", title: "Erro ao alterar pontuação." });
+		try {
+        const response = await changeUnitScore({ id: data.unit, score: data.points, isSum: data.isSum });
+        if (response) {
+            Toast.fire({ icon: "success", title: `Pontuação ${data.isSum ? "adicionada" : "removida"} com sucesso!` });
         }
-    };
+		} catch (error) {
+			Toast.fire({
+				icon: "error",
+				title: "Erro ao adicionar pontuação.",
+			});
+			console.error("Error adding unit point:", error);
+		}
+	};
 
     return (
         <div className="h-screen flex flex-col bg-gray-50 overflow-hidden font-sans">
@@ -293,10 +312,9 @@ const Unities = () => {
                         </div>
                     </div>
 
-//<<<<<<< feature/mobile-ruth_v2
                     {/* Botões */}
                     <div className="flex gap-2 w-full xl:w-auto">
-                        {selectedUnit && (
+                        {selectedUnit && getUser().access !== "SUPERVISOR" && getUser().access !== "TESOURARIA" && (
                             <button
                                 onClick={handleShowAddMemberModal}
                                 className="flex-1 flex items-center justify-center gap-2 px-3 py-3 bg-[#FCAE2D] text-white rounded-xl hover:bg-[#e0961a] active:scale-95 transition-all font-bold text-xs md:text-sm shadow-md"
@@ -313,36 +331,8 @@ const Unities = () => {
                     </div>
                 </div>
             </div>
-//=======
-		try {
-			const response = await api.post(
-				"/units/score",
-				{},
-				{
-					params: {
-						id: data.unit,
-						score: data.points,
-						isSum: data.isSum,
-					},
-				}
-			);
-			if (response.status === 200) {
-				Toast.fire({
-					icon: "success",
-					title: `Pontuação ${data.isSum ? "adicionada" : "removida"} com sucesso!`,
-				});
-			}
-		} catch (error) {
-			Toast.fire({
-				icon: "error",
-				title: "Erro ao adicionar pontuação.",
-			});
-			console.error("Error adding unit point:", error);
-		}
-	};
-	
-//>>>>>>> develop_v2
 
+	
             {/* --- LISTA (Scroll Interno) --- */}
             <div className="flex-1 overflow-hidden relative max-w-[1920px] w-full mx-auto px-3 md:px-6 pb-3">
                 <div className="flex flex-col h-full bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -399,7 +389,21 @@ const Unities = () => {
             {/* --- MODAIS --- */}
             {showAddUnitPointModal && <EditModal title="Pontuação" fields={unitPointsFields} onClose={() => setShowAddUnitPointModal(false)} onSubmit={(data) => { handleAddUnitPoint(data); setShowAddUnitPointModal(false); }} />}
             {showAddMemberModal && <MemberModal members={allMembers} unitId={selectedUnit} unitName={selectedUnitName} isOpen={showAddMemberModal} onClose={handleShowAddMemberModal} onConfirm={(selectedMembers) => handleUpdateMemberUnit(selectedMembers)} />}
-            {showEditMemberModal && selectedMember && <EditModal editingItem={selectedMember} onClose={handleShowEditMemberModal} onSubmit={handleEditMember} title="Editar" fields={membersFields} />}
+            {showEditMemberModal && selectedMember && (
+                <EditModal
+                    editingItem={{
+                        ...selectedMember,
+                        unitName: selectedMember.unit?.surname || selectedMember.unitName,
+                        classCategory: selectedMember.classCategory,
+                        unitRole: selectedMember.unitRole,
+                        classRole: selectedMember.classRole,
+                    }}
+                    onClose={handleShowEditMemberModal}
+                    onSubmit={handleEditMember}
+                    title="Editar"
+                    fields={unitEditFields}
+                />
+            )}
         </div>
     );
 };

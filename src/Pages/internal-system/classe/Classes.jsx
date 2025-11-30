@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { api } from "../../../provider/api";
+import { getUser } from "../../../utils/authStorage";
+import { getAllMembers, getMembersByFilter, getMembersByClass, updateMemberByCpf, updateMemberUnitAndClass } from "../../../services/membersService";
 import Toast from "../../../utils/Toast";
 
 // Imagens
@@ -84,21 +85,19 @@ const Classes = () => {
     // --- API FUNCTIONS (MANTIDAS) ---
     const fetchMembers = async () => {
         try {
-            const allMembersResponse = await api.get("/members");
-            setAllMembers(allMembersResponse.data || []);
+            const allMembersResponse = await getAllMembers();
+            setAllMembers(allMembersResponse || []);
             if (selectedClassName === null) {
-                const response = await api.get(`/members/filter`, { params: { page: pageNumber, size: pageSize } });
-                setMembers(response.data.items || []);
-                setTotalItems(response.data.totalItems);
-                setTotalPages(response.data.totalPages);
+                const response = await getMembersByFilter({ page: pageNumber, size: pageSize });
+                setMembers(response?.items || []);
+                setTotalItems(response?.totalItems || 0);
+                setTotalPages(response?.totalPages || 1);
             } else {
-                const response = await api.get("/members/class", {
-                    params: { classCategory: selectedClassName.toUpperCase(), page: pageNumber, size: pageSize },
-                });
-                setMembers(response.data.members || []);
-                setTotalItems(response.data.totalItems);
-                setTotalPages(response.data.totalPages);
-                setClassInstructor(response.data.instructorName);
+                const response = await getMembersByClass(selectedClassName.toUpperCase(), pageNumber, pageSize);
+                setMembers(response?.members || []);
+                setTotalItems(response?.totalItems || 0);
+                setTotalPages(response?.totalPages || 1);
+                setClassInstructor(response?.instructorName || null);
             }
         } catch (error) {
             setMembers([]);
@@ -114,8 +113,8 @@ const Classes = () => {
 
     const handleEditMember = async (member) => {
         try {
-            const response = await api.put(`/members/${member.cpf}`, member);
-            if (response.status === 200) {
+            const response = await updateMemberByCpf(member.cpf, member);
+            if (response) {
                 Toast.fire({ icon: "success", title: "Membro editado com sucesso!" });
                 setShowEditMemberModal(false);
                 fetchMembers();
@@ -129,16 +128,14 @@ const Classes = () => {
         try {
             await Promise.all(
                 membersList.map(async (member) => {
-                    const response = await api.put(
-                        `/members/unit-and-class/${member.cpf}`,
-                        {
-                            classCategory: selectedClassName.toUpperCase(),
-                            classRole: member.classRole,
-                            unitRole: member.unitRole,
-                            unitName: member.unit.surname,
-                        }
-                    );
-                    if (response.status === 200) {
+                    const payload = {
+                        classCategory: selectedClassName.toUpperCase(),
+                        classRole: member.classRole,
+                        unitRole: member.unitRole,
+                        unitName: member.unit.surname,
+                    };
+                    const response = await updateMemberUnitAndClass(member.cpf, payload);
+                    if (response) {
                         Toast.fire({ icon: "success", title: `Membro adicionado à classe ${selectedClassName}!` });
                     }
                     handleShowAddMemberModal();
@@ -290,7 +287,7 @@ const Classes = () => {
 
                     {/* Botão de Ação */}
                     <div className="w-full lg:w-auto flex items-center">
-                        {selectedClassName && (
+                        {selectedClassName && getUser().access !== "SUPERVISOR" && getUser().access !== "TESOURARIA" && (
                             <button
                                 onClick={handleShowAddMemberModal}
                                 className="w-full lg:w-auto flex items-center justify-center gap-2 px-6 py-3.5 bg-[#FCAE2D] text-white rounded-xl hover:bg-[#e0961a] active:scale-95 transition-all font-bold text-sm shadow-md"

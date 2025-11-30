@@ -1,0 +1,2595 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Backend Application",
+    "license": {
+      "name": "UNLICENSED"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080/api",
+      "description": "Generated server url"
+    }
+  ],
+  "security": [
+    {
+      "Bearer": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Statement Controller",
+      "description": "Statement data routes"
+    },
+    {
+      "name": "Unit Controller",
+      "description": "Unit data routes"
+    },
+    {
+      "name": "Reset Password Controller",
+      "description": "Reset password routes"
+    },
+    {
+      "name": "Member data Controller",
+      "description": "Member data routes"
+    },
+    {
+      "name": "Account Controller",
+      "description": "Account data routes"
+    },
+    {
+      "name": "Tag Controller",
+      "description": "Tag data routes"
+    },
+    {
+      "name": "Transport Controller",
+      "description": "Transport data routes"
+    },
+    {
+      "name": "Place Controller",
+      "description": "Place data routes"
+    }
+  ],
+  "paths": {
+    "/units/score": {
+      "put": {
+        "tags": [
+          "Unit Controller"
+        ],
+        "summary": "Endpoint for update unit score by unit id",
+        "operationId": "updateScoreById",
+        "parameters": [
+          {
+            "name": "surname",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "newScore",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnitResponseDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Unit Controller"
+        ],
+        "summary": "Endpoint for increase or decrease unit score by unit id",
+        "operationId": "increaseOrDecreaseTheScoreById",
+        "parameters": [
+          {
+            "name": "surname",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "score",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "isSum",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnitResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transports/{id}": {
+      "get": {
+        "tags": [
+          "Transport Controller"
+        ],
+        "summary": "Endpoint for get transport by id",
+        "operationId": "getById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransportResponseDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Transport Controller"
+        ],
+        "summary": "Endpoint for update transport by id",
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransportRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransportResponseDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Transport Controller"
+        ],
+        "summary": "Endpoint for remove transport by id",
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/tags/{id}": {
+      "get": {
+        "tags": [
+          "Tag Controller"
+        ],
+        "summary": "Endpoint for get tag by id",
+        "operationId": "getById_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/TagResponseDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Tag Controller"
+        ],
+        "summary": "Endpoint for update tag by id",
+        "operationId": "update_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TagRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/TagResponseDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Tag Controller"
+        ],
+        "summary": "Endpoint for remove tag by id",
+        "operationId": "delete_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/statements/{id}": {
+      "get": {
+        "tags": [
+          "Statement Controller"
+        ],
+        "summary": "Endpoint for get statement by id",
+        "operationId": "getById_2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatementResponseDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Statement Controller"
+        ],
+        "summary": "Endpoint for update statement by id",
+        "operationId": "update_2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateStatementCommand"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatementResponseDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Statement Controller"
+        ],
+        "summary": "Endpoint for remove statement by id",
+        "operationId": "delete_2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/places/{id}": {
+      "get": {
+        "tags": [
+          "Place Controller"
+        ],
+        "summary": "Endpoint for get place by id",
+        "operationId": "getById_3",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlaceResponseDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Place Controller"
+        ],
+        "summary": "Endpoint for update place by id",
+        "operationId": "update_3",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePlaceRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlaceResponseDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Place Controller"
+        ],
+        "summary": "Endpoint for remove place by id",
+        "operationId": "delete_3",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/members": {
+      "get": {
+        "tags": [
+          "Member data Controller"
+        ],
+        "summary": "Endpoint for list all member data",
+        "operationId": "getAll",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MemberDataResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Member data Controller"
+        ],
+        "summary": "Endpoint for update member data by cpf",
+        "operationId": "update_4",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "data"
+                ],
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "string"
+                  },
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemberDataResponseDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Member data Controller"
+        ],
+        "summary": "Endpoint for create member",
+        "operationId": "register",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "data"
+                ],
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "string"
+                  },
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemberDataResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/members/unit-and-class/{cpf}": {
+      "put": {
+        "tags": [
+          "Member data Controller"
+        ],
+        "summary": "Endpoint for update member unit and class by cpf",
+        "operationId": "updateUnitAndClass",
+        "parameters": [
+          {
+            "name": "cpf",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMemberUnitAndClassRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemberDataResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accounts/{id}": {
+      "get": {
+        "tags": [
+          "Account Controller"
+        ],
+        "summary": "Endpoint for get account by id",
+        "operationId": "getById_4",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetAccountResponseDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Account Controller"
+        ],
+        "summary": "Endpoint for update account by id",
+        "operationId": "update_5",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAccountRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Account Controller"
+        ],
+        "summary": "Endpoint for remove account by id",
+        "operationId": "delete_4",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/units/reseted": {
+      "post": {
+        "tags": [
+          "Unit Controller"
+        ],
+        "summary": "Endpoint for reset all unit score",
+        "operationId": "resetAllScores",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transports": {
+      "get": {
+        "tags": [
+          "Transport Controller"
+        ],
+        "summary": "Endpoint to get transports ranked by rating",
+        "operationId": "getAllOrderedByRating",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TransportResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Transport Controller"
+        ],
+        "summary": "Endpoint for create transport",
+        "operationId": "register_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransportRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransportResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tags": {
+      "get": {
+        "tags": [
+          "Tag Controller"
+        ],
+        "summary": "Endpoint for list all tags",
+        "operationId": "getAll_1",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TagResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Tag Controller"
+        ],
+        "summary": "Endpoint for create a new tag",
+        "operationId": "register_2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TagRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/TagResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/statements": {
+      "get": {
+        "tags": [
+          "Statement Controller"
+        ],
+        "summary": "Endpoint for get statement by filter and pagination",
+        "operationId": "getByFilterAndPagination",
+        "parameters": [
+          {
+            "name": "startDate",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "tagId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ENTRADA",
+                "SAIDA"
+              ]
+            }
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetByFilterAndPaginationStatementResponseDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Statement Controller"
+        ],
+        "summary": "Endpoint for create statement",
+        "operationId": "register_3",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StatementRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatementResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reset-password/verify-code": {
+      "post": {
+        "tags": [
+          "Reset Password Controller"
+        ],
+        "summary": "Endpoint for verify reset password code",
+        "operationId": "verifyCode",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reset-password/update-password": {
+      "post": {
+        "tags": [
+          "Reset Password Controller"
+        ],
+        "summary": "Endpoint for update password",
+        "operationId": "updatePassword",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "newPassword",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/reset-password/reset": {
+      "post": {
+        "tags": [
+          "Reset Password Controller"
+        ],
+        "summary": "Endpoint for generate reset password code",
+        "operationId": "resetPassword",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/places": {
+      "get": {
+        "tags": [
+          "Place Controller"
+        ],
+        "summary": "Endpoint to get places ranked by rating",
+        "operationId": "getAllOrderedByRating_1",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PlaceResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Place Controller"
+        ],
+        "summary": "Endpoint for create place",
+        "operationId": "register_4",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SavePlaceRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlaceResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accounts/register": {
+      "post": {
+        "tags": [
+          "Account Controller"
+        ],
+        "summary": "Endpoint for account register",
+        "operationId": "register_5",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveAccountRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/accounts/login": {
+      "post": {
+        "tags": [
+          "Account Controller"
+        ],
+        "summary": "Endpoint for account login",
+        "operationId": "login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginAccountRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenAccountResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/units/ranking": {
+      "get": {
+        "tags": [
+          "Unit Controller"
+        ],
+        "summary": "Endpoint for get units by ranking",
+        "operationId": "getRanked",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UnitResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/statements/goal": {
+      "get": {
+        "tags": [
+          "Statement Controller"
+        ],
+        "summary": "Endpoint for get goal by tag id",
+        "operationId": "getGoalByTagId",
+        "parameters": [
+          {
+            "name": "tagId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoalResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/members/{cpf}": {
+      "get": {
+        "tags": [
+          "Member data Controller"
+        ],
+        "summary": "Endpoint for get member data by cpf",
+        "operationId": "getById_5",
+        "parameters": [
+          {
+            "name": "cpf",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemberDataResponseDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Member data Controller"
+        ],
+        "summary": "Endpoint for remove member data by cpf",
+        "operationId": "delete_5",
+        "parameters": [
+          {
+            "name": "cpf",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/members/unit": {
+      "get": {
+        "tags": [
+          "Member data Controller"
+        ],
+        "summary": "Endpoint for list member data by unit",
+        "operationId": "getByUnit",
+        "parameters": [
+          {
+            "name": "unitName",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemberDataForUnitResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/members/filter": {
+      "get": {
+        "tags": [
+          "Member data Controller"
+        ],
+        "summary": "Endpoint for get member data by filter and pagination",
+        "operationId": "getByFilterAndPagination_1",
+        "parameters": [
+          {
+            "name": "unit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "classCategory",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetByFilterAndPaginationMemberDataResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/members/class": {
+      "get": {
+        "tags": [
+          "Member data Controller"
+        ],
+        "summary": "Endpoint for list member data by class",
+        "operationId": "getByClass",
+        "parameters": [
+          {
+            "name": "classCategory",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "NENHUMA",
+                "AMIGO",
+                "COMPANHEIRO",
+                "PESQUISADOR",
+                "PIONEIRO",
+                "EXCURSIONISTA",
+                "GUIA",
+                "AGRUPADAS",
+                "DESBRAVADORES_COMPLETO",
+                "LIDER",
+                "LIDER_MASTER",
+                "LIDER_MASTER_AVANCADO"
+              ]
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemberDataForClassResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accounts": {
+      "get": {
+        "tags": [
+          "Account Controller"
+        ],
+        "summary": "Endpoint for list all accounts",
+        "operationId": "getAll_2",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetAccountResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/statements/tag": {
+      "delete": {
+        "tags": [
+          "Statement Controller"
+        ],
+        "summary": "Endpoint for remove statement by tag",
+        "operationId": "deleteByTag",
+        "parameters": [
+          {
+            "name": "tagName",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UnitResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "surname": {
+            "type": "string"
+          },
+          "score": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "TransportRequestDto": {
+        "required": [
+          "capacity",
+          "companyName",
+          "companyNumber",
+          "driverName",
+          "driverNumber",
+          "price",
+          "rating",
+          "travelDistance"
+        ],
+        "type": "object",
+        "properties": {
+          "price": {
+            "type": "number"
+          },
+          "travelDistance": {
+            "type": "number",
+            "format": "float"
+          },
+          "capacity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "companyName": {
+            "type": "string"
+          },
+          "companyNumber": {
+            "type": "string"
+          },
+          "driverName": {
+            "type": "string"
+          },
+          "driverNumber": {
+            "type": "string"
+          },
+          "rating": {
+            "maximum": 5,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "TransportResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "price": {
+            "type": "number"
+          },
+          "travelDistance": {
+            "type": "number",
+            "format": "float"
+          },
+          "capacity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "companyName": {
+            "type": "string"
+          },
+          "companyNumber": {
+            "type": "string"
+          },
+          "driverName": {
+            "type": "string"
+          },
+          "driverNumber": {
+            "type": "string"
+          },
+          "rating": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "TagRequestDto": {
+        "required": [
+          "color",
+          "surname"
+        ],
+        "type": "object",
+        "properties": {
+          "surname": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "goal": {
+            "type": "number"
+          },
+          "privateGoal": {
+            "type": "boolean"
+          }
+        }
+      },
+      "TagResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "surname": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "goal": {
+            "type": "number"
+          },
+          "privateGoal": {
+            "type": "boolean"
+          }
+        }
+      },
+      "UpdateStatementCommand": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "information": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "transactionDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "transactionType": {
+            "type": "string",
+            "enum": [
+              "ENTRADA",
+              "SAIDA"
+            ]
+          },
+          "tagSurname": {
+            "type": "string"
+          }
+        }
+      },
+      "StatementResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "information": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "transactionDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "transactionType": {
+            "type": "string",
+            "enum": [
+              "ENTRADA",
+              "SAIDA"
+            ]
+          },
+          "tag": {
+            "$ref": "#/components/schemas/TagResponseDto"
+          }
+        }
+      },
+      "UpdateAddressRequestDto": {
+        "required": [
+          "cep",
+          "city",
+          "district",
+          "houseNumber",
+          "id",
+          "state",
+          "street"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "houseNumber": {
+            "type": "string"
+          },
+          "district": {
+            "maxLength": 2147483647,
+            "minLength": 2,
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "street": {
+            "type": "string"
+          },
+          "cep": {
+            "maxLength": 8,
+            "minLength": 0,
+            "type": "string"
+          },
+          "referenceHouse": {
+            "type": "string"
+          },
+          "complement": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdatePlaceRequestDto": {
+        "required": [
+          "address",
+          "capacity",
+          "contactCellphoneNumber",
+          "contactName",
+          "name",
+          "price",
+          "rating"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 45,
+            "minLength": 0,
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "capacity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "contactName": {
+            "type": "string"
+          },
+          "contactCellphoneNumber": {
+            "maxLength": 12,
+            "minLength": 0,
+            "type": "string"
+          },
+          "rating": {
+            "maximum": 5,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          },
+          "address": {
+            "$ref": "#/components/schemas/UpdateAddressRequestDto"
+          }
+        }
+      },
+      "AddressResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "houseNumber": {
+            "type": "string"
+          },
+          "district": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "street": {
+            "type": "string"
+          },
+          "cep": {
+            "type": "string"
+          },
+          "referenceHouse": {
+            "type": "string"
+          },
+          "complement": {
+            "type": "string"
+          }
+        }
+      },
+      "PlaceResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "capacity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "contactName": {
+            "type": "string"
+          },
+          "contactCellphoneNumber": {
+            "type": "string"
+          },
+          "rating": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "address": {
+            "$ref": "#/components/schemas/AddressResponseDto"
+          }
+        }
+      },
+      "MedicalDataResponseDto": {
+        "type": "object",
+        "properties": {
+          "cpf": {
+            "type": "string"
+          },
+          "cns": {
+            "type": "string"
+          },
+          "agreement": {
+            "type": "string"
+          },
+          "bloodType": {
+            "type": "string"
+          },
+          "catapora": {
+            "type": "boolean"
+          },
+          "meningite": {
+            "type": "boolean"
+          },
+          "hepatite": {
+            "type": "boolean"
+          },
+          "dengue": {
+            "type": "boolean"
+          },
+          "pneumonia": {
+            "type": "boolean"
+          },
+          "malaria": {
+            "type": "boolean"
+          },
+          "febreAmarela": {
+            "type": "boolean"
+          },
+          "sarampo": {
+            "type": "boolean"
+          },
+          "tetano": {
+            "type": "boolean"
+          },
+          "variola": {
+            "type": "boolean"
+          },
+          "coqueluche": {
+            "type": "boolean"
+          },
+          "difteria": {
+            "type": "boolean"
+          },
+          "rinite": {
+            "type": "boolean"
+          },
+          "bronquite": {
+            "type": "boolean"
+          },
+          "asma": {
+            "type": "boolean"
+          },
+          "rubeola": {
+            "type": "boolean"
+          },
+          "colera": {
+            "type": "boolean"
+          },
+          "covid19": {
+            "type": "boolean"
+          },
+          "h1n1": {
+            "type": "boolean"
+          },
+          "caxumba": {
+            "type": "boolean"
+          },
+          "others": {
+            "type": "string"
+          },
+          "heartProblems": {
+            "type": "string"
+          },
+          "drugAllergy": {
+            "type": "string"
+          },
+          "lactoseAllergy": {
+            "type": "boolean"
+          },
+          "deficiency": {
+            "type": "string"
+          },
+          "bloodTransfusion": {
+            "type": "boolean"
+          },
+          "skinAllergy": {
+            "type": "boolean"
+          },
+          "skinAllergyMedications": {
+            "type": "string"
+          },
+          "faintingOrConvulsion": {
+            "type": "boolean"
+          },
+          "faintingOrSeizuresMedications": {
+            "type": "string"
+          },
+          "psychologicalDisorder": {
+            "type": "string"
+          },
+          "allergy": {
+            "type": "boolean"
+          },
+          "allergyMedications": {
+            "type": "string"
+          },
+          "diabetic": {
+            "type": "boolean"
+          },
+          "diabeticMedications": {
+            "type": "string"
+          },
+          "recentSeriousInjury": {
+            "type": "boolean"
+          },
+          "recentFracture": {
+            "type": "string"
+          },
+          "surgeries": {
+            "type": "string"
+          },
+          "hospitalizationReasonLast5Years": {
+            "type": "string"
+          }
+        }
+      },
+      "MemberDataResponseDto": {
+        "type": "object",
+        "properties": {
+          "cpf": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string",
+            "format": "byte"
+          },
+          "imageFormat": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "birthDate": {
+            "type": "string"
+          },
+          "sex": {
+            "type": "string",
+            "enum": [
+              "OUTRO",
+              "FEMININO",
+              "MASCULINO"
+            ]
+          },
+          "birthCertificate": {
+            "type": "string"
+          },
+          "tshirtSize": {
+            "type": "string",
+            "enum": [
+              "PP",
+              "P",
+              "M",
+              "G",
+              "GG",
+              "XG",
+              "XG1",
+              "XG2"
+            ]
+          },
+          "isBaptized": {
+            "type": "boolean"
+          },
+          "contact": {
+            "type": "string"
+          },
+          "issuingAuthority": {
+            "type": "string"
+          },
+          "unit": {
+            "$ref": "#/components/schemas/UnitResponseDto"
+          },
+          "unitRole": {
+            "type": "string",
+            "enum": [
+              "NENHUM",
+              "CONSELHEIRO",
+              "CONSELHEIRO_AUXILIAR",
+              "CAPITAO",
+              "VICE_CAPITAO",
+              "TESOUREIRO",
+              "VICE_TESOUREIRO",
+              "SECRETARIO",
+              "VICE_SECRETARIO",
+              "PADIOLEIRO",
+              "CAPELAO",
+              "ALMOXARIFADO"
+            ]
+          },
+          "classCategory": {
+            "type": "string",
+            "enum": [
+              "NENHUMA",
+              "AMIGO",
+              "COMPANHEIRO",
+              "PESQUISADOR",
+              "PIONEIRO",
+              "EXCURSIONISTA",
+              "GUIA",
+              "AGRUPADAS",
+              "DESBRAVADORES_COMPLETO",
+              "LIDER",
+              "LIDER_MASTER",
+              "LIDER_MASTER_AVANCADO"
+            ]
+          },
+          "classRole": {
+            "type": "string",
+            "enum": [
+              "NENHUMA",
+              "INSTRUTOR",
+              "INSTRUTOR_AUXILIAR",
+              "MEMBRO"
+            ]
+          },
+          "fatherName": {
+            "type": "string"
+          },
+          "fatherContact": {
+            "type": "string"
+          },
+          "fatherEmail": {
+            "type": "string"
+          },
+          "motherName": {
+            "type": "string"
+          },
+          "motherContact": {
+            "type": "string"
+          },
+          "motherEmail": {
+            "type": "string"
+          },
+          "responsibleName": {
+            "type": "string"
+          },
+          "responsibleContact": {
+            "type": "string"
+          },
+          "responsibleEmail": {
+            "type": "string"
+          },
+          "address": {
+            "$ref": "#/components/schemas/AddressResponseDto"
+          },
+          "medicalData": {
+            "$ref": "#/components/schemas/MedicalDataResponseDto"
+          },
+          "acceptTerms": {
+            "type": "boolean"
+          },
+          "baptized": {
+            "type": "boolean"
+          }
+        }
+      },
+      "UpdateMemberUnitAndClassRequestDto": {
+        "type": "object",
+        "properties": {
+          "unitName": {
+            "type": "string"
+          },
+          "unitRole": {
+            "type": "string"
+          },
+          "classCategory": {
+            "type": "string"
+          },
+          "classRole": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdateAccountRequestDto": {
+        "required": [
+          "access",
+          "email",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Account e-mail",
+            "example": "test@email.com"
+          },
+          "name": {
+            "type": "string",
+            "description": "Account name",
+            "example": "Test"
+          },
+          "access": {
+            "type": "string",
+            "description": "Account access",
+            "example": "DIRETOR",
+            "enum": [
+              "DIRETOR",
+              "EXECUTIVO",
+              "TESOURARIA",
+              "SUPERVISOR"
+            ]
+          }
+        }
+      },
+      "StatementRequestDto": {
+        "required": [
+          "information",
+          "price",
+          "tagSurname",
+          "transactionDate",
+          "transactionType"
+        ],
+        "type": "object",
+        "properties": {
+          "information": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "transactionDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "transactionType": {
+            "type": "string",
+            "enum": [
+              "ENTRADA",
+              "SAIDA"
+            ]
+          },
+          "tagSurname": {
+            "type": "string"
+          }
+        }
+      },
+      "SaveAddressRequestDto": {
+        "required": [
+          "cep",
+          "city",
+          "district",
+          "houseNumber",
+          "state",
+          "street"
+        ],
+        "type": "object",
+        "properties": {
+          "houseNumber": {
+            "type": "string"
+          },
+          "district": {
+            "maxLength": 2147483647,
+            "minLength": 2,
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "street": {
+            "type": "string"
+          },
+          "cep": {
+            "maxLength": 8,
+            "minLength": 8,
+            "type": "string"
+          },
+          "referenceHouse": {
+            "type": "string"
+          },
+          "complement": {
+            "type": "string"
+          }
+        }
+      },
+      "SavePlaceRequestDto": {
+        "required": [
+          "address",
+          "capacity",
+          "contactCellphoneNumber",
+          "contactName",
+          "name",
+          "price",
+          "rating"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 45,
+            "minLength": 0,
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "capacity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "contactName": {
+            "type": "string"
+          },
+          "contactCellphoneNumber": {
+            "maxLength": 12,
+            "minLength": 0,
+            "type": "string"
+          },
+          "rating": {
+            "maximum": 5,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          },
+          "address": {
+            "$ref": "#/components/schemas/SaveAddressRequestDto"
+          }
+        }
+      },
+      "SaveAccountRequestDto": {
+        "required": [
+          "access",
+          "email",
+          "name",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Account e-mail",
+            "example": "test@email.com"
+          },
+          "password": {
+            "maxLength": 2147483647,
+            "minLength": 4,
+            "type": "string",
+            "description": "Account password",
+            "example": "ABCDE12345"
+          },
+          "name": {
+            "type": "string",
+            "description": "Account name",
+            "example": "Test"
+          },
+          "access": {
+            "type": "string",
+            "description": "Account access",
+            "example": "DIRETOR",
+            "enum": [
+              "DIRETOR",
+              "EXECUTIVO",
+              "TESOURARIA",
+              "SUPERVISOR"
+            ]
+          }
+        }
+      },
+      "LoginAccountRequestDto": {
+        "required": [
+          "email",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Account e-mail",
+            "example": "root@email.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "Account password",
+            "example": "1234"
+          }
+        }
+      },
+      "TokenAccountResponseDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "email": {
+            "type": "string"
+          },
+          "token": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "access": {
+            "type": "string"
+          }
+        }
+      },
+      "GetByFilterAndPaginationStatementResponseDto": {
+        "type": "object",
+        "properties": {
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPrice": {
+            "type": "number"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StatementResponseDto"
+            }
+          }
+        }
+      },
+      "GoalResponseDto": {
+        "type": "object",
+        "properties": {
+          "totalPrice": {
+            "type": "number"
+          },
+          "tag": {
+            "$ref": "#/components/schemas/Tag"
+          }
+        }
+      },
+      "Tag": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "surname": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "goal": {
+            "type": "number"
+          },
+          "privateGoal": {
+            "type": "boolean"
+          }
+        }
+      },
+      "MemberDataForUnitResponseDto": {
+        "type": "object",
+        "properties": {
+          "score": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "counselorName": {
+            "type": "string"
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "members": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MemberDataResponseDto"
+            }
+          }
+        }
+      },
+      "GetByFilterAndPaginationMemberDataResponseDto": {
+        "type": "object",
+        "properties": {
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MemberDataResponseDto"
+            }
+          }
+        }
+      },
+      "MemberDataForClassResponseDto": {
+        "type": "object",
+        "properties": {
+          "instructorName": {
+            "type": "string"
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "members": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MemberDataResponseDto"
+            }
+          }
+        }
+      },
+      "GetAccountResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Account ID",
+            "format": "int64",
+            "example": 1
+          },
+          "email": {
+            "type": "string",
+            "description": "Account e-mail",
+            "example": "test@email.com"
+          },
+          "name": {
+            "type": "string",
+            "description": "Account name",
+            "example": "Test"
+          },
+          "access": {
+            "type": "string",
+            "description": "Account access",
+            "enum": [
+              "DIRETOR",
+              "EXECUTIVO",
+              "TESOURARIA",
+              "SUPERVISOR"
+            ]
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FaPencilAlt, FaTrash, FaEye } from "react-icons/fa";
 import { getUser } from "../../utils/authStorage";
-import { api } from "../../provider/api";
+import { deleteMember } from "../../services/membersService";
 import Toast from "../../utils/Toast";
 import Swal from "sweetalert2";
 import MemberModalController from "../member-modal-controller/MemberModalController";
@@ -27,7 +27,7 @@ export const MemberCard = ({ item, editFields, onEdit, onDelete }) => {
     });
     if (result.isConfirmed) {
       try {
-        await api.delete(`/members/${id}`);
+        await deleteMember(id);
         Toast.fire({
           icon: "success",
           title: "Membro deletado com sucesso!",

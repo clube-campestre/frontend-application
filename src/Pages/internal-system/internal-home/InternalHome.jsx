@@ -2,7 +2,10 @@ import { useEffect, useState } from "react";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 import { api } from "../../../provider/api";
+import { getGoalByTag } from "../../../services/statementsService";
+import { getTags as fetchTagsService } from "../../../services/tagsService";
 import Swal from "sweetalert2";
+import { getUnitsRanking, resetAllUnitScores } from "../../../services/unitsService";
 import { getUser } from "../../../utils/authStorage";
 import { Trophy, Target, AlertTriangle, Medal } from "lucide-react"; // Ícones modernos
 
@@ -39,11 +42,9 @@ const InternalHome = () => {
 
         if (tagId) {
             try {
-                const response = await api.get(`/statements/goal`, {
-                    params: { tagId },
-                });
-                setCollectedAmount(response.data.totalPrice || 0);
-                setGoalAmount(response.data.tag?.goal || 0);
+                const response = await getGoalByTag(tagId);
+                setCollectedAmount(response?.totalPrice || 0);
+                setGoalAmount(response?.tag?.goal || 0);
             } catch (error) {
                 setCollectedAmount(0);
                 setGoalAmount(0);
@@ -57,8 +58,8 @@ const InternalHome = () => {
     useEffect(() => {
         const fetchPoints = async () => {
             try {
-                const response = await api.get("/units/ranking");
-                setPoints(response.data);
+                const response = await getUnitsRanking();
+                setPoints(response || []);
             } catch (error) {
                 console.error("Erro ao buscar pontos:", error);
             }
@@ -66,10 +67,8 @@ const InternalHome = () => {
 
         const getTags = async () => {
             try {
-                const response = await api.get("/tags");
-                const filteredTags = response.data.filter(
-                    (tag) => tag.goal !== null
-                );
+                const response = await fetchTagsService();
+                const filteredTags = (response || []).filter((tag) => tag.goal !== null);
                 setTags(filteredTags);
             } catch (error) {
                 console.error("Error fetching tags:", error);
@@ -166,15 +165,15 @@ const InternalHome = () => {
 
         if (result.isConfirmed) {
             try {
-                await api.post("/units/reseted");
+                await resetAllUnitScores();
                 Swal.fire({
                     title: "Sucesso!",
                     text: "Pontuação resetada.",
                     icon: "success",
                     confirmButtonColor: "#10b981"
                 });
-                const response = await api.get("/units/ranking");
-                setPoints(response.data);
+                const response = await getUnitsRanking();
+                setPoints(response || []);
             } catch (error) {
                 Swal.fire("Erro!", "Não foi possível resetar.", "error");
             }

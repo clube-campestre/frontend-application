@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { api } from "../../../provider/api";
+import { createMember, updateMember } from "../../../services/membersService";
 import Toast from "../../../utils/Toast";
 import PersonalData from "./add-member-steps/PersonalData";
 import Address from "./add-member-steps/Address";
@@ -68,14 +69,50 @@ export default function AddMemberPage({ initialData = {}, editMode = false, onCl
         setEtapaAtual((prev) => Math.max(prev - 1, 1));
     };
 
-    // ... (Lógica de handleEnviar mantida idêntica, omitida para brevidade visual, mas funcionalmente presente) ...
+    const buildFormData = (data) => {
+        const form = new FormData();
+        for (const key in data) {
+            const value = data[key];
+            if (value === undefined || value === null) continue;
+            // Files
+            if (value instanceof File) {
+                form.append(key, value);
+            } else if (value instanceof Blob) {
+                form.append(key, value);
+            } else if (Array.isArray(value)) {
+                form.append(key, JSON.stringify(value));
+            } else if (typeof value === "object") {
+                form.append(key, JSON.stringify(value));
+            } else {
+                form.append(key, value);
+            }
+        }
+        return form;
+    };
+
     const handleEnviar = async () => {
-        // ... (Sua lógica de validação e envio original aqui) ...
-        // MANTIDA INTOCADA CONFORME SOLICITADO
-        // Apenas simulando a chamada para manter o exemplo funcional visualmente
-        console.log("Enviando...", formDados);
         setLoading(true);
-        setTimeout(() => { setLoading(false); Toast.fire({ icon: 'success', title: 'Simulação OK' }); if(onClose) onClose(); }, 2000);
+        try {
+            const form = buildFormData(formDados);
+            let result = null;
+            if (editMode) {
+                // updateMember expects multipart form
+                result = await updateMember(form);
+            } else {
+                result = await createMember(form);
+            }
+
+            if (result) {
+                Toast.fire({ icon: 'success', title: editMode ? 'Membro atualizado com sucesso' : 'Membro cadastrado com sucesso' });
+                if (typeof onSave === 'function') onSave(result);
+                if (typeof onClose === 'function') onClose();
+            }
+        } catch (err) {
+            console.error(err);
+            Toast.fire({ icon: 'error', title: err?.response?.data?.message || 'Erro ao salvar membro.' });
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleClose = () => {

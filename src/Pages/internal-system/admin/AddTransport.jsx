@@ -10,32 +10,10 @@ import {
   Save, 
   X 
 } from "lucide-react";
-
-// =================================================================================
-// ⚠️ MOCKS (PARA O PREVIEW FUNCIONAR) - REMOVA EM PRODUÇÃO
-// =================================================================================
-const useNavigate = () => (path) => {
-  const msg = `[Navegação Simulada] Redirecionando para: ${path}`;
-  
-  // CORREÇÃO: Agora exibe alerta para a rota /admin também
-  if (path === "/admin") {
-    alert("✅ Ação de Cancelar recebida!\n\nNo seu app real, isso fechará o modal ou navegará para: /admin");
-  } else {
-    alert(msg);
-  }
-};
-
-const Toast = {
-  fire: ({ icon, title }) => console.log(`[TOAST ${icon.toUpperCase()}]: ${title}`),
-};
-
-const api = {
-  post: (url, body) => new Promise((resolve) => {
-    console.log(`API POST ${url}`, body);
-    setTimeout(resolve, 1000);
-  }),
-};
-// =================================================================================
+import { useNavigate } from "react-router-dom";
+import { createTransport } from "../../../services/transportsService";
+import Toast from "../../../utils/Toast";
+import { getUser } from "../../../utils/authStorage";
 
 // --- Componente FormRegister Refatorado ---
 const FormRegister = ({ formTitle, fields, onSubmit, onCancel }) => {
@@ -189,6 +167,15 @@ const AddTransport = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (formData) => {
+    const user = getUser();
+    const access = user?.access || null;
+
+    // Permissões: bloquear SUPERVISOR e TESOURARIA para criação de transportes
+    if (access === "SUPERVISOR" || access === "TESOURARIA") {
+      Toast.fire({ icon: "error", title: "Permissão insuficiente" });
+      return;
+    }
+
     try {
       const body = {
         companyName: formData.empresa,
@@ -198,26 +185,18 @@ const AddTransport = () => {
         price: Number(formData.cotacao),
         travelDistance: Number(formData.distanciaHistorica),
         capacity: Number(formData.capacidade),
-        rating: 0, 
+        rating: 0,
       };
 
-      await api.post("/transports", body);
+      const res = await createTransport(body);
 
-      Toast.fire({
-        icon: "success",
-        title: "Transporte cadastrado com sucesso!",
-      });
-
-      setTimeout(() => {
-        navigate("/admin");
-      }, 1500);
-      
+      if (res) {
+        Toast.fire({ icon: "success", title: "Transporte cadastrado com sucesso!" });
+        setTimeout(() => navigate("/admin"), 1200);
+      }
     } catch (error) {
       console.error("Erro ao cadastrar transporte:", error);
-      Toast.fire({
-        icon: "error",
-        title: "Erro ao cadastrar transporte.",
-      });
+      Toast.fire({ icon: "error", title: "Erro ao cadastrar transporte." });
     }
   };
 

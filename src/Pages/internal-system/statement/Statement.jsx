@@ -8,6 +8,15 @@ import { IoMdSearch } from "react-icons/io"; // Ícone de busca moderno
 import { FaChevronLeft, FaChevronRight, FaFileInvoiceDollar } from "react-icons/fa6"; // Ícone de Extrato
 import { FaFilter, FaBroom, FaPencilAlt, FaTrash } from "react-icons/fa";
 import Toast from "../../../utils/Toast";
+import {
+    getStatements,
+    createStatement,
+    updateStatement,
+    deleteStatement,
+    getGoalByTag,
+    deleteStatementsByTag,
+} from "../../../services/statementsService";
+import { getTags as fetchTagsService, createTag as createTagService, updateTag as updateTagService, deleteTag as deleteTagService } from "../../../services/tagsService";
 
 const Statement = () => {
     // --- ESTADOS (MANTIDOS) ---
@@ -76,12 +85,12 @@ const Statement = () => {
         }
 
         try {
-            const response = await api.get("/statements", { params: { ...params, page: pageNumber, size: pageSize } });
-            setTransactions(response.data.items);
-            setTotalAmount(response.data.totalPrice);
-            setPageSize(response.data.pageSize);
-            setTotalItems(response.data.totalItems);
-            setTotalPages(response.data.totalPages);
+            const response = await getStatements({ ...params, page: pageNumber, size: pageSize });
+            setTransactions(response.items || []);
+            setTotalAmount(response.totalPrice || 0);
+            setPageSize(response.pageSize || pageSize);
+            setTotalItems(response.totalItems || 0);
+            setTotalPages(response.totalPages || 1);
             Toast.fire({ icon: "success", title: "Filtrado com sucesso!" });
             setPageNumber(0);
         } catch (error) {
@@ -92,12 +101,12 @@ const Statement = () => {
 
     const handleClearFilters = async () => {
         setFilters({ startDate: "", endDate: "", tagId: "", type: "", description: "" });
-        const response = await api.get("/statements", { params: { page: pageNumber, size: pageSize } });
-        setTransactions(response.data.items);
-        setTotalAmount(response.data.totalPrice);
-        setPageSize(response.data.pageSize);
-        setTotalItems(response.data.totalItems);
-        setTotalPages(response.data.totalPages);
+        const response = await getStatements({ page: pageNumber, size: pageSize });
+        setTransactions(response.items || []);
+        setTotalAmount(response.totalPrice || 0);
+        setPageSize(response.pageSize || pageSize);
+        setTotalItems(response.totalItems || 0);
+        setTotalPages(response.totalPages || 1);
         Toast.fire({ icon: "info", title: "Filtros limpos!" });
     };
 
@@ -109,12 +118,12 @@ const Statement = () => {
             type: filters.type.toUpperCase(),
         };
         try {
-            const response = await api.get("/statements", { params: { page: pageNumber, size: pageSize, ...params } });
-            setTransactions(response.data.items);
-            setTotalAmount(response.data.totalPrice);
-            setPageSize(response.data.pageSize);
-            setTotalItems(response.data.totalItems);
-            setTotalPages(response.data.totalPages);
+            const response = await getStatements({ page: pageNumber, size: pageSize, ...params });
+            setTransactions(response.items || []);
+            setTotalAmount(response.totalPrice || 0);
+            setPageSize(response.pageSize || pageSize);
+            setTotalItems(response.totalItems || 0);
+            setTotalPages(response.totalPages || 1);
         } catch (error) {
             console.error(error);
         }
@@ -122,8 +131,8 @@ const Statement = () => {
 
     const getTags = async () => {
         try {
-            const response = await api.get("/tags");
-            setTags(response.data);
+            const response = await fetchTagsService();
+            setTags(response || []);
         } catch (error) {
             console.error(error);
         }
@@ -135,8 +144,8 @@ const Statement = () => {
             return;
         }
         try {
-            const response = await api.post("/tags", data);
-            if (response.status === 200) {
+            const response = await createTagService(data);
+            if (response) {
                 Toast.fire({ icon: "success", title: "Tag criada!" });
                 setShowTagModal(false);
                 getTags();
@@ -148,8 +157,8 @@ const Statement = () => {
 
     const handleEditTag = async (data) => {
         try {
-            const response = await api.put(`/tags/${editingTag.id}`, data);
-            if (response.status === 200) {
+            const response = await updateTagService(editingTag.id, data);
+            if (response) {
                 Toast.fire({ icon: "success", title: "Tag editada!" });
                 setEditingTag(null);
                 getTags();
@@ -173,7 +182,7 @@ const Statement = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    await api.delete(`/tags/${id}`);
+                    await deleteTagService(id);
                     Toast.fire({ icon: "success", title: "Deletado!" });
                     getTags();
                 } catch (err) {
@@ -192,8 +201,8 @@ const Statement = () => {
         try {
             const isoDate = data.transactionDate ? new Date(data.transactionDate).toISOString() : null;
             const payload = { ...data, transactionDate: isoDate };
-            const response = await api.post("/statements", payload);
-            if (response.status === 201) {
+            const response = await createStatement(payload);
+            if (response) {
                 Toast.fire({ icon: "success", title: "Transação criada!" });
                 setShowAddModal(false);
                 fetchTransactions();
@@ -217,7 +226,7 @@ const Statement = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    await api.delete(`/statements/${id}`);
+                    await deleteStatement(id);
                     Toast.fire({ icon: "success", title: "Deletado!" });
                     fetchTransactions();
                 } catch (err) {
@@ -229,8 +238,9 @@ const Statement = () => {
 
     const handleEditTransaction = async (data) => {
         try {
-            const response = await api.put(`/statements/${editingItem.id}`, data);
-            if (response.status === 200) {
+            const payload = { ...data, id: editingItem.id };
+            const response = await updateStatement(payload);
+            if (response) {
                 Toast.fire({ icon: "success", title: "Editado!" });
                 setShowEditModal(false);
                 fetchTransactions();

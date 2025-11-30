@@ -9,6 +9,7 @@ import MemberModalController from "../../../components/member-modal-controller/M
 import AddMemberPage from "../admin/AddMemberPage";
 import Toast from "../../../utils/Toast";
 import { api } from "../../../provider/api";
+import { getMembersByFilter } from "../../../services/membersService";
 
 const SecretaryPage = () => {
     // --- ESTADOS ---
@@ -90,10 +91,10 @@ const SecretaryPage = () => {
         }
 
         try {
-            const response = await api.get("/members/filter", { params: { ...params, page: pageNumber, size: pageSize } });
-            setMembers(response.data.items || []);
-            setTotalItems(response.data.totalItems);
-            setTotalPages(response.data.totalPages);
+            const response = await getMembersByFilter({ ...params, page: pageNumber, size: pageSize });
+            setMembers(response?.items || []);
+            setTotalItems(response?.totalItems || 0);
+            setTotalPages(response?.totalPages || 1);
             Toast.fire({ icon: "success", title: "Membros filtrados!" });
             setPageNumber(0);
         } catch (error) {
@@ -104,22 +105,22 @@ const SecretaryPage = () => {
 
     const handleClearFilters = async () => {
         setFilters({ name: "", classe: "", unidade: "" });
-        const response = await api.get("/members/filter", { params: { page: pageNumber, size: pageSize } });
-        setMembers(response.data.items || []);
-        setTotalItems(response.data.totalItems);
-        setTotalPages(response.data.totalPages);
+        const response = await getMembersByFilter({ page: pageNumber, size: pageSize });
+        setMembers(response?.items || []);
+        setTotalItems(response?.totalItems || 0);
+        setTotalPages(response?.totalPages || 1);
         Toast.fire({ icon: "info", title: "Filtros limpos!" });
     };
 
     const fetchMembers = async () => {
         try {
-            const response = await api.get("/members/filter", { params: { page: pageNumber, size: pageSize } });
-            setMembers(response.data.items || []);
-            setTotalItems(response.data.totalItems);
-            setTotalPages(response.data.totalPages || 1);
-        } catch (error) {
-            console.error(error);
-        }
+                const response = await getMembersByFilter({ page: pageNumber, size: pageSize });
+                setMembers(response?.items || []);
+                setTotalItems(response?.totalItems || 0);
+                setTotalPages(response?.totalPages || 1);
+            } catch (error) {
+                console.error(error);
+            }
     };
 
     useEffect(() => { fetchMembers(); }, [pageNumber]);
