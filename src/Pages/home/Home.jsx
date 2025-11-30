@@ -1,4 +1,4 @@
-import Header from "../sections/header/header.jsx";
+import Header from "../sections/header/Header.jsx";
 import Footer from "../sections/Footer.jsx"
 import AboutUs from "../sections/about-us/AboutUs.jsx"
 import Unities from "../sections/unities/Unities.jsx"
