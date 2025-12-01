@@ -112,7 +112,7 @@ const Header = () => {
           Ser{" "}
           {/* Quebra de linha forçada em mobile (block) para destaque */}
           <span className="text-[#FCAE2D] block md:inline my-2 md:my-0">
-            Desbravador Campestreeeee
+            Desbravador Campestre
           </span>
           <span className="block">
              é um chamado para servir, amar e transformar!
