@@ -29,7 +29,7 @@ const Statement = () => {
     const [tags, setTags] = useState([]);
     const [totalAmount, setTotalAmount] = useState(0);
     const [transactions, setTransactions] = useState([]);
-    const [pageNumber, setPageNumber] = useState(0);
+    const [pageNumber, setPageNumber] = useState(1);
     const [pageSize, setPageSize] = useState(5);
     const [totalPages, setTotalPages] = useState(1);
     const [totalItems, setTotalItems] = useState(0);
