@@ -2,7 +2,7 @@ name: Build and Deploy Frontend
 
 on:
   push:
-    branches: [ "ci_implement_test" ]
+    branches: [ "develop_v2" ]
 
 jobs:
   deploy:
