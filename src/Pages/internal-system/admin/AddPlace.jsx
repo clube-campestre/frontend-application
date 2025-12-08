@@ -1,5 +1,5 @@
 import FormRegister from "../../../components/admin-internal/FormRegister";
-import { api } from "../../../provider/api";
+import { createPlace } from "../../../services/placesService";
 import { useNavigate } from "react-router-dom";
 import Toast from "../../../utils/Toast";
 
@@ -11,6 +11,7 @@ const placeFields = [
   { id: "estado", type: "text", label: "Estado", isRequired: true },
   { id: "cidade", type: "text", label: "Cidade", isRequired: true },
   { id: "numero", type: "text", label: "Número", isRequired: true },
+  { id: "complemento", type: "text", label: "Complemento", isRequired: false },
   {
     id: "referencia",
     type: "text",
@@ -43,22 +44,22 @@ const AddPlace = () => {
           city: formData.cidade,
           cep: formData.cep,
           referenceHouse: formData.referencia,
+          complement: formData.complemento,
         },
       };
 
-      await api.post("/places", body);
-      Toast.fire({
-        icon: "success",
-        title: "Local cadastrado com sucesso!",
-      });
+      console.log("places-body", body);
 
-      setTimeout(() => {
-        navigate("/admin");
-      }, 2500);
+      const result = await createPlace(body);
+      if (result) {
+        setTimeout(() => {
+          navigate("/admin");
+        }, 2500);
+      }
     } catch (error) {  
       Toast.fire({
         icon: "error",
-        title: error.response?.data?.message ||`Erro ao cadastrar Local!`,
+        title: "Erro ao cadastrar Local!",
       });
     }
   };

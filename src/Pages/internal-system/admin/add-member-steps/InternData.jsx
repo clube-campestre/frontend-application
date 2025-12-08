@@ -1,47 +1,12 @@
 import React, { useState } from "react";
 import { Upload, X, FileText } from "lucide-react"; // Ícones para melhorar UX
-
-// --- MOCK: Componente de Input (Simulação) ---
-const AddMemberInput = ({ id, label, type, value, onChange, options, className }) => (
-  <div className={`flex flex-col gap-1 ${className}`}>
-    <label htmlFor={id} className="text-sm font-semibold text-gray-600 ml-1">
-      {label}
-    </label>
-    {type === "select" ? (
-      <select
-        id={id}
-        value={value}
-        onChange={onChange}
-        className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-amber-400 outline-none transition-all h-12"
-      >
-        <option value="">Selecione...</option>
-        {options?.map((opt) => (
-          <option key={opt.value} value={opt.value}>
-            {opt.label}
-          </option>
-        ))}
-      </select>
-    ) : (
-      <input
-        id={id}
-        type={type}
-        value={value}
-        onChange={onChange}
-        className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-amber-400 outline-none transition-all h-12"
-      />
-    )}
-  </div>
-);
+import AddMemberInput from "../../../../components/add-member-input/AddMemberInput";
 
 // --- COMPONENTE PRINCIPAL ---
 
-function InternData({ dados = {}, setDados = () => {} }) {
+function InternData({ dados, setDados}) {
   const [showTermsModal, setShowTermsModal] = useState(false);
 
-  // Função helper para atualizar estado
-  const updateField = (field, value) => {
-    setDados((prev) => ({ ...prev, [field]: value }));
-  };
 
   return (
     // Container Principal: Removemos ml-20 e usamos max-w-screen-xl para centralizar
@@ -78,8 +43,8 @@ function InternData({ dados = {}, setDados = () => {} }) {
               { value: "", label: "Nenhuma" },
             ]}
             label="Unidade"
-            value={dados.unit ?? ""}
-            onChange={(e) => updateField("unit", e.target.value)}
+            value={String(dados.unit || "")}
+            onChange={(e) => setDados({...dados, unit: e.target.value})}
             className="w-full"
           />
 
@@ -100,8 +65,8 @@ function InternData({ dados = {}, setDados = () => {} }) {
               { value: "NENHUMA", label: "Nenhuma" },
             ]}
             label="Função na Unidade"
-            value={dados.unitRole || ""}
-            onChange={(e) => updateField("unitRole", e.target.value)}
+            value={String(dados.unitRole || "")}
+            onChange={(e) => setDados({...dados, unitRole: e.target.value})}
             className="w-full"
           />
 
@@ -123,8 +88,8 @@ function InternData({ dados = {}, setDados = () => {} }) {
               { value: "NENHUMA", label: "Nenhuma" },
             ]}
             label="Categoria da Classe"
-            value={dados.classCategory || ""}
-            onChange={(e) => updateField("classCategory", e.target.value)}
+            value={String(dados.classCategory || "")}
+            onChange={(e) => setDados({...dados, classCategory: e.target.value})}
             className="w-full"
           />
 
@@ -138,8 +103,8 @@ function InternData({ dados = {}, setDados = () => {} }) {
               { value: "NENHUMA", label: "Nenhuma" },
             ]}
             label="Função na Classe"
-            value={dados.classRole || ""}
-            onChange={(e) => updateField("classRole", e.target.value)}
+            value={String(dados.classRole || "")}
+            onChange={(e) => setDados({...dados, classRole: e.target.value})}
             className="w-full"
           />
         </div>
@@ -206,9 +171,9 @@ function InternData({ dados = {}, setDados = () => {} }) {
         <input
           type="checkbox"
           id="acceptTerms"
-          checked={!!dados.acceptTerms}
-          onChange={(e) => updateField("acceptTerms", e.target.checked)}
-          className="mt-1 w-5 h-5 text-amber-500 rounded border-gray-300 focus:ring-amber-400 cursor-pointer"
+          checked={Boolean(dados.acceptTerms)}
+          onChange={(e) => setDados({...dados, acceptTerms: e.target.checked})}
+          className="mt-1 w-5 h-5 text-amber-500 rounded border-gray-300 focus:ring-amber-400 cursor-pointer accent-amber-500"
         />
         <label htmlFor="acceptTerms" className="text-sm text-gray-700 cursor-pointer select-none">
           Declaro que as informações acima são verdadeiras e aceito os{" "}
@@ -280,7 +245,7 @@ function InternData({ dados = {}, setDados = () => {} }) {
               </button>
               <button
                 onClick={() => {
-                  updateField("acceptTerms", true);
+                  setDados({...dados, acceptTerms: true});
                   setShowTermsModal(false);
                 }}
                 className="px-5 py-2.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-medium shadow-sm shadow-amber-200 transition-all transform active:scale-95"

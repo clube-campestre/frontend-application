@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaSearch, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 import { FaFilter, FaBroom } from "react-icons/fa6";
 import { IoMdSearch } from "react-icons/io";
 
@@ -10,6 +10,7 @@ import AddMemberPage from "../admin/AddMemberPage";
 import Toast from "../../../utils/Toast";
 import { api } from "../../../provider/api";
 import { getMembersByFilter } from "../../../services/membersService";
+import Pagination from "../../../components/pagination/Pagination";
 
 const SecretaryPage = () => {
     // --- ESTADOS ---
@@ -223,31 +224,13 @@ const SecretaryPage = () => {
 
                     {/* Footer / Paginação (Fixo na parte inferior) */}
                     <div className="flex-shrink-0 bg-gray-50 border-t border-gray-200 px-6 py-4 z-20">
-                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                            <span className="text-sm text-gray-600">
-                                Mostrando <span className="font-semibold text-gray-900">{members.length}</span> de <span className="font-semibold text-gray-900">{totalItems}</span>
-                            </span>
-                            
-                            <div className="flex items-center gap-2">
-                                <button
-                                    onClick={() => setPageNumber((p) => Math.max(p - 1, 0))}
-                                    disabled={pageNumber === 0}
-                                    className="p-2 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-gray-600"
-                                >
-                                    <FaChevronLeft />
-                                </button>
-                                <span className="text-sm font-medium px-2">
-                                    Página {pageNumber + 1} de {totalPages}
-                                </span>
-                                <button
-                                    onClick={() => setPageNumber((p) => p + 1)}
-                                    disabled={pageNumber + 1 === totalPages}
-                                    className="p-2 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-gray-600"
-                                >
-                                    <FaChevronRight />
-                                </button>
-                            </div>
-                        </div>
+                        <Pagination
+                            pageNumber={pageNumber}
+                            totalPages={totalPages}
+                            onPageChange={setPageNumber}
+                            totalItems={totalItems}
+                            itemsPerPage={members.length}
+                        />
                     </div>
                 </div>
             </div>

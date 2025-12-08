@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import AddButton from "../../../components/admin-internal/AddButton";
 import { useNavigate } from "react-router-dom";
-import { api } from "../../../provider/api";
+import { getTransports, updateTransport, deleteTransport } from "../../../services/transportsService";
+import { getPlaces, updatePlace, deletePlace } from "../../../services/placesService";
 import { FaRegStar, FaStar, FaPencilAlt, FaTrash, FaEye, FaInbox } from "react-icons/fa";
 import EditModal from "../../../components/edit-modal/EditModal";
 import ViewModal from "../../../components/view-modal-admin/ViewModal";
@@ -55,23 +56,25 @@ const Admin = () => {
   };
 
   // --- API REQUESTS ---
-  const getTransports = async () => {
+  const fetchTransports = async () => {
     try {
-      const response = await api.get("/transports");
-      setTransports(response.data);
+      const data = await getTransports();
+      if (data) {
+        setTransports(data);
+      }
     } catch (error) {
-      Toast.fire({ icon: "error", title: error.response?.data?.message || "Erro ao buscar transportes!" });
+      Toast.fire({ icon: "error", title: "Erro ao buscar transportes!" });
     }
   };
 
-  const getPlaces = async () => {
+  const fetchPlaces = async () => {
     try {
-      const response = await api.get("/places");
-      if (!response.data || response.data.length === 0) {
+      const data = await getPlaces();
+      if (!data || data.length === 0) {
         setPlaces([]);
         return;
       }
-      const adaptedPlaces = response.data.map((place) => ({
+      const adaptedPlaces = data.map((place) => ({
         id: place.id,
         name: place.name,
         price: place.price,
@@ -79,23 +82,23 @@ const Admin = () => {
         contactName: place.contactName,
         contactCellphoneNumber: place.contactCellphoneNumber,
         rating: place.rating,
-        houseNumber: place.address.houseNumber,
-        district: place.address.district,
-        city: place.address.city,
-        street: place.address.street,
-        state: place.address.state,
-        cep: place.address.cep,
-        referenceHouse: place.address.referenceHouse,
+        houseNumber: place.address?.houseNumber,
+        district: place.address?.district,
+        city: place.address?.city,
+        street: place.address?.street,
+        state: place.address?.state,
+        cep: place.address?.cep,
+        referenceHouse: place.address?.referenceHouse,
       }));
       setPlaces(adaptedPlaces);
     } catch (error) {
-      Toast.fire({ icon: "error", title: error.response?.data?.message || "Erro ao buscar locais!" });
+      Toast.fire({ icon: "error", title: "Erro ao buscar locais!" });
     }
   };
 
   useEffect(() => {
-    getTransports();
-    getPlaces();
+    fetchTransports();
+    fetchPlaces();
   }, []);
 
   // --- HANDLERS ---
@@ -116,20 +119,27 @@ const Admin = () => {
 
   const handleEditTransport = async (updatedTransport) => {
     try {
-      await api.put(`/transports/${updatedTransport.id}`, updatedTransport);
-      Toast.fire({ icon: "success", title: "Transporte atualizado com sucesso!" });
-      setShowTransportModal(false);
-      getTransports();
+      const result = await updateTransport(updatedTransport.id, updatedTransport);
+      if (result) {
+        setShowTransportModal(false);
+        fetchTransports();
+      }
     } catch (error) {
-      Toast.fire({ icon: "error", title: error.response?.data?.message || "Erro ao atualizar transporte!" });
+      Toast.fire({ icon: "error", title: "Erro ao atualizar transporte!" });
     }
   };
 
   const handleEditPlace = async (updatedPlace) => {
     try {
       const payload = {
-        ...updatedPlace,
+        name: updatedPlace.name,
+        price: updatedPlace.price,
+        capacity: updatedPlace.capacity,
+        contactName: updatedPlace.contactName,
+        contactCellphoneNumber: updatedPlace.contactCellphoneNumber,
+        rating: updatedPlace.rating,
         address: {
+          id: updatedPlace.addressId || 0, // Se tiver ID do endereço
           houseNumber: updatedPlace.houseNumber,
           district: updatedPlace.district,
           city: updatedPlace.city,
@@ -140,12 +150,13 @@ const Admin = () => {
         },
       };
 
-      await api.put(`/places/${updatedPlace.id}`, payload);
-      Toast.fire({ icon: "success", title: "Local atualizado com sucesso!" });
-      setShowPlaceModal(false);
-      getPlaces();
+      const result = await updatePlace(updatedPlace.id, payload);
+      if (result) {
+        setShowPlaceModal(false);
+        fetchPlaces();
+      }
     } catch (error) {
-      Toast.fire({ icon: "error", title: error.response?.data?.message || "Erro ao atualizar local!" });
+      Toast.fire({ icon: "error", title: "Erro ao atualizar local!" });
     }
   };
 
@@ -163,11 +174,12 @@ const Admin = () => {
 
     if (result.isConfirmed) {
       try {
-        await api.delete(`/transports/${id}`);
-        Toast.fire({ icon: "success", title: "Transporte deletado com sucesso!" });
-        getTransports();
+        const success = await deleteTransport(id);
+        if (success) {
+          fetchTransports();
+        }
       } catch (error) {
-        Toast.fire({ icon: "error", title: error.response?.data?.message || "Erro ao deletar transporte!" });
+        Toast.fire({ icon: "error", title: "Erro ao deletar transporte!" });
       }
     }
   };
@@ -186,11 +198,12 @@ const Admin = () => {
 
     if (result.isConfirmed) {
       try {
-        await api.delete(`/places/${id}`);
-        Toast.fire({ icon: "success", title: "Local deletado com sucesso!" });
-        getPlaces();
+        const success = await deletePlace(id);
+        if (success) {
+          fetchPlaces();
+        }
       } catch (error) {
-        Toast.fire({ icon: "error", title: error.response?.data?.message || "Erro ao deletar local!" });
+        Toast.fire({ icon: "error", title: "Erro ao deletar local!" });
       }
     }
   };

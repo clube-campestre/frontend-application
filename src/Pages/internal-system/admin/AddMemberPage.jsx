@@ -69,24 +69,181 @@ export default function AddMemberPage({ initialData = {}, editMode = false, onCl
         setEtapaAtual((prev) => Math.max(prev - 1, 1));
     };
 
-    const buildFormData = (data) => {
-        const form = new FormData();
-        for (const key in data) {
-            const value = data[key];
-            if (value === undefined || value === null) continue;
-            // Files
-            if (value instanceof File) {
-                form.append(key, value);
-            } else if (value instanceof Blob) {
-                form.append(key, value);
-            } else if (Array.isArray(value)) {
-                form.append(key, JSON.stringify(value));
-            } else if (typeof value === "object") {
-                form.append(key, JSON.stringify(value));
-            } else {
-                form.append(key, value);
+    const buildPayloadData = (data) => {
+        // Transformar dados do formulário para o formato esperado pela API
+        
+        // 1. Construir objeto address
+        const address = {
+            id: data.address?.id || 0,
+            houseNumber: data.houseNumber || "",
+            district: data.district || "",
+            city: data.city || "",
+            state: data.state || "",
+            street: data.street || "",
+            cep: data.cep || "",
+            referenceHouse: data.referenceHouse || "",
+            complement: data.complement || ""
+        };
+
+        // 2. Construir objeto unit
+        // Se unit for string (nome da unidade), precisamos converter para objeto
+        // Por enquanto, assumindo que unit pode ser string ou objeto
+        let unit = { id: 0, surname: "", score: 0 };
+        if (data.unit) {
+            if (typeof data.unit === 'string') {
+                // Se for string, usar como surname
+                unit = {
+                    id: data.unitId || 0,
+                    surname: data.unit,
+                    score: data.unitScore || 0
+                };
+            } else if (typeof data.unit === 'object') {
+                unit = {
+                    id: data.unit.id || 0,
+                    surname: data.unit.surname || data.unit || "",
+                    score: data.unit.score || 0
+                };
             }
         }
+
+        // 3. Consolidar medicalData
+        // Mover campos de sickness para dentro de medicalData
+        const sickness = data.sickness || {};
+        const medicalAnswers = data.medicalAnswers || [];
+        
+        // Extrair dados médicos dos medicalAnswers e campos diretos
+        const medicalData = {
+            cpf: data.cpf || "",
+            cns: data.cns || "",
+            agreement: data.agreement || "",
+            bloodType: data.blood_type || "",
+            // Doenças (sickness) - garantir boolean
+            catapora: Boolean(sickness.catapora),
+            meningite: Boolean(sickness.meningite),
+            hepatite: Boolean(sickness.hepatite),
+            dengue: Boolean(sickness.dengue),
+            pneumonia: Boolean(sickness.pneumonia),
+            malaria: Boolean(sickness.malaria),
+            febreAmarela: Boolean(sickness.febreAmarela),
+            sarampo: Boolean(sickness.sarampo),
+            tetano: Boolean(sickness.tetano),
+            variola: Boolean(sickness.variola),
+            coqueluche: Boolean(sickness.coqueluche),
+            difteria: Boolean(sickness.difteria),
+            rinite: Boolean(sickness.rinite),
+            bronquite: Boolean(sickness.bronquite),
+            asma: Boolean(sickness.asma),
+            rubeola: Boolean(sickness.rubeola),
+            colera: Boolean(sickness.colera),
+            covid19: Boolean(sickness.covid19),
+            h1n1: Boolean(sickness.h1n1),
+            caxumba: Boolean(sickness.caxumba),
+            others: sickness.others || "",
+            // Campos médicos das perguntas
+            heartProblems: medicalAnswers[0]?.value === true ? (medicalAnswers[0]?.description || medicalAnswers[0]?.extra || "") : (data.heartProblems || ""),
+            drugAllergy: medicalAnswers[1]?.value === true ? (medicalAnswers[1]?.description || medicalAnswers[1]?.extra || "") : (data.drugAllergy || ""),
+            lactoseAllergy: Boolean(medicalAnswers[2]?.value === true || data.lactoseAllergy),
+            deficiency: medicalAnswers[3]?.value === true ? (medicalAnswers[3]?.description || medicalAnswers[3]?.extra || "") : (data.deficiency || ""),
+            bloodTransfusion: Boolean(medicalAnswers[4]?.value === true || data.bloodTransfusion),
+            skinAllergy: Boolean(medicalAnswers[5]?.value === true || data.skinAllergy),
+            skinAllergyMedications: medicalAnswers[5]?.value === true ? (medicalAnswers[5]?.description || medicalAnswers[5]?.extra || "") : (data.skinAllergyMedications || ""),
+            faintingOrConvulsion: Boolean(medicalAnswers[6]?.value === true || data.faintingOrConvulsion),
+            faintingOrSeizuresMedications: medicalAnswers[6]?.value === true ? (medicalAnswers[6]?.description || medicalAnswers[6]?.extra || "") : (data.faintingOrSeizuresMedications || ""),
+            psychologicalDisorder: medicalAnswers[7]?.value === true ? (medicalAnswers[7]?.description || medicalAnswers[7]?.extra || "") : (data.psychologicalDisorder || ""),
+            allergy: Boolean(medicalAnswers[8]?.value === true || data.allergy),
+            allergyMedications: medicalAnswers[8]?.value === true ? (medicalAnswers[8]?.description || medicalAnswers[8]?.extra || "") : (data.allergyMedications || ""),
+            diabetic: Boolean(medicalAnswers[9]?.value === true || data.diabetic),
+            diabeticMedications: medicalAnswers[9]?.value === true ? (medicalAnswers[9]?.description || medicalAnswers[9]?.extra || "") : (data.diabeticMedications || ""),
+            recentSeriousInjury: Boolean(medicalAnswers[10]?.value === true || data.recentSeriousInjury),
+            recentFracture: medicalAnswers[11]?.value === true ? (medicalAnswers[11]?.description || medicalAnswers[11]?.extra || "") : (data.recentFracture || ""),
+            surgeries: medicalAnswers[12]?.value === true ? (medicalAnswers[12]?.description || medicalAnswers[12]?.extra || "") : (data.surgeries || ""),
+            hospitalizationReasonLast5Years: medicalAnswers[13]?.value === true ? (medicalAnswers[13]?.description || medicalAnswers[13]?.extra || "") : (data.hospitalizationReasonLast5Years || "")
+        };
+
+        // 4. Converter isBaptized para boolean
+        let isBaptized = false;
+        if (data.isBaptized === true || data.isBaptized === "true" || String(data.isBaptized).toLowerCase() === "true") {
+            isBaptized = true;
+        }
+
+        // 5. Construir payload final no formato esperado pela API
+        const payload = {
+            cpf: data.cpf || "",
+            // image: data.image || "",
+            // imageFormat: data.imageFormat || "", //todo!: validar se é necessário enviar isso
+            username: data.username || "",
+            birthDate: data.birthDate || "",
+            sex: data.sex || "",
+            birthCertificate: data.birthCertificate || "",
+            tshirtSize: data.tshirtSize || "",
+            isBaptized: isBaptized,
+            contact: data.contact || "",
+            issuingAuthority: data.issuingAuthority || "",
+            // unit: unit,
+            unitName: unit.surname || "",
+            unitRole: data.unitRole || "",
+            classCategory: data.classCategory || "",
+            classRole: data.classRole || "",
+            fatherName: data.fatherName || "",
+            fatherContact: data.fatherContact || "",
+            fatherEmail: data.fatherEmail || "",
+            motherName: data.motherName || "",
+            motherContact: data.motherContact || "",
+            motherEmail: data.motherEmail || "",
+            responsibleName: data.responsibleName || "",
+            responsibleContact: data.responsibleContact || "",
+            responsibleEmail: data.responsibleEmail || "",
+            address: address,
+            medicalData: medicalData,
+            acceptTerms: data.acceptTerms || false,
+        };
+
+        console.log("[buildPayloadData] Payload construído:", payload);
+
+        return payload;
+    };
+
+    const buildFormData = (data) => {
+        const form = new FormData();
+
+        console.log("[buildFormData] Dados recebidos:", data);
+        
+        // Transformar dados para o formato esperado pela API
+        const payloadData = buildPayloadData(data);
+        
+        console.log("[buildFormData] Payload transformado:", payloadData);
+        
+        // Processar imagem separadamente
+        let imageFile = null;
+        if (data.imageFile && data.imageFile instanceof File) {
+            imageFile = data.imageFile;
+        } else if (data.image && typeof data.image === 'string' && data.image.trim()) {
+            // Se for base64 string, converter para Blob
+            try {
+                const base64Data = data.image.includes(',') ? data.image.split(',')[1] : data.image;
+                const mimeType = data.imageFormat || 'image/jpeg';
+                const byteCharacters = atob(base64Data);
+                const byteNumbers = new Array(byteCharacters.length);
+                for (let i = 0; i < byteCharacters.length; i++) {
+                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                }
+                const byteArray = new Uint8Array(byteNumbers);
+                imageFile = new Blob([byteArray], { type: mimeType });
+            } catch (e) {
+                console.warn('Erro ao converter base64 para Blob:', e);
+            }
+        }
+
+        // Adicionar arquivo se existir
+        if (imageFile) {
+            form.append('file', imageFile);
+        }
+
+        // Adicionar objeto de dados como string JSON no campo 'data'
+        form.append('data', JSON.stringify(payloadData));
+        
+        console.log("[buildFormData] Objeto de dados a ser enviado:", payloadData);
+        
         return form;
     };
 
@@ -94,6 +251,7 @@ export default function AddMemberPage({ initialData = {}, editMode = false, onCl
         setLoading(true);
         try {
             const form = buildFormData(formDados);
+            console.log("MEMBER DATA:", form);
             let result = null;
             if (editMode) {
                 // updateMember expects multipart form
@@ -223,6 +381,167 @@ export default function AddMemberPage({ initialData = {}, editMode = false, onCl
     );
 }
 
-// ... (Mantive as funções normalizeMemberToForm e initializeMemberDefaults exatamente iguais ao código original para não quebrar lógica)
-function normalizeMemberToForm(member) { return member ? member : {}; } // Simplificado para visualização, use o seu original
-function initializeMemberDefaults(data = {}) { return data; } // Simplificado para visualização, use o seu original
+function normalizeMemberToForm(member) {
+    if (!member) return {};
+
+	console.log("Normalizando membro:", member);
+
+    // Endereço
+    const address = member.address || {};
+    // Dados médicos
+    const medical = member.medicalData || {};
+
+    // Sickness (doenças)
+    const sickness = {
+        catapora: medical.catapora ?? false,
+        meningite: medical.meningite ?? false,
+        hepatite: medical.hepatite ?? false,
+        dengue: medical.dengue ?? false,
+        pneumonia: medical.pneumonia ?? false,
+        malaria: medical.malaria ?? false,
+        febreAmarela: medical.febreAmarela ?? false,
+        sarampo: medical.sarampo ?? false,
+        tetano: medical.tetano ?? false,
+        variola: medical.variola ?? false,
+        coqueluche: medical.coqueluche ?? false,
+        difteria: medical.difteria ?? false,
+        rinite: medical.rinite ?? false,
+        bronquite: medical.bronquite ?? false,
+        asma: medical.asma ?? false,
+        rubeola: medical.rubeola ?? false,
+        colera: medical.colera ?? false,
+        covid19: medical.covid19 ?? false,
+        h1n1: medical.h1n1 ?? false,
+        caxumba: medical.caxumba ?? false,
+        others: medical.others ?? "",
+    };
+
+    // MedicalAnswers (para perguntas extras)
+    const medicalAnswers = [
+        { value: !!medical.heartProblems, extra: medical.heartProblems || "" },
+        { value: !!medical.drugAllergy, extra: medical.drugAllergy || "" },
+        { value: !!medical.lactoseAllergy, extra: medical.lactoseAllergy || "" },
+        { value: !!medical.deficiency, extra: medical.deficiency || "" },
+        { value: !!medical.bloodTransfusion, extra: medical.bloodTransfusion || "" },
+        { value: !!medical.skinAllergy, extra: medical.skinAllergyMedications || "" },
+        { value: !!medical.faintingOrConvulsion, extra: medical.faintingOrSeizuresMedications || "" },
+        { value: !!medical.psychologicalDisorder, extra: medical.psychologicalDisorder || "" },
+        { value: !!medical.allergy, extra: medical.allergyMedications || "" },
+        { value: !!medical.diabetic, extra: medical.diabeticMedications || "" },
+        { value: !!medical.recentSeriousInjury, extra: medical.recentSeriousInjury || "" },
+        { value: !!medical.recentFracture, extra: medical.recentFracture || "" },
+        { value: !!medical.surgeries, extra: medical.surgeries || "" },
+        { value: !!medical.hospitalizationReasonLast5Years, extra: medical.hospitalizationReasonLast5Years || "" },
+    ];
+
+    // FOTO: só gera a URL se houver idImage
+    let foto = null;
+    console.log(member.image, "aaaaa")
+        console.log(member.image.image, "bbb")
+    if (member.image && typeof member.image === "string" && member.image.trim() !== "") {
+        foto = `data:${member.imageFormat};base64,${member.image}`;
+    }
+
+    const normalizedMember = {
+        idImage: member.idImage || "",
+        imagePath: member.imagePath || "",
+        username: member.username || "",
+        birthCertificate: member.birthCertificate || "",
+        cpf: member.cpf || "",
+        issuingAuthority: member.issuingAuthority || "",
+        contact: member.contact || "",
+        birthDate: member.birthDate ? member.birthDate.slice(0, 10) : "",
+        sex: member.sex || "",
+        tshirtSize: member.tshirtSize || "",
+        isBaptized: member.isBaptized ? "true" : "false",
+        cep: address.cep || "",
+        houseNumber: address.houseNumber || "",
+        street: address.street || "",
+        district: address.district || "",
+        city: address.city || "",
+        state: address.state || "",
+        complement: address.complement || "",
+        sickness,
+        medicalAnswers,
+        heartProblems: medical.heartProblems || "",
+        drugAllergy: medical.drugAllergy || "",
+        lactoseAllergy: medical.lactoseAllergy ?? false,
+        deficiency: medical.deficiency || "",
+        bloodTransfusion: medical.bloodTransfusion ?? false,
+        skinAllergy: medical.skinAllergy ?? false,
+        skinAllergyMedications: medical.skinAllergyMedications || "",
+        faintingOrConvulsion: medical.faintingOrConvulsion ?? false,
+        faintingOrSeizuresMedications: medical.faintingOrSeizuresMedications || "",
+        psychologicalDisorder: medical.psychologicalDisorder || "",
+        allergy: medical.allergy ?? false,
+        allergyMedications: medical.allergyMedications || "",
+        diabetic: medical.diabetic ?? false,
+        diabeticMedications: medical.diabeticMedications || "",
+        recentSeriousInjury: medical.recentSeriousInjury ?? false,
+        recentFracture: medical.recentFracture || "",
+        surgeries: medical.surgeries || "",
+        hospitalizationReasonLast5Years: medical.hospitalizationReasonLast5Years || "",
+        blood_type: medical.bloodType || "",
+        cns: medical.cns || "",
+        agreement: medical.agreement || "",
+        fatherName: member.fatherName || "",
+        fatherEmail: member.fatherEmail || "",
+        fatherContact: member.fatherContact || "",
+        motherName: member.motherName || "",
+        motherEmail: member.motherEmail || "",
+        motherContact: member.motherContact || "",
+        responsibleName: member.responsibleName || "",
+        responsibleEmail: member.responsibleEmail || "",
+        responsibleContact: member.responsibleContact || "",
+        unitRole: member.unitRole || "",
+        classCategory: member.classCategory || "",
+        classRole: member.classRole || "",
+        foto, // agora é null ou a URL correta
+        unit: member.unit?.id ?? "",
+        unitSurname: member.unit?.surname ?? "",
+    };
+	console.log("Membro normalizado:", normalizedMember);
+
+	return normalizedMember;
+}
+
+function initializeMemberDefaults(data = {}) {
+    const defaultSickness = {
+        catapora: false, meningite: false, hepatite: false, dengue: false,
+        pneumonia: false, malaria: false, febreAmarela: false, sarampo: false,
+        tetano: false, variola: false, coqueluche: false, difteria: false,
+        rinite: false, bronquite: false, asma: false, rubeola: false,
+        colera: false, covid19: false, h1n1: false, caxumba: false,
+        others: "",
+    };
+
+    const defaultMedical = {
+        heartProblems: "",
+        drugAllergy: "",
+        lactoseAllergy: false,
+        deficiency: "",
+        bloodTransfusion: false,
+        skinAllergy: false,
+        skinAllergyMedications: "",
+        faintingOrConvulsion: false,
+        faintingOrSeizuresMedications: "",
+        psychologicalDisorder: "",
+        allergy: false,
+        allergyMedications: "",
+        diabetic: false,
+        diabeticMedications: "",
+        recentSeriousInjury: false,
+        recentFracture: "",
+        surgeries: "",
+        hospitalizationReasonLast5Years: "",
+    };
+
+    const defaultMedicalAnswers = Array(14).fill(0).map(() => ({ value: false, extra: "" }));
+
+    return {
+        ...defaultMedical,
+        ...data,
+        sickness: { ...defaultSickness, ...(data.sickness || {}) },
+        medicalAnswers: data.medicalAnswers || defaultMedicalAnswers,
+    };
+}

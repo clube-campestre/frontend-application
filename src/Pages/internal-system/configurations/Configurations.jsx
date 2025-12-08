@@ -6,7 +6,7 @@ import logo from "../../../assets/images/logoDesbravadores.png";
 import AddUserModal from "./AddUserModal";
 import { getUser } from "../../../utils/authStorage";
 import Toast from "../../../utils/Toast";
-import { api } from "../../../provider/api";
+import { updateAccount, registerAccount } from "../../../services/accountsService";
 import Swal from "sweetalert2";
 
 const Configurations = () => {
@@ -19,20 +19,27 @@ const Configurations = () => {
     }, []);
 
     const handleAddUser = async (user) => {
-        // ...Lógica mantida idêntica à original...
         if (editingUser) {
             try {
-                await api.put(`/accounts/${editingUser.userId}`, user);
-                setEditingUser(null);
-                Toast.fire({ icon: "success", title: "Usuário editado com sucesso!" });
+                const result = await updateAccount(editingUser.userId, user);
+                if (result) {
+                    setEditingUser(null);
+                    // Atualizar dados do usuário logado se for edição própria
+                    if (editingUser.userId === getUser()?.userId) {
+                        window.location.reload(); // Recarregar para atualizar dados do usuário
+                    }
+                }
             } catch (err) {
                 Toast.fire({ icon: "error", title: "Erro ao editar usuário." });
                 console.error(err);
             }
         } else {
             try {
-                await api.post("/accounts/register", user);
-                Toast.fire({ icon: "success", title: "Usuário adicionado com sucesso!" });
+                const result = await registerAccount(user);
+                if (result) {
+                    // Recarregar página após cadastrar novo usuário
+                    window.location.reload();
+                }
             } catch (err) {
                 Toast.fire({ icon: "error", title: "Erro ao adicionar usuário." });
                 console.error(err);

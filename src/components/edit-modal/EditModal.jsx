@@ -19,7 +19,21 @@ const EditModal = ({
 
 	useEffect(() => {
 		if (editingItem) {
-			setForm(editingItem);
+			const formattedItem = { ...editingItem };
+			// Formatar goal com máscara R$ se existir
+			if (formattedItem.goal !== undefined && formattedItem.goal !== null && formattedItem.goal !== "") {
+				// Se goal já é um número, formatar diretamente
+				const goalValue = typeof formattedItem.goal === 'number' 
+					? formattedItem.goal 
+					: parseFloat(String(formattedItem.goal).replace(/[^\d,]/g, "").replace(",", "."));
+				if (!isNaN(goalValue)) {
+					formattedItem.goal = goalValue.toLocaleString("pt-BR", {
+						style: "currency",
+						currency: "BRL",
+					});
+				}
+			}
+			setForm(formattedItem);
 		}
 	}, [editingItem]);
 
@@ -65,6 +79,11 @@ const EditModal = ({
 			const priceStr = String(newData.price);
 			newData.price = priceStr.replace(/[^\d,]/g, "").replace(",", ".");
 		}
+		if (newData.goal) {
+			// Remover máscara R$ e enviar só número
+			const goalStr = String(newData.goal);
+			newData.goal = parseFloat(goalStr.replace(/[^\d,]/g, "").replace(",", ".")) || null;
+		}
 		if (newData.contactCellphoneNumber) {
 			newData.contactCellphoneNumber = newData.contactCellphoneNumber.replace(/\D/g, "");
 		}
@@ -104,6 +123,10 @@ const EditModal = ({
 		if (name === "cep") {
 			return maskCep(valor);
 		}
+		if (name === "goal") {
+			// Aplicar máscara R$ para o campo goal
+			return formatBRL(valor);
+		}
 
 		return valor;
 	}
@@ -114,7 +137,7 @@ const EditModal = ({
 
 		if (name === "cep") {
 			newValue = formatCEP(value);
-		} else if (name === "price") {
+		} else if (name === "price" || name === "goal") {
 			newValue = formatBRL(value);
 		} else if (
 			name === "driverNumber" ||

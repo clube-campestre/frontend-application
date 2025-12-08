@@ -40,11 +40,22 @@ const AddMemberInput = ({ id, label, type, value, onChange, options, className }
     </div>
 );
 
-const MedicalDataCard = ({ questions, answers = [], onChange, className }) => {
+const MedicalDataCard = ({ questions, answers = [], onChange, fieldNames = [], className }) => {
     const handleAnswer = (index, value) => {
         const newAnswers = [...answers];
         if (!newAnswers[index]) newAnswers[index] = {};
         newAnswers[index] = { ...newAnswers[index], value };
+        // Limpar descrição se mudar para "Não"
+        if (value === false && newAnswers[index].description) {
+            newAnswers[index].description = "";
+        }
+        onChange(newAnswers);
+    };
+
+    const handleDescriptionChange = (index, description) => {
+        const newAnswers = [...answers];
+        if (!newAnswers[index]) newAnswers[index] = {};
+        newAnswers[index] = { ...newAnswers[index], description };
         onChange(newAnswers);
     };
 
@@ -52,6 +63,8 @@ const MedicalDataCard = ({ questions, answers = [], onChange, className }) => {
         <div className={className}>
             {questions.map((question, idx) => {
                 const currentAnswer = answers[idx]?.value;
+                const currentDescription = answers[idx]?.description || "";
+                const fieldName = fieldNames[idx];
                 
                 return (
                     <div key={idx} className="bg-gray-50 p-4 rounded-lg border border-gray-100 flex flex-col gap-3">
@@ -78,6 +91,17 @@ const MedicalDataCard = ({ questions, answers = [], onChange, className }) => {
                                 <span className="text-gray-600">Não</span>
                             </label>
                         </div>
+                        {currentAnswer === true && fieldName && (
+                            <div className="mt-2">
+                                <input
+                                    type="text"
+                                    placeholder="Descreva o motivo..."
+                                    value={currentDescription}
+                                    onChange={(e) => handleDescriptionChange(idx, e.target.value)}
+                                    className="w-full p-3 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-amber-400 outline-none transition-all text-gray-700"
+                                />
+                            </div>
+                        )}
                     </div>
                 );
             })}
@@ -184,13 +208,52 @@ function MedicalData({ dados = {}, setDados = () => {} }) {
                             "Passou por cirurgias? Se sim, quais?",
                             "Motivo de internação nos últimos 5 anos:",
                         ]}
+                        fieldNames={[
+                            "heartProblems",
+                            "drugAllergy",
+                            "lactoseAllergy",
+                            "deficiency",
+                            "bloodTransfusion",
+                            "skinAllergyMedications",
+                            "faintingOrSeizuresMedications",
+                            "psychologicalDisorder",
+                            "allergyMedications",
+                            "diabeticMedications",
+                            "recentSeriousInjury",
+                            "recentFracture",
+                            "surgeries",
+                            "hospitalizationReasonLast5Years",
+                        ]}
                         answers={dados.medicalAnswers}
                         onChange={(respostas) => {
+                            // Mapear respostas para os campos do payload
+                            const medicalData = {
+                                heartProblems: respostas[0]?.value === true ? respostas[0]?.description || "" : "",
+                                drugAllergy: respostas[1]?.value === true ? respostas[1]?.description || "" : "",
+                                lactoseAllergy: respostas[2]?.value === true,
+                                deficiency: respostas[3]?.value === true ? respostas[3]?.description || "" : "",
+                                bloodTransfusion: respostas[4]?.value === true,
+                                skinAllergy: respostas[5]?.value === true,
+                                skinAllergyMedications: respostas[5]?.value === true ? respostas[5]?.description || "" : "",
+                                faintingOrConvulsion: respostas[6]?.value === true,
+                                faintingOrSeizuresMedications: respostas[6]?.value === true ? respostas[6]?.description || "" : "",
+                                psychologicalDisorder: respostas[7]?.value === true ? respostas[7]?.description || "" : "",
+                                allergy: respostas[8]?.value === true,
+                                allergyMedications: respostas[8]?.value === true ? respostas[8]?.description || "" : "",
+                                diabetic: respostas[9]?.value === true,
+                                diabeticMedications: respostas[9]?.value === true ? respostas[9]?.description || "" : "",
+                                recentSeriousInjury: respostas[10]?.value === true,
+                                recentFracture: respostas[11]?.value === true ? respostas[11]?.description || "" : "",
+                                surgeries: respostas[12]?.value === true ? respostas[12]?.description || "" : "",
+                                hospitalizationReasonLast5Years: respostas[13]?.value === true ? respostas[13]?.description || "" : "",
+                            };
+                            
                             const novosDados = {
                                 ...dados,
                                 medicalAnswers: respostas,
-                                // Lógica simplificada para o exemplo
+                                medicalData: medicalData,
                             };
+                            
                             // Evita loop infinito no React
                             if (JSON.stringify(novosDados.medicalAnswers) !== JSON.stringify(dados.medicalAnswers)) {
                                 setDados(novosDados);

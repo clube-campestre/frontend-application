@@ -10,6 +10,7 @@ import {
   Save, 
   X 
 } from "lucide-react";
+import { FaRegStar, FaStar } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { createTransport } from "../../../services/transportsService";
 import Toast from "../../../utils/Toast";
@@ -19,15 +20,42 @@ import { getUser } from "../../../utils/authStorage";
 const FormRegister = ({ formTitle, fields, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
+  const [hoveredNota, setHoveredNota] = useState(0);
+
+  const formatToBRL = (value) => {
+    if (!value) return "";
+    const numericValue = value.replace(/\D/g, "");
+    if (numericValue === "") return "";
+    const number = parseFloat(numericValue) / 100;
+    return number.toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
+  };
+
+  const unmaskBRL = (value) => {
+    if (!value) return 0;
+    return parseFloat(value.replace(/[^\d,]/g, "").replace(",", ".")) || 0;
+  };
 
   const handleChange = (id, value) => {
-    setFormData((prev) => ({ ...prev, [id]: value }));
+    if (id === "cotacao") {
+      const formatted = formatToBRL(value);
+      setFormData((prev) => ({ ...prev, [id]: formatted }));
+    } else {
+      setFormData((prev) => ({ ...prev, [id]: value }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    await onSubmit(formData);
+    // Remover máscara do campo cotação antes de enviar
+    const cleanedFormData = {
+      ...formData,
+      cotacao: unmaskBRL(formData.cotacao),
+    };
+    await onSubmit(cleanedFormData);
     setLoading(false);
   };
 
@@ -63,14 +91,39 @@ const FormRegister = ({ formTitle, fields, onSubmit, onCancel }) => {
                 </label>
                 
                 <div className="relative">
-                  <input
-                    id={field.id}
-                    type={field.type}
-                    required={field.isRequired}
-                    onChange={(e) => handleChange(field.id, e.target.value)}
-                    className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-amber-400 outline-none transition-all h-11 text-gray-700 placeholder-gray-400"
-                    placeholder={`Digite ${field.label.toLowerCase()}...`}
-                  />
+                  {field.type === "rating" ? (
+                    <div className="flex space-x-1">
+                      {[...Array(5).keys()].map((i) => {
+                        const valor = i + 1;
+                        return (
+                          <button
+                            key={valor}
+                            type="button"
+                            onClick={() => handleChange(field.id, valor)}
+                            onMouseEnter={() => setHoveredNota(valor)}
+                            onMouseLeave={() => setHoveredNota(0)}
+                            className="w-8 h-8 rounded-full cursor-pointer focus:outline-none focus:scale-110 transition-transform"
+                          >
+                            {valor <= (formData[field.id] || hoveredNota) ? (
+                              <FaStar color="#FCAE2D" size={24} />
+                            ) : (
+                              <FaRegStar color="#FCAE2D" size={24} />
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <input
+                      id={field.id}
+                      type={field.type}
+                      required={field.isRequired}
+                      value={formData[field.id] || ""}
+                      onChange={(e) => handleChange(field.id, e.target.value)}
+                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-amber-400 outline-none transition-all h-11 text-gray-700 placeholder-gray-400"
+                      placeholder={`Digite ${field.label.toLowerCase()}...`}
+                    />
+                  )}
                 </div>
               </div>
             ))}
@@ -88,7 +141,7 @@ const FormRegister = ({ formTitle, fields, onSubmit, onCancel }) => {
             <button
               type="button" // Essencial para não submeter o formulário
               onClick={onCancel}
-              className="w-full sm:w-auto px-6 py-2.5 rounded-lg bg-gray-300 text-blue hover:bg-red-600 font-medium transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full sm:w-auto px-6 py-2.5 rounded-lg bg-gray-300 text-blue hover:bg-red-600 hover:text-gray-100 font-medium transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer"
             >
               <X size={18} /> Cancelar
             </button>
@@ -141,7 +194,7 @@ const transportFields = [
   },
   { 
     id: "cotacao", 
-    type: "number", 
+    type: "text", 
     label: "Cotação (R$)", 
     isRequired: true,
     colSpan: "md:col-span-2"
@@ -160,6 +213,13 @@ const transportFields = [
     isRequired: true,
     colSpan: "md:col-span-2", 
     icon: <Box size={14} />
+  },
+  {
+    id: "nota",
+    type: "rating",
+    label: "Nota",
+    isRequired: true,
+    colSpan: "md:col-span-12"
   },
 ];
 
@@ -185,7 +245,7 @@ const AddTransport = () => {
         price: Number(formData.cotacao),
         travelDistance: Number(formData.distanciaHistorica),
         capacity: Number(formData.capacidade),
-        rating: 0,
+        rating: Number(formData.nota) || 0,
       };
 
       const res = await createTransport(body);

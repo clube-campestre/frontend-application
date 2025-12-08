@@ -13,6 +13,8 @@ import Toast from "../../../utils/Toast";
 import { MemberCard } from "../../../components/member-card/MemberCard";
 import EditModal from "../../../components/edit-modal/EditModal";
 import MemberModal from "../../../components/member-manage/MemberModal";
+import Pagination from "../../../components/pagination/Pagination";
+import InfoCard from "../../../components/info-card/InfoCard";
 
 // Imagens
 import loboImage from "../../../assets/images/lobo.png";
@@ -85,13 +87,13 @@ const Unities = () => {
     const unitPointsFields = [
         {
             name: "unit", label: "Unidade", placeholder: "Selecione", type: "select", isRequired: true,
-            options: unities.map((unit) => ({ value: unit.id, label: unit.name })), selectedOption: "Selecione",
+            options: unities.map((unit) => ({ value: unit.formatedName, label: unit.name })), selectedOption: "Selecione",
         },
         {
             name: "isSum", label: "Ação", placeholder: "Selecione", type: "select", isRequired: true,
-            options: [{ value: true, label: "Adicionar Pontos" }, { value: false, label: "Remover Pontos" }], selectedOption: "Selecione",
+            options: [{ value: "true", label: "Adicionar Pontos" }, { value: "false", label: "Remover Pontos" }], selectedOption: "Selecione",
         },
-        { name: "points", label: "Pontos", placeholder: "Qtd", type: "number", isRequired: true },
+        { name: "score", label: "Pontos", placeholder: "Qtd", type: "number", isRequired: true },
     ];
 
     const membersFields = [
@@ -184,21 +186,29 @@ const Unities = () => {
     };
 
     const handleAddUnitPoint = async (data) => {
-        if (!data.unit || !data.points) return Toast.fire({ icon: "error", title: "Dados inválidos." });
-        if (data.points < 0) return Toast.fire({ icon: "error", title: "A pontuação não pode ser negativa." });
-		try {
-        const response = await changeUnitScore({ id: data.unit, score: data.points, isSum: data.isSum });
-        if (response) {
-            Toast.fire({ icon: "success", title: `Pontuação ${data.isSum ? "adicionada" : "removida"} com sucesso!` });
+        if (!data.unit || data.score === undefined || data.score === null) {
+            return Toast.fire({ icon: "error", title: "Dados inválidos." });
         }
-		} catch (error) {
-			Toast.fire({
-				icon: "error",
-				title: "Erro ao adicionar pontuação.",
-			});
-			console.error("Error adding unit point:", error);
-		}
-	};
+        if (data.score < 0) {
+            return Toast.fire({ icon: "error", title: "A pontuação não pode ser negativa." });
+        }
+        // Converter isSum de string para boolean se necessário
+        const isSum = data.isSum === "true" || data.isSum === true;
+        try {
+            const response = await changeUnitScore(data.unit, Number(data.score), isSum);
+            if (response) {
+                Toast.fire({ icon: "success", title: `Pontuação ${isSum ? "adicionada" : "removida"} com sucesso!` });
+                setShowAddUnitPointModal(false);
+                fetchMembers(); // Recarregar dados
+            }
+        } catch (error) {
+            Toast.fire({
+                icon: "error",
+                title: "Erro ao adicionar pontuação.",
+            });
+            console.error("Error adding unit point:", error);
+        }
+    };
 
     return (
         <div className="h-screen flex flex-col bg-gray-50 overflow-hidden font-sans">
@@ -287,29 +297,23 @@ const Unities = () => {
                     
                     {/* Grid Mobile (2 cols) / Flex Desktop */}
                     <div className="grid grid-cols-2 md:flex md:flex-row gap-3 flex-1">
-                        <div className="bg-white p-3 md:p-4 rounded-xl shadow-sm border border-gray-200 flex flex-col md:flex-row items-center md:gap-4 text-center md:text-left">
-                            <div className="bg-amber-100 p-2 md:p-3 rounded-full text-[#FCAE2D] mb-2 md:mb-0">
-                                <LuTrophy className="w-5 h-5 md:w-6 md:h-6" />
-                            </div>
-                            <div>
-                                <p className="text-[10px] md:text-xs text-gray-500 uppercase font-bold">Pontuação</p>
-                                <p className="text-lg md:text-2xl font-bold text-gray-800">
-                                    {selectedUnit ? (unitPoints || 0) : "-"}
-                                </p>
-                            </div>
-                        </div>
+                        <InfoCard
+                            icon={LuTrophy}
+                            label="Pontuação"
+                            value={selectedUnit ? (unitPoints || 0) : "-"}
+                            iconBgColor="bg-amber-100"
+                            iconColor="text-[#FCAE2D]"
+                            className="flex-col md:flex-row items-center md:gap-4 text-center md:text-left"
+                        />
 
-                        <div className="bg-white p-3 md:p-4 rounded-xl shadow-sm border border-gray-200 flex flex-col md:flex-row items-center md:gap-4 text-center md:text-left flex-1">
-                            <div className="bg-blue-100 p-2 md:p-3 rounded-full text-blue-600 mb-2 md:mb-0">
-                                <LuUser className="w-5 h-5 md:w-6 md:h-6" />
-                            </div>
-                            <div className="w-full overflow-hidden">
-                                <p className="text-[10px] md:text-xs text-gray-500 uppercase font-bold">Conselheiro(a)</p>
-                                <p className="text-sm md:text-lg font-bold text-gray-800 truncate">
-                                    {selectedUnit ? (unitCounselor || "Indefinido") : "Selecione..."}
-                                </p>
-                            </div>
-                        </div>
+                        <InfoCard
+                            icon={LuUser}
+                            label="Conselheiro(a)"
+                            value={selectedUnit ? (unitCounselor || "Indefinido") : "Selecione..."}
+                            iconBgColor="bg-blue-100"
+                            iconColor="text-blue-600"
+                            className="flex-col md:flex-row items-center md:gap-4 text-center md:text-left flex-1"
+                        />
                     </div>
 
                     {/* Botões */}
@@ -373,14 +377,14 @@ const Unities = () => {
                     {/* Footer */}
                     {members.length > 0 && (
                         <div className="flex-shrink-0 bg-white border-t border-gray-200 px-4 py-2 z-10">
-                            <div className="flex flex-row items-center justify-between gap-2">
-                                <span className="text-[10px] text-gray-500">Total: {totalItems}</span>
-                                <div className="flex items-center gap-2">
-                                    <button onClick={() => setPageNumber((p) => Math.max(p - 1, 0))} disabled={pageNumber === 0} className="p-1.5 rounded-md bg-gray-100 disabled:opacity-50 text-gray-600"><FaChevronLeft size={10} /></button>
-                                    <span className="text-xs font-medium text-gray-700">{pageNumber + 1}/{totalPages}</span>
-                                    <button onClick={() => setPageNumber((p) => p + 1)} disabled={pageNumber + 1 === totalPages} className="p-1.5 rounded-md bg-gray-100 disabled:opacity-50 text-gray-600"><FaChevronRight size={10} /></button>
-                                </div>
-                            </div>
+                            <Pagination
+                                pageNumber={pageNumber}
+                                totalPages={totalPages}
+                                onPageChange={setPageNumber}
+                                totalItems={totalItems}
+                                itemsPerPage={members.length}
+                                className="justify-between"
+                            />
                         </div>
                     )}
                 </div>

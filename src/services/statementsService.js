@@ -3,7 +3,13 @@ import Swal from "sweetalert2";
 
 export const getStatements = async (params = {}) => {
   try {
-    const res = await api.get(`/statements`, { params });
+    // Garantir parâmetros obrigatórios page e size
+    const queryParams = { 
+      page: params.page !== undefined ? params.page : 0, 
+      size: params.size !== undefined ? params.size : 10,
+      ...params 
+    };
+    const res = await api.get(`/statements`, { params: queryParams });
     return res.data;
   } catch (err) {
     console.error(err);
@@ -99,6 +105,16 @@ export const deleteStatementsByTag = async (tagName) => {
 
 export const getGoalByTag = async (tagId) => {
   try {
+    // Validar parâmetro obrigatório
+    if (!tagId) {
+      Swal.fire({
+        title: "Erro de validação",
+        text: "tagId é obrigatório.",
+        icon: "error",
+        confirmButtonColor: "#FCAE2D",
+      });
+      return null;
+    }
     const res = await api.get(`/statements/goal`, { params: { tagId } });
     return res.data;
   } catch (err) {
