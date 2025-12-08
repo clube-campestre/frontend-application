@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Pencil, Trash2, UserPlus, Users, SearchX } from "lucide-react";
 import Toast from "../../../utils/Toast";
 import AddUserModal from "./AddUserModal";
-import { api } from "../../../provider/api";
+import { getAllAccounts, updateAccount, registerAccount, deleteAccount } from "../../../services/accountsService";
 import Swal from "sweetalert2";
 import { getUser } from "../../../utils/authStorage";
 
@@ -22,9 +22,13 @@ export default function UserManagement() {
 
     const fetchUsers = async () => {
         try {
-            const response = await api.get("/accounts");
-            setUsers(response.data);
-            setError(null);
+            const data = await getAllAccounts();
+            if (data) {
+                setUsers(data);
+                setError(null);
+            } else {
+                setUsers([]);
+            }
             setLoading(false);
         } catch (err) {
             setError("Ocorreu um erro ao buscar os usuários.");
@@ -40,19 +44,23 @@ export default function UserManagement() {
     const handleAddUser = async (user) => {
         if (editingUser) {
             try {
-                await api.put(`/accounts/${editingUser.id}`, user);
-                fetchUsers();
-                setEditingUser(null);
-                Toast.fire({ icon: "success", title: "Usuário editado com sucesso!" });
+                const result = await updateAccount(editingUser.id, user);
+                if (result) {
+                    setEditingUser(null);
+                    // Recarregar página após editar usuário
+                    window.location.reload();
+                }
             } catch (err) {
                 Toast.fire({ icon: "error", title: "Ocorreu um erro ao editar usuário." });
                 console.error("Error editing user:", err);
             }
         } else {
             try {
-                await api.post("/accounts/register", user);
-                fetchUsers();
-                Toast.fire({ icon: "success", title: "Usuário adicionado com sucesso!" });
+                const result = await registerAccount(user);
+                if (result) {
+                    // Recarregar página após cadastrar novo usuário
+                    window.location.reload();
+                }
             } catch (err) {
                 Toast.fire({ icon: "error", title: "Ocorreu um erro ao adicionar usuário." });
                 console.error("Error adding user:", err);
@@ -75,9 +83,11 @@ export default function UserManagement() {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    await api.delete(`/accounts/${id}`);
-                    fetchUsers();
-                    Toast.fire({ icon: "success", title: "Usuário deletado!" });
+                    const success = await deleteAccount(id);
+                    if (success) {
+                        // Recarregar página após excluir usuário
+                        window.location.reload();
+                    }
                 } catch (err) {
                     setError("Ocorreu um erro ao deletar o usuário.");
                     Toast.fire({ icon: "error", title: "Erro ao deletar usuário." });

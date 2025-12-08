@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getUser } from "../../../utils/authStorage";
-import { getAllMembers, getMembersByFilter, getMembersByClass, updateMemberByCpf, updateMemberUnitAndClass } from "../../../services/membersService";
+import { getAllMembers, getMembersByFilter, getMembersByClass, updateMemberUnitAndClass } from "../../../services/membersService";
 import Toast from "../../../utils/Toast";
 
 // Imagens
@@ -17,6 +17,8 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import { MemberCard } from "../../../components/member-card/MemberCard";
 import MemberModal from "../../../components/member-manage/MemberModal";
 import EditModal from "../../../components/edit-modal/EditModal";
+import Pagination from "../../../components/pagination/Pagination";
+import InfoCard from "../../../components/info-card/InfoCard";
 
 const Classes = () => {
     // --- ESTADOS (MANTIDOS) ---
@@ -112,8 +114,15 @@ const Classes = () => {
     }, [selectedClassName, pageNumber]);
 
     const handleEditMember = async (member) => {
+        // Apenas permitir edição de unidade e classe nesta tela
         try {
-            const response = await updateMemberByCpf(member.cpf, member);
+            const payload = {
+                unitName: member.unitName || member.unit?.surname,
+                unitRole: member.unitRole,
+                classRole: member.classRole,
+                classCategory: member.classCategory || selectedClassName?.toUpperCase(),
+            };
+            const response = await updateMemberUnitAndClass(member.cpf, payload);
             if (response) {
                 Toast.fire({ icon: "success", title: "Membro editado com sucesso!" });
                 setShowEditMemberModal(false);
@@ -259,30 +268,22 @@ const Classes = () => {
                     {/* Info Cards (Empilhados no mobile, lado a lado no desktop) */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 flex-1">
                         {/* Classe Selecionada */}
-                        <div className="bg-white p-3 md:p-4 rounded-xl shadow-sm border border-gray-200 flex items-center gap-4 transition-all hover:shadow-md">
-                            <div className="bg-amber-100 p-3 rounded-full text-[#FCAE2D]">
-                                <LuUsers size={20} className="md:w-6 md:h-6" />
-                            </div>
-                            <div>
-                                <p className="text-[10px] md:text-xs text-gray-500 uppercase font-bold">Classe Atual</p>
-                                <p className="text-base md:text-lg font-bold text-gray-800 leading-tight">
-                                    {selectedClassName || "Todas"}
-                                </p>
-                            </div>
-                        </div>
+                        <InfoCard
+                            icon={LuUsers}
+                            label="Classe Atual"
+                            value={selectedClassName || "Todas"}
+                            iconBgColor="bg-amber-100"
+                            iconColor="text-[#FCAE2D]"
+                        />
 
                         {/* Instrutor */}
-                        <div className="bg-white p-3 md:p-4 rounded-xl shadow-sm border border-gray-200 flex items-center gap-4 transition-all hover:shadow-md">
-                            <div className="bg-blue-100 p-3 rounded-full text-blue-600">
-                                <LuUser size={20} className="md:w-6 md:h-6" />
-                            </div>
-                            <div className="w-full overflow-hidden">
-                                <p className="text-[10px] md:text-xs text-gray-500 uppercase font-bold">Instrutor(a)</p>
-                                <p className="text-base md:text-lg font-bold text-gray-800 truncate leading-tight">
-                                    {selectedClassName ? (classInstructor || "Indefinido") : "-"}
-                                </p>
-                            </div>
-                        </div>
+                        <InfoCard
+                            icon={LuUser}
+                            label="Instrutor"
+                            value={classInstructor || "N/A"}
+                            iconBgColor="bg-blue-100"
+                            iconColor="text-blue-600"
+                        />
                     </div>
 
                     {/* Botão de Ação */}
@@ -349,25 +350,14 @@ const Classes = () => {
                                     Total: <strong className="text-gray-800">{totalItems}</strong>
                                 </span>
                                 
-                                <div className="flex items-center gap-2">
-                                    <button
-                                        onClick={() => setPageNumber((p) => Math.max(p - 1, 0))}
-                                        disabled={pageNumber === 0}
-                                        className="p-2 rounded-lg bg-gray-50 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-gray-600 border border-gray-200"
-                                    >
-                                        <FaChevronLeft size={12} />
-                                    </button>
-                                    <span className="text-xs font-medium px-2 text-gray-700">
-                                        {pageNumber + 1} / {totalPages}
-                                    </span>
-                                    <button
-                                        onClick={() => setPageNumber((p) => p + 1)}
-                                        disabled={pageNumber + 1 === totalPages}
-                                        className="p-2 rounded-lg bg-gray-50 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-gray-600 border border-gray-200"
-                                    >
-                                        <FaChevronRight size={12} />
-                                    </button>
-                                </div>
+                                <Pagination
+                                    pageNumber={pageNumber}
+                                    totalPages={totalPages}
+                                    onPageChange={setPageNumber}
+                                    totalItems={totalItems}
+                                    itemsPerPage={members.length}
+                                    className="justify-end"
+                                />
                             </div>
                         </div>
                     )}

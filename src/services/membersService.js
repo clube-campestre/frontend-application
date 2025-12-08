@@ -110,7 +110,13 @@ export const getMembersByUnit = async (unitName, page = 0, size = 10) => {
 
 export const getMembersByFilter = async (filter = {}) => {
   try {
-    const res = await api.get(`/members/filter`, { params: filter });
+    // Garantir parâmetros obrigatórios page e size
+    const params = { 
+      page: filter.page !== undefined ? filter.page : 0, 
+      size: filter.size !== undefined ? filter.size : 10,
+      ...filter 
+    };
+    const res = await api.get(`/members/filter`, { params });
     return res.data;
   } catch (err) {
     console.error(err);
@@ -128,15 +134,9 @@ export const getMembersByClass = async (classCategory, page = 0, size = 10) => {
   }
 };
 
-export const updateMemberByCpf = async (cpf, payload) => {
-  try {
-    const res = await api.put(`/members/${cpf}`, payload);
-    return res.data;
-  } catch (err) {
-    console.error(err);
-    return null;
-  }
-};
+// REMOVIDO: updateMemberByCpf - A rota PUT /members/{cpf} não existe no Swagger
+// Use updateMember (PUT /members) com CPF no body (data) para atualizar membro completo
+// Use updateMemberUnitAndClass (PUT /members/unit-and-class/{cpf}) para atualizar apenas unidade e classe
 
 export const updateMemberUnitAndClass = async (cpf, payload) => {
   try {

@@ -5,9 +5,12 @@ import { StatementCard } from "../../../components/statement-card/StatementCard"
 import { useState, useEffect } from "react";
 import EditModal from "../../../components/edit-modal/EditModal";
 import { IoMdSearch } from "react-icons/io"; // Ícone de busca moderno
-import { FaChevronLeft, FaChevronRight, FaFileInvoiceDollar } from "react-icons/fa6"; // Ícone de Extrato
-import { FaFilter, FaBroom, FaPencilAlt, FaTrash } from "react-icons/fa";
+import { FaFileInvoiceDollar } from "react-icons/fa6"; // Ícone de Extrato
+import { FaFilter, FaBroom } from "react-icons/fa";
 import Toast from "../../../utils/Toast";
+import Pagination from "../../../components/pagination/Pagination";
+import EmptyState from "../../../components/empty-state/EmptyState";
+import TagsModal from "../../../components/tags-modal/TagsModal";
 import {
     getStatements,
     createStatement,
@@ -29,7 +32,7 @@ const Statement = () => {
     const [tags, setTags] = useState([]);
     const [totalAmount, setTotalAmount] = useState(0);
     const [transactions, setTransactions] = useState([]);
-    const [pageNumber, setPageNumber] = useState(1);
+    const [pageNumber, setPageNumber] = useState(0);
     const [pageSize, setPageSize] = useState(5);
     const [totalPages, setTotalPages] = useState(1);
     const [totalItems, setTotalItems] = useState(0);
@@ -38,7 +41,7 @@ const Statement = () => {
         endDate: "",
         tagId: "",
         type: "",
-        description: "",
+        description: "", 
     });
 
     // --- CAMPOS (MANTIDOS) ---
@@ -59,14 +62,14 @@ const Statement = () => {
     const tagFields = [
         { name: "surname", label: "Nome da Tag", placeholder: "Ex: Alimentação", type: "text", isRequired: true },
         { name: "color", label: "Cor", placeholder: "Cor", type: "color", isRequired: true },
-        { name: "goal", label: "Meta (Opcional)", placeholder: "0,00", type: "Number", isRequired: false },
+        { name: "goal", label: "Meta (Opcional)", placeholder: "R$ 0,00", type: "text", isRequired: false },
         { name: "privateGoal", label: "Meta Privada", placeholder: "", type: "checkbox", isRequired: false }
     ];
 
     const tagEditFields = [
         { name: "surname", label: "Nome da Tag", placeholder: "Nome", type: "text", isRequired: true },
         { name: "color", label: "Cor", placeholder: "Cor", type: "color", isRequired: true },
-        { name: "goal", label: "Meta", placeholder: "0,00", type: "number", isRequired: false },
+        { name: "goal", label: "Meta", placeholder: "R$ 0,00", type: "text", isRequired: false },
         { name: "privateGoal", label: "Meta Privada", placeholder: "", type: "checkbox", isRequired: false },
     ];
 
@@ -144,7 +147,12 @@ const Statement = () => {
             return;
         }
         try {
-            const response = await createTagService(data);
+            // Remover máscara do campo goal antes de enviar (enviar só número)
+            const payload = {
+                ...data,
+                goal: data.goal ? parseFloat(data.goal.replace(/[^\d,]/g, "").replace(",", ".")) || null : null
+            };
+            const response = await createTagService(payload);
             if (response) {
                 Toast.fire({ icon: "success", title: "Tag criada!" });
                 setShowTagModal(false);
@@ -157,7 +165,12 @@ const Statement = () => {
 
     const handleEditTag = async (data) => {
         try {
-            const response = await updateTagService(editingTag.id, data);
+            // Remover máscara do campo goal antes de enviar (enviar só número)
+            const payload = {
+                ...data,
+                goal: data.goal ? parseFloat(data.goal.replace(/[^\d,]/g, "").replace(",", ".")) || null : null
+            };
+            const response = await updateTagService(editingTag.id, payload);
             if (response) {
                 Toast.fire({ icon: "success", title: "Tag editada!" });
                 setEditingTag(null);
@@ -199,8 +212,16 @@ const Statement = () => {
 
     const handleCreateTransaction = async (data) => {
         try {
+            // Remover máscara do campo price antes de enviar
+            const cleanedPrice = data.price 
+                ? parseFloat(String(data.price).replace(/[^\d,]/g, "").replace(",", ".")) 
+                : null;
             const isoDate = data.transactionDate ? new Date(data.transactionDate).toISOString() : null;
-            const payload = { ...data, transactionDate: isoDate };
+            const payload = { 
+                ...data, 
+                price: cleanedPrice,
+                transactionDate: isoDate 
+            };
             const response = await createStatement(payload);
             if (response) {
                 Toast.fire({ icon: "success", title: "Transação criada!" });
@@ -238,7 +259,15 @@ const Statement = () => {
 
     const handleEditTransaction = async (data) => {
         try {
-            const payload = { ...data, id: editingItem.id };
+            // Remover máscara do campo price antes de enviar
+            const cleanedPrice = data.price 
+                ? parseFloat(String(data.price).replace(/[^\d,]/g, "").replace(",", ".")) 
+                : null;
+            const payload = { 
+                ...data, 
+                id: editingItem.id,
+                price: cleanedPrice
+            };
             const response = await updateStatement(payload);
             if (response) {
                 Toast.fire({ icon: "success", title: "Editado!" });
@@ -416,44 +445,24 @@ const Statement = () => {
                                     />
                                 ))
                             ) : (
-                                <div className="flex flex-col items-center justify-center py-20 text-center">
-                                    <div className="bg-gray-50 p-4 rounded-full mb-4">
-                                        <FaFileInvoiceDollar size={32} className="text-gray-300" />
-                                    </div>
-                                    <h3 className="text-lg font-medium text-gray-900">Nenhuma transação encontrada</h3>
-                                    <p className="text-gray-500 max-w-sm mt-1">Use os filtros acima ou adicione uma nova transação.</p>
-                                </div>
+                                <EmptyState
+                                    icon={FaFileInvoiceDollar}
+                                    title="Nenhuma transação encontrada"
+                                    message="Use os filtros acima ou adicione uma nova transação."
+                                />
                             )}
                         </div>
                     </div>
 
                     {/* Footer / Paginação */}
                     <div className="flex-shrink-0 bg-gray-50 border-t border-gray-200 px-6 py-3 z-10">
-                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                            <span className="text-xs text-gray-600">
-                                Mostrando <span className="font-bold text-gray-900">{transactions.length}</span> de {totalItems} registros
-                            </span>
-                            
-                            <div className="flex items-center gap-2">
-                                <button
-                                    onClick={() => setPageNumber((p) => Math.max(p - 1, 0))}
-                                    disabled={pageNumber === 0}
-                                    className="p-2 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-gray-600"
-                                >
-                                    <FaChevronLeft size={14} />
-                                </button>
-                                <span className="text-xs font-medium px-2">
-                                    Pág {pageNumber + 1} de {totalPages}
-                                </span>
-                                <button
-                                    onClick={() => setPageNumber((p) => p + 1)}
-                                    disabled={pageNumber + 1 === totalPages}
-                                    className="p-2 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-gray-600"
-                                >
-                                    <FaChevronRight size={14} />
-                                </button>
-                            </div>
-                        </div>
+                        <Pagination
+                            pageNumber={pageNumber}
+                            totalPages={totalPages}
+                            onPageChange={setPageNumber}
+                            totalItems={totalItems}
+                            itemsPerPage={transactions.length}
+                        />
                     </div>
                 </div>
             </div>
@@ -480,92 +489,22 @@ const Statement = () => {
                 />
             )}
 
-            {/* Modal de Gerenciamento de Tags (Estilo Modernizado) */}
-            {showManageTagsModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-                    <div className="bg-white rounded-xl shadow-2xl w-full max-w-md max-h-[85vh] flex flex-col relative animate-fadeIn">
-                        {/* Header Modal */}
-                        <div className="flex justify-between items-center p-5 border-b border-gray-100">
-                            <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-                                <LuTags className="text-[#FCAE2D]" /> Gerenciar Tags
-                            </h2>
-                            <button
-                                onClick={() => { setShowManageTagsModal(false); setEditingTag(null); }}
-                                className="text-gray-400 hover:text-red-500 transition-colors"
-                            >
-                                <span className="text-2xl leading-none">&times;</span>
-                            </button>
-                        </div>
-
-                        {/* Body Modal */}
-                        <div className="flex-1 overflow-y-auto p-5 bg-gray-50">
-                            
-                            {!editingTag && !showTagModal && (
-                                <button
-                                    onClick={() => setShowTagModal(true)}
-                                    className="w-full mb-4 py-3 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:border-[#FCAE2D] hover:text-[#FCAE2D] hover:bg-white transition-all font-medium flex items-center justify-center gap-2"
-                                >
-                                    <LuCirclePlus /> Nova Tag
-                                </button>
-                            )}
-
-                            {showTagModal && (
-                                <div className="bg-white p-4 rounded-lg shadow-sm mb-4 border border-gray-100">
-                                    <h3 className="text-sm font-bold text-gray-700 mb-3">Nova Tag</h3>
-                                    <EditModal
-                                        onClose={() => setShowTagModal(false)}
-                                        onSubmit={handleCreateTag}
-                                        editingItem={null}
-                                        title="" // Título oculto pois já tem header
-                                        fields={tagFields}
-                                        containerClassName="w-full shadow-none p-0 bg-transparent"
-                                        floatingLabels={true}
-                                    />
-                                </div>
-                            )}
-
-                            {editingTag ? (
-                                <div className="bg-white p-4 rounded-lg shadow-sm mb-4 border border-gray-100">
-                                    <h3 className="text-sm font-bold text-gray-700 mb-3">Editando: {editingTag.surname}</h3>
-                                    <EditModal
-                                        onClose={() => setEditingTag(null)}
-                                        onSubmit={handleEditTag}
-                                        editingItem={editingTag}
-                                        title=""
-                                        fields={tagEditFields}
-                                        containerClassName="w-full shadow-none p-0 bg-transparent"
-                                    />
-                                </div>
-                            ) : (
-                                <div className="space-y-2">
-                                    {tags.length === 0 && <p className="text-center text-gray-400 text-sm">Nenhuma tag encontrada.</p>}
-                                    {tags.map((tag) => {
-                                        const isDefault = String(tag.surname || "").trim().toLowerCase() === "outros";
-                                        return (
-                                            <div key={tag.id} className="flex items-center justify-between bg-white p-3 rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-all">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-3 h-3 rounded-full" style={{ background: tag.color }}></div>
-                                                    <span className="text-sm font-medium text-gray-700">{tag.surname}</span>
-                                                    {tag.goal && <span className="text-[10px] bg-green-50 text-green-600 px-1.5 py-0.5 rounded border border-green-100">Meta: {tag.goal}</span>}
-                                                    {tag.privateGoal && <span className="text-[10px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded">Privada</span>}
-                                                </div>
-                                                <div className="flex gap-1">
-                                                    {!isDefault && (
-                                                        <>
-                                                            <button onClick={() => setEditingTag(tag)} className="p-1.5 text-gray-400 hover:text-amber-500 hover:bg-amber-50 rounded transition-colors"><FaPencilAlt size={14} /></button>
-                                                            <button onClick={() => handleDeleteTag(tag.id)} className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"><FaTrash size={14} /></button>
-                                                        </>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            )}
+            {/* Modal de Gerenciamento de Tags */}
+            <TagsModal
+                isOpen={showManageTagsModal}
+                onClose={() => { setShowManageTagsModal(false); setEditingTag(null); setShowTagModal(false); }}
+                tags={tags}
+                editingTag={editingTag}
+                onEditTag={setEditingTag}
+                onCancelEdit={() => setEditingTag(null)}
+                onSaveTag={handleEditTag}
+                onDeleteTag={handleDeleteTag}
+                showTagModal={showTagModal}
+                onShowTagModal={setShowTagModal}
+                onCreateTag={handleCreateTag}
+                tagFields={tagFields}
+                tagEditFields={tagEditFields}
+            />
         </div>
     );
 };

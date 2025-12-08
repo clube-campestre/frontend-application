@@ -78,30 +78,17 @@ export const registerService = async (
 		return false;
 	}
 
-	const duplicatedUser = await fetch(`${API_URL}?email=${email}`);
-	const user = await duplicatedUser.json();
-
-	if (user.length > 0) {
-		Swal.fire({
-			title: "Erro ao cadastrar",
-			text: "Email já cadastrado.",
-			icon: "error",
-			confirmButtonColor: "#FCAE2D",
-		});
-
-		return false;
-	}
-
 	try {
-		const response = await fetch(API_URL, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({ name, email, password }),
-		});
-
-		return true;
+		// Usar accountsService para registro
+		const { registerAccount } = await import("./accountsService");
+		const payload = {
+			name,
+			email,
+			password,
+			access: "SUPERVISOR", // Valor padrão para registro público
+		};
+		const result = await registerAccount(payload);
+		return result !== null;
 	} catch (error) {
 		Swal.fire({
 			title: "Erro ao cadastrar",
@@ -109,7 +96,6 @@ export const registerService = async (
 			icon: "error",
 			confirmButtonColor: "#FCAE2D",
 		});
-
 		console.error(error);
 		return false;
 	}

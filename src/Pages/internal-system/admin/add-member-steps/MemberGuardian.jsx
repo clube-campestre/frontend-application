@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import AddMemberInput from "../../../../components/add-member-input/AddMemberInput";
 
 // --- MOCKS (Simulação de dependências externas) ---
 const maskPhone = (value) => {
@@ -9,30 +10,10 @@ const maskPhone = (value) => {
     .slice(0, 15);
 };
 
-const AddMemberInput = ({ id, label, type, value, onChange, className }) => (
-  <div className={`flex flex-col gap-1 ${className}`}>
-    <label htmlFor={id} className="text-sm font-semibold text-gray-600 ml-1">
-      {label}
-    </label>
-    <input
-      id={id}
-      type={type}
-      value={value}
-      onChange={onChange}
-      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-amber-400 outline-none transition-all h-12"
-    />
-  </div>
-);
-
 // --- COMPONENTE PRINCIPAL ---
 
-function MemberGuardian({ dados = {}, setDados = () => {} }) {
+function MemberGuardian({ dados, setDados}) {
   const [responsavelUnico, setResponsavelUnico] = useState(false);
-
-  // Helper para atualizar o state
-  const handleChange = (field, value) => {
-    setDados((prev) => ({ ...prev, [field]: value }));
-  };
 
   return (
     // Container Principal: Centralizado, sem margens fixas laterais (ml-20 removido)
@@ -58,17 +39,17 @@ function MemberGuardian({ dados = {}, setDados = () => {} }) {
                   type="text"
                   label="Nome do Pai"
                   value={dados.fatherName || ""}
-                  onChange={(e) => handleChange("fatherName", e.target.value)}
+                  onChange={(e) => setDados({...dados, fatherName: e.target.value})}
                   className="w-full"
                 />
               </div>
               <div className="md:col-span-7">
                 <AddMemberInput
                   id="fatherEmail"
-                  type="text"
+                  type="email"
                   label="Email do Pai"
                   value={dados.fatherEmail || ""}
-                  onChange={(e) => handleChange("fatherEmail", e.target.value)}
+                  onChange={(e) => setDados({...dados, fatherEmail: e.target.value})}
                   className="w-full"
                 />
               </div>
@@ -79,7 +60,7 @@ function MemberGuardian({ dados = {}, setDados = () => {} }) {
                   label="Contato do Pai"
                   value={maskPhone(dados.fatherContact || "")}
                   onChange={(e) =>
-                    handleChange("fatherContact", e.target.value.replace(/\D/g, "").slice(0, 11))
+                    setDados({...dados, fatherContact: e.target.value.replace(/\D/g, "").slice(0, 11)})
                   }
                   className="w-full"
                 />
@@ -96,17 +77,17 @@ function MemberGuardian({ dados = {}, setDados = () => {} }) {
                   type="text"
                   label="Nome da Mãe"
                   value={dados.motherName || ""}
-                  onChange={(e) => handleChange("motherName", e.target.value)}
+                  onChange={(e) => setDados({...dados, motherName: e.target.value})}
                   className="w-full"
                 />
               </div>
               <div className="md:col-span-7">
                 <AddMemberInput
                   id="motherEmail"
-                  type="text"
+                  type="email"
                   label="Email da Mãe"
                   value={dados.motherEmail || ""}
-                  onChange={(e) => handleChange("motherEmail", e.target.value)}
+                  onChange={(e) => setDados({...dados, motherEmail: e.target.value})}
                   className="w-full"
                 />
               </div>
@@ -117,7 +98,7 @@ function MemberGuardian({ dados = {}, setDados = () => {} }) {
                   label="Contato da Mãe"
                   value={maskPhone(dados.motherContact || "")}
                   onChange={(e) =>
-                    handleChange("motherContact", e.target.value.replace(/\D/g, "").slice(0, 11))
+                    setDados({...dados, motherContact: e.target.value.replace(/\D/g, "").slice(0, 11)})
                   }
                   className="w-full"
                 />
@@ -146,17 +127,17 @@ function MemberGuardian({ dados = {}, setDados = () => {} }) {
                   type="text"
                   label="Nome do Responsável"
                   value={dados.responsibleName || ""}
-                  onChange={(e) => handleChange("responsibleName", e.target.value)}
+                  onChange={(e) => setDados({...dados, responsibleName: e.target.value})}
                   className="w-full"
                 />
               </div>
               <div className="md:col-span-7">
                 <AddMemberInput
                   id="responsibleEmail"
-                  type="text"
+                  type="email"
                   label="Email do Responsável"
                   value={dados.responsibleEmail || ""}
-                  onChange={(e) => handleChange("responsibleEmail", e.target.value)}
+                  onChange={(e) => setDados({...dados, responsibleEmail: e.target.value})}
                   className="w-full"
                 />
               </div>
@@ -167,7 +148,7 @@ function MemberGuardian({ dados = {}, setDados = () => {} }) {
                   label="Contato do Responsável"
                   value={maskPhone(dados.responsibleContact || "")}
                   onChange={(e) =>
-                    handleChange("responsibleContact", e.target.value.replace(/\D/g, "").slice(0, 11))
+                    setDados({...dados, responsibleContact: e.target.value.replace(/\D/g, "").slice(0, 11)})
                   }
                   className="w-full"
                 />

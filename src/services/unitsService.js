@@ -19,9 +19,17 @@ export const getUnitsRanking = async () => {
 
 export const updateUnitScore = async (surname, newScore) => {
   try {
-    const params = {};
-    if (surname !== undefined && surname !== null) params.surname = surname;
-    if (newScore !== undefined && newScore !== null) params.newScore = newScore;
+    // Validar parâmetros obrigatórios
+    if (!surname || newScore === undefined || newScore === null) {
+      Swal.fire({
+        title: "Erro de validação",
+        text: "surname e newScore são obrigatórios.",
+        icon: "error",
+        confirmButtonColor: "#FCAE2D",
+      });
+      return null;
+    }
+    const params = { surname, newScore };
     const res = await api.put(`/units/score`, null, { params });
     return res.data;
   } catch (err) {
@@ -38,14 +46,18 @@ export const updateUnitScore = async (surname, newScore) => {
 
 export const changeUnitScore = async (surname, score, isSum = true) => {
   try {
-    // Accept either { id } or { surname }
-    let params = {};
-    if (typeof surname === 'object' && surname !== null) {
-      // called with object: { id, surname, score, isSum }
-      params = { ...(surname.id !== undefined ? { id: surname.id } : {}), ...(surname.surname !== undefined ? { surname: surname.surname } : {}), score: surname.score, isSum: surname.isSum };
-    } else {
-      params = { surname, score, isSum };
+    // Validar parâmetros obrigatórios
+    if (!surname || score === undefined || score === null || isSum === undefined || isSum === null) {
+      Swal.fire({
+        title: "Erro de validação",
+        text: "surname, score e isSum são obrigatórios.",
+        icon: "error",
+        confirmButtonColor: "#FCAE2D",
+      });
+      return null;
     }
+    // Simplificar: sempre usar parâmetros nomeados
+    const params = { surname, score, isSum };
     const res = await api.post(`/units/score`, null, { params });
     return res.data;
   } catch (err) {
