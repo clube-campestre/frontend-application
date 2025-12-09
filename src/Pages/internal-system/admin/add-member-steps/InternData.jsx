@@ -4,8 +4,18 @@ import AddMemberInput from "../../../../components/add-member-input/AddMemberInp
 
 // --- COMPONENTE PRINCIPAL ---
 
-function InternData({ dados, setDados}) {
+function InternData({ dados, setDados, errors = {}, setErrors}) {
   const [showTermsModal, setShowTermsModal] = useState(false);
+
+  const handleChange = (field, value) => {
+    setDados({ ...dados, [field]: value });
+    // Limpar erro ao digitar
+    if (errors[field] && setErrors) {
+      const newErrors = { ...errors };
+      delete newErrors[field];
+      setErrors(newErrors);
+    }
+  };
 
 
   return (
@@ -52,6 +62,7 @@ function InternData({ dados, setDados}) {
             id="unitRole"
             type="select"
             options={[
+              { value: "", label: "Selecione..." },
               { value: "CONSELHEIRO", label: "Conselheiro" },
               { value: "CONSELHEIRO_AUXILIAR", label: "Conselheiro Auxiliar" },
               { value: "CAPITAO", label: "Capitão" },
@@ -66,7 +77,9 @@ function InternData({ dados, setDados}) {
             ]}
             label="Função na Unidade"
             value={String(dados.unitRole || "")}
-            onChange={(e) => setDados({...dados, unitRole: e.target.value})}
+            onChange={(e) => handleChange("unitRole", e.target.value)}
+            required={true}
+            error={errors.unitRole}
             className="w-full"
           />
 
@@ -74,6 +87,7 @@ function InternData({ dados, setDados}) {
             id="classCategory"
             type="select"
             options={[
+              { value: "", label: "Selecione..." },
               { value: "AMIGO", label: "Amigo" },
               { value: "COMPANHEIRO", label: "Companheiro" },
               { value: "PESQUISADOR", label: "Pesquisador" },
@@ -89,7 +103,9 @@ function InternData({ dados, setDados}) {
             ]}
             label="Categoria da Classe"
             value={String(dados.classCategory || "")}
-            onChange={(e) => setDados({...dados, classCategory: e.target.value})}
+            onChange={(e) => handleChange("classCategory", e.target.value)}
+            required={true}
+            error={errors.classCategory}
             className="w-full"
           />
 
@@ -97,6 +113,7 @@ function InternData({ dados, setDados}) {
             id="classRole"
             type="select"
             options={[
+              { value: "", label: "Selecione..." },
               { value: "INSTRUTOR", label: "Instrutor" },
               { value: "INSTRUTOR_AUXILIAR", label: "Instrutor Auxiliar" },
               { value: "MEMBRO", label: "Membro" },
@@ -104,7 +121,9 @@ function InternData({ dados, setDados}) {
             ]}
             label="Função na Classe"
             value={String(dados.classRole || "")}
-            onChange={(e) => setDados({...dados, classRole: e.target.value})}
+            onChange={(e) => handleChange("classRole", e.target.value)}
+            required={true}
+            error={errors.classRole}
             className="w-full"
           />
         </div>
@@ -115,77 +134,110 @@ function InternData({ dados, setDados}) {
             Foto do membro
           </h3>
           
-          <label className="relative flex flex-col items-center justify-center w-full aspect-[3/4] max-w-[240px] border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-amber-400 hover:bg-amber-50 transition-all group bg-gray-50 overflow-hidden">
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) {
-                  const reader = new FileReader();
-                  reader.onloadend = () => {
-                    const dataUrl = String(reader.result || "");
-                    const base64 = dataUrl.includes(",")
-                      ? dataUrl.split(",")[1]
-                      : dataUrl;
-                    setDados({
-                      ...dados,
-                      image: base64,
-                      imageFormat: file.type,
-                      imageFile: file,
-                      imagePreview: dataUrl, // Usa dataURL direto para preview
-                    });
-                  };
-                  reader.readAsDataURL(file);
-                }
-              }}
-            />
-
-            {dados.imagePreview || dados.foto ? (
-              <img
-                src={dados.imagePreview || dados.foto}
-                alt="Pré-visualização"
-                className="object-cover w-full h-full"
+          <div className="relative w-full aspect-[3/4] max-w-[240px]">
+            <label className="relative flex flex-col items-center justify-center w-full h-full border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-amber-400 hover:bg-amber-50 transition-all group bg-gray-50 overflow-hidden">
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                id="image-upload"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                      const dataUrl = String(reader.result || "");
+                      const base64 = dataUrl.includes(",")
+                        ? dataUrl.split(",")[1]
+                        : dataUrl;
+                      setDados({
+                        ...dados,
+                        image: base64,
+                        imageFormat: file.type,
+                        imageFile: file,
+                        imagePreview: dataUrl, // Usa dataURL direto para preview
+                      });
+                    };
+                    reader.readAsDataURL(file);
+                  }
+                }}
               />
-            ) : (
-              <div className="flex flex-col items-center text-gray-400 group-hover:text-amber-500 transition-colors p-4 text-center">
-                <Upload size={40} strokeWidth={1.5} className="mb-2" />
-                <span className="text-sm font-medium">Clique para adicionar foto</span>
-                <span className="text-xs mt-1 opacity-70">(Formatos: JPG, PNG)</span>
-              </div>
-            )}
-            
-            {/* Overlay para editar quando já tem foto */}
-            {(dados.imagePreview || dados.foto) && (
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <span className="text-white text-sm font-medium bg-black/50 px-3 py-1 rounded-full border border-white/30">Alterar foto</span>
+
+              {dados.imagePreview || dados.foto ? (
+                <img
+                  src={dados.imagePreview || dados.foto}
+                  alt="Pré-visualização"
+                  className="object-cover w-full h-full"
+                />
+              ) : (
+                <div className="flex flex-col items-center text-gray-400 group-hover:text-amber-500 transition-colors p-4 text-center">
+                  <Upload size={40} strokeWidth={1.5} className="mb-2" />
+                  <span className="text-sm font-medium">Clique para adicionar foto</span>
+                  <span className="text-xs mt-1 opacity-70">(Formatos: JPG, PNG)</span>
                 </div>
+              )}
+              
+              {/* Overlay para editar quando já tem foto */}
+              {(dados.imagePreview || dados.foto) && (
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="text-white text-sm font-medium bg-black/50 px-3 py-1 rounded-full border border-white/30">Alterar foto</span>
+                  </div>
+              )}
+            </label>
+            
+            {/* Botão de remover imagem */}
+            {(dados.imagePreview || dados.foto) && (
+              <button
+                type="button"
+                onClick={() => {
+                  setDados({
+                    ...dados,
+                    image: null,
+                    imageFormat: null,
+                    imageFile: null,
+                    imagePreview: null,
+                    foto: null,
+                  });
+                  // Limpar o input file
+                  const fileInput = document.getElementById('image-upload');
+                  if (fileInput) fileInput.value = '';
+                }}
+                className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-2 shadow-lg transition-all z-10"
+                title="Remover imagem"
+              >
+                <X size={16} />
+              </button>
             )}
-          </label>
+          </div>
         </div>
       </div>
 
       {/* Checkbox de Termos */}
-      <div className="mt-8 p-4 bg-gray-50 rounded-lg border border-gray-100 flex items-start gap-3">
-        <input
-          type="checkbox"
-          id="acceptTerms"
-          checked={Boolean(dados.acceptTerms)}
-          onChange={(e) => setDados({...dados, acceptTerms: e.target.checked})}
-          className="mt-1 w-5 h-5 text-amber-500 rounded border-gray-300 focus:ring-amber-400 cursor-pointer accent-amber-500"
-        />
-        <label htmlFor="acceptTerms" className="text-sm text-gray-700 cursor-pointer select-none">
-          Declaro que as informações acima são verdadeiras e aceito os{" "}
-          <button
-            type="button"
-            onClick={() => setShowTermsModal(true)}
-            className="font-semibold text-blue-600 hover:text-blue-800 hover:underline focus:outline-none"
-          >
-            termos de uso
-          </button>{" "}
-          e política de privacidade do clube.
-        </label>
+      <div className="mt-8 p-4 bg-gray-50 rounded-lg border border-gray-100 flex flex-col gap-2">
+        <div className="flex items-start gap-3">
+          <input
+            type="checkbox"
+            id="acceptTerms"
+            checked={Boolean(dados.acceptTerms)}
+            onChange={(e) => handleChange("acceptTerms", e.target.checked)}
+            className={`mt-1 w-5 h-5 text-amber-500 rounded border-gray-300 focus:ring-amber-400 cursor-pointer accent-amber-500 ${errors.acceptTerms ? 'border-red-500' : ''}`}
+          />
+          <label htmlFor="acceptTerms" className="text-sm text-gray-700 cursor-pointer select-none">
+            Declaro que as informações acima são verdadeiras e aceito os{" "}
+            <button
+              type="button"
+              onClick={() => setShowTermsModal(true)}
+              className="font-semibold text-blue-600 hover:text-blue-800 hover:underline focus:outline-none"
+            >
+              termos de uso
+            </button>{" "}
+            e política de privacidade do clube.
+            <span className="text-red-500 ml-1">*</span>
+          </label>
+        </div>
+        {errors.acceptTerms && (
+          <span className="text-red-500 text-xs ml-8">{errors.acceptTerms}</span>
+        )}
       </div>
 
       {/* Modal de Termos */}

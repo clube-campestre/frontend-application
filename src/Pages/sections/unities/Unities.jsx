@@ -9,6 +9,8 @@ import raposaImage from "../../../assets/images/raposa.png";
 import tigreImage from "../../../assets/images/tigre.png";
 import ursoImage from "../../../assets/images/urso.png";
 import aguiaRealImage from "../../../assets/images/aguia-real.png";
+import leaoImage from "../../../assets/images/leao.png";
+import linceImage from "../../../assets/images/lince.png";
 
 
 
@@ -20,7 +22,7 @@ const unityData = [
         title: "Panda (10 anos)"
     },
     {
-        imagePath: loboImage,
+        imagePath: linceImage,
         description: "Ágeis e atentas, as desbravadoras da unidade Lince estão sempre prontas para novos desafios e descobertas.",
         title: "Lince (11 anos)"
     },
@@ -45,7 +47,7 @@ const unityData = [
         title: "Falcão (10 anos)"
     },
     {
-        imagePath: pandaImage,
+        imagePath: leaoImage,
         description: "Corajosos e cheios de energia, os membros da unidade Leão enfrentam desafios com determinação.",
         title: "Leão (11 anos)"
     },

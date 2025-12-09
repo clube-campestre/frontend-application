@@ -12,8 +12,18 @@ const maskPhone = (value) => {
 
 // --- COMPONENTE PRINCIPAL ---
 
-function MemberGuardian({ dados, setDados}) {
+function MemberGuardian({ dados, setDados, errors = {}, setErrors}) {
   const [responsavelUnico, setResponsavelUnico] = useState(false);
+
+  const handleChange = (field, value) => {
+    setDados({ ...dados, [field]: value });
+    // Limpar erro ao digitar
+    if (errors[field] && setErrors) {
+      const newErrors = { ...errors };
+      delete newErrors[field];
+      setErrors(newErrors);
+    }
+  };
 
   return (
     // Container Principal: Centralizado, sem margens fixas laterais (ml-20 removido)
@@ -39,7 +49,8 @@ function MemberGuardian({ dados, setDados}) {
                   type="text"
                   label="Nome do Pai"
                   value={dados.fatherName || ""}
-                  onChange={(e) => setDados({...dados, fatherName: e.target.value})}
+                  onChange={(e) => handleChange("fatherName", e.target.value)}
+                  error={errors.fatherName}
                   className="w-full"
                 />
               </div>
@@ -49,7 +60,8 @@ function MemberGuardian({ dados, setDados}) {
                   type="email"
                   label="Email do Pai"
                   value={dados.fatherEmail || ""}
-                  onChange={(e) => setDados({...dados, fatherEmail: e.target.value})}
+                  onChange={(e) => handleChange("fatherEmail", e.target.value)}
+                  error={errors.fatherEmail}
                   className="w-full"
                 />
               </div>
@@ -60,8 +72,9 @@ function MemberGuardian({ dados, setDados}) {
                   label="Contato do Pai"
                   value={maskPhone(dados.fatherContact || "")}
                   onChange={(e) =>
-                    setDados({...dados, fatherContact: e.target.value.replace(/\D/g, "").slice(0, 11)})
+                    handleChange("fatherContact", e.target.value.replace(/\D/g, "").slice(0, 11))
                   }
+                  error={errors.fatherContact}
                   className="w-full"
                 />
               </div>
@@ -77,7 +90,8 @@ function MemberGuardian({ dados, setDados}) {
                   type="text"
                   label="Nome da Mãe"
                   value={dados.motherName || ""}
-                  onChange={(e) => setDados({...dados, motherName: e.target.value})}
+                  onChange={(e) => handleChange("motherName", e.target.value)}
+                  error={errors.motherName}
                   className="w-full"
                 />
               </div>
@@ -87,7 +101,8 @@ function MemberGuardian({ dados, setDados}) {
                   type="email"
                   label="Email da Mãe"
                   value={dados.motherEmail || ""}
-                  onChange={(e) => setDados({...dados, motherEmail: e.target.value})}
+                  onChange={(e) => handleChange("motherEmail", e.target.value)}
+                  error={errors.motherEmail}
                   className="w-full"
                 />
               </div>
@@ -98,8 +113,9 @@ function MemberGuardian({ dados, setDados}) {
                   label="Contato da Mãe"
                   value={maskPhone(dados.motherContact || "")}
                   onChange={(e) =>
-                    setDados({...dados, motherContact: e.target.value.replace(/\D/g, "").slice(0, 11)})
+                    handleChange("motherContact", e.target.value.replace(/\D/g, "").slice(0, 11))
                   }
+                  error={errors.motherContact}
                   className="w-full"
                 />
               </div>
@@ -127,7 +143,8 @@ function MemberGuardian({ dados, setDados}) {
                   type="text"
                   label="Nome do Responsável"
                   value={dados.responsibleName || ""}
-                  onChange={(e) => setDados({...dados, responsibleName: e.target.value})}
+                  onChange={(e) => handleChange("responsibleName", e.target.value)}
+                  error={errors.responsibleName}
                   className="w-full"
                 />
               </div>
@@ -137,7 +154,8 @@ function MemberGuardian({ dados, setDados}) {
                   type="email"
                   label="Email do Responsável"
                   value={dados.responsibleEmail || ""}
-                  onChange={(e) => setDados({...dados, responsibleEmail: e.target.value})}
+                  onChange={(e) => handleChange("responsibleEmail", e.target.value)}
+                  error={errors.responsibleEmail}
                   className="w-full"
                 />
               </div>
@@ -148,8 +166,9 @@ function MemberGuardian({ dados, setDados}) {
                   label="Contato do Responsável"
                   value={maskPhone(dados.responsibleContact || "")}
                   onChange={(e) =>
-                    setDados({...dados, responsibleContact: e.target.value.replace(/\D/g, "").slice(0, 11)})
+                    handleChange("responsibleContact", e.target.value.replace(/\D/g, "").slice(0, 11))
                   }
+                  error={errors.responsibleContact}
                   className="w-full"
                 />
               </div>

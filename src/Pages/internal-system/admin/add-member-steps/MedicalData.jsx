@@ -111,9 +111,19 @@ const MedicalDataCard = ({ questions, answers = [], onChange, fieldNames = [], c
 
 // --- COMPONENTE PRINCIPAL ---
 
-function MedicalData({ dados = {}, setDados = () => {} }) {
+function MedicalData({ dados = {}, setDados = () => {}, errors = {}, setErrors }) {
     // Garante que dados.medicalAnswers seja um array para evitar erros no mock
     if (!dados.medicalAnswers) dados.medicalAnswers = [];
+
+    const handleChange = (field, value) => {
+        setDados({ ...dados, [field]: value });
+        // Limpar erro ao digitar
+        if (errors[field] && setErrors) {
+            const newErrors = { ...errors };
+            delete newErrors[field];
+            setErrors(newErrors);
+        }
+    };
 
     return (
         // Container Principal: Largura controlada e centralizada
@@ -139,6 +149,7 @@ function MedicalData({ dados = {}, setDados = () => {} }) {
                             id="blood_type"
                             type="select"
                             options={[
+                                { value: "", label: "Selecione..." },
                                 { value: "A+", label: "A+" },
                                 { value: "A-", label: "A-" },
                                 { value: "B+", label: "B+" },
@@ -150,9 +161,9 @@ function MedicalData({ dados = {}, setDados = () => {} }) {
                             ]}
                             label="Tipo Sanguíneo"
                             value={dados.blood_type || ""}
-                            onChange={(e) =>
-                                setDados({ ...dados, blood_type: e.target.value })
-                            }
+                            onChange={(e) => handleChange("blood_type", e.target.value)}
+                            required={true}
+                            error={errors.blood_type}
                             className="w-full"
                         />
                     </div>
@@ -165,8 +176,10 @@ function MedicalData({ dados = {}, setDados = () => {} }) {
                             label="Carteira SUS"
                             value={maskCns(dados.cns || "")}
                             onChange={(e) =>
-                                setDados({ ...dados, cns: e.target.value.replace(/\D/g, "") })
+                                handleChange("cns", e.target.value.replace(/\D/g, ""))
                             }
+                            required={true}
+                            error={errors.cns}
                             className="w-full"
                         />
                     </div>
@@ -178,9 +191,7 @@ function MedicalData({ dados = {}, setDados = () => {} }) {
                             type="text"
                             label="Convênio"
                             value={dados.agreement || ""}
-                            onChange={(e) =>
-                                setDados({ ...dados, agreement: e.target.value })
-                            }
+                            onChange={(e) => handleChange("agreement", e.target.value)}
                             className="w-full"
                         />
                     </div>

@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { createTransport } from "../../../services/transportsService";
 import Toast from "../../../utils/Toast";
 import { getUser } from "../../../utils/authStorage";
+import { maskPhone } from "../../../utils/validators/addMemberValidator";
 
 // --- Componente FormRegister Refatorado ---
 const FormRegister = ({ formTitle, fields, onSubmit, onCancel }) => {
@@ -38,10 +39,18 @@ const FormRegister = ({ formTitle, fields, onSubmit, onCancel }) => {
     return parseFloat(value.replace(/[^\d,]/g, "").replace(",", ".")) || 0;
   };
 
+  const unmaskPhone = (value) => {
+    return value ? value.replace(/\D/g, "") : "";
+  };
+
   const handleChange = (id, value) => {
     if (id === "cotacao") {
       const formatted = formatToBRL(value);
       setFormData((prev) => ({ ...prev, [id]: formatted }));
+    } else if (id === "telefone" || id === "whatsapp") {
+      // Armazena apenas números no estado, mas exibe com máscara
+      const digits = value.replace(/\D/g, "").slice(0, 11);
+      setFormData((prev) => ({ ...prev, [id]: digits }));
     } else {
       setFormData((prev) => ({ ...prev, [id]: value }));
     }
@@ -54,6 +63,7 @@ const FormRegister = ({ formTitle, fields, onSubmit, onCancel }) => {
     const cleanedFormData = {
       ...formData,
       cotacao: unmaskBRL(formData.cotacao),
+      // Telefones já estão sem máscara no estado (apenas dígitos)
     };
     await onSubmit(cleanedFormData);
     setLoading(false);
@@ -118,7 +128,9 @@ const FormRegister = ({ formTitle, fields, onSubmit, onCancel }) => {
                       id={field.id}
                       type={field.type}
                       required={field.isRequired}
-                      value={formData[field.id] || ""}
+                      value={field.id === "telefone" || field.id === "whatsapp" 
+                        ? maskPhone(formData[field.id] || "") 
+                        : formData[field.id] || ""}
                       onChange={(e) => handleChange(field.id, e.target.value)}
                       className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-amber-400 outline-none transition-all h-11 text-gray-700 placeholder-gray-400"
                       placeholder={`Digite ${field.label.toLowerCase()}...`}
@@ -237,11 +249,12 @@ const AddTransport = () => {
     }
 
     try {
+      // Telefones já estão sem máscara (apenas dígitos) no formData
       const body = {
         companyName: formData.empresa,
-        companyNumber: formData.telefone,
+        companyNumber: (formData.telefone || "").replace(/\D/g, ""),
         driverName: formData.nomeMotorista,
-        driverNumber: formData.whatsapp,
+        driverNumber: (formData.whatsapp || "").replace(/\D/g, ""),
         price: Number(formData.cotacao),
         travelDistance: Number(formData.distanciaHistorica),
         capacity: Number(formData.capacidade),

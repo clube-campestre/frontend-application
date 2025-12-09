@@ -19,23 +19,28 @@ const AddMemberInput = ({
     icon: Icon,
     options = [],
     className = "",
+    required = false,
+    error = null,
     ...props
 }) => {
     const [focused, setFocused] = useState(false);
 
-    const inputClass = `${baseInputClass} ${typeStyles[type] || typeStyles.default}`;
+    const inputClass = `${baseInputClass} ${typeStyles[type] || typeStyles.default} ${error ? 'border-red-500 focus:border-red-500' : ''}`;
 
     return (
-        <div className={className}>
+        <div className={`${className} ${error ? 'mb-6' : ''}`}>
             <div className="relative">
                 {type === "select" ? (
                     <>
                         {label && (
                             <label
                                 htmlFor={id}
-                                className="block mb-1 text-[15px] font-medium text-gray-700"
+                                className="block mb-1 text-[15px] font-medium text-gray-700 relative pr-2"
                             >
                                 {label}
+                                {required && (
+                                    <span className="absolute top-0 -right-0 text-red-500 text-lg">*</span>
+                                )}
                             </label>
                         )}
                         <select
@@ -58,34 +63,48 @@ const AddMemberInput = ({
                                 </option>
                             ))}
                         </select>
+                        {error && (
+                            <span className="text-red-500 text-xs mt-1 block">{error}</span>
+                        )}
                     </>
                 ) : (
-                    <input
-                        id={id}
-                        type={type}
-                        className={inputClass}
-                        value={value}
-                        onChange={onChange}
-                        onFocus={() => setFocused(true)}
-                        onBlur={() => setFocused(false)}
-                        placeholder=" "
-                        {...props}
-                    />
-                )}
+                    <>
+                        <input
+                            id={id}
+                            type={type}
+                            className={inputClass}
+                            value={value}
+                            onChange={onChange}
+                            onFocus={() => setFocused(true)}
+                            onBlur={() => setFocused(false)}
+                            placeholder=" "
+                            {...props}
+                        />
 
-                {label && type !== "select" && (
-                    <label
-                        htmlFor={id}
-                        className={`absolute left-4 bg-transparent px-2 pointer-events-none transition-all duration-300 ${
-                            type === "date"
-                                ? "top-1 -translate-y-6 scale-75 text-[#000000]"
-                                : focused || value
-                                ? "top-1 -translate-y-6 scale-75 text-[#000000]"
-                                : "top-1/2 -translate-y-1/2 text-gray-500"
-                        }`}
-                    >
-                        {label}
-                    </label>
+                        {label && (
+                            <label
+                                htmlFor={id}
+                                className={`absolute left-4 bg-transparent px-2 pointer-events-none transition-all duration-300 ${
+                                    type === "date"
+                                        ? "top-1 -translate-y-6 scale-75 text-[#000000]"
+                                        : focused || value
+                                        ? "top-1 -translate-y-6 scale-75 text-[#000000]"
+                                        : "top-1/2 -translate-y-1/2 text-gray-500"
+                                }`}
+                            >
+                                <span>{label}</span>
+                                {required && (
+                                    <span className="text-red-500 ml-1">*</span>
+                                )}
+                            </label>
+                        )}
+
+                        {error && (
+                            <span className="absolute -bottom-5 left-0 text-red-500 text-xs mt-1 block">
+                                {error}
+                            </span>
+                        )}
+                    </>
                 )}
 
                 {Icon && (

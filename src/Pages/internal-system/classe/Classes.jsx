@@ -147,9 +147,11 @@ const Classes = () => {
                     if (response) {
                         Toast.fire({ icon: "success", title: `Membro adicionado à classe ${selectedClassName}!` });
                     }
-                    handleShowAddMemberModal();
                 })
             );
+            handleShowAddMemberModal();
+            // Recarregar membros da classe após adicionar
+            fetchMembers();
         } catch (error) {
             Toast.fire({ icon: "error", title: `Erro ao adicionar membro.` });
         }

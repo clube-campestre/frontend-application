@@ -41,6 +41,7 @@ export default function AddMemberPage({ initialData = {}, editMode = false, onCl
         editMode ? normalizeMemberToForm(initialData) : initializeMemberDefaults(initialData)
     );
     const [loading, setLoading] = useState(false);
+    const [fieldErrors, setFieldErrors] = useState({});
     const initializedRef = useRef(false);
 
     useEffect(() => {
@@ -59,7 +60,102 @@ export default function AddMemberPage({ initialData = {}, editMode = false, onCl
         setFormDados((prev) => ({ ...prev, ...novosDados }));
     };
 
+    // Função de validação por etapa - retorna objeto de erros por campo
+    const validarEtapa = (etapa) => {
+        const errors = {};
+        const dados = formDados;
+
+        switch(etapa) {
+            case 1: // PersonalData
+                if (!dados.username?.trim()) errors.username = "Este campo é obrigatório";
+                if (!dados.cpf?.replace(/\D/g, "") || dados.cpf.replace(/\D/g, "").length !== 11) errors.cpf = "CPF é obrigatório e deve ter 11 dígitos";
+                if (!dados.birthDate) errors.birthDate = "Este campo é obrigatório";
+                if (!dados.sex) errors.sex = "Este campo é obrigatório";
+                if (!dados.birthCertificate?.trim()) errors.birthCertificate = "Este campo é obrigatório";
+                if (!dados.issuingAuthority?.trim()) errors.issuingAuthority = "Este campo é obrigatório";
+                if (!dados.contact?.replace(/\D/g, "") || dados.contact.replace(/\D/g, "").length < 10) errors.contact = "Este campo é obrigatório";
+                if (!dados.tshirtSize) errors.tshirtSize = "Este campo é obrigatório";
+                if (dados.isBaptized === "" || dados.isBaptized === undefined || dados.isBaptized === null) errors.isBaptized = "Este campo é obrigatório";
+                break;
+
+            case 2: // Address
+                if (!dados.cep?.replace(/\D/g, "") || dados.cep.replace(/\D/g, "").length !== 8) errors.cep = "CEP é obrigatório";
+                if (!dados.houseNumber?.trim()) errors.houseNumber = "Este campo é obrigatório";
+                if (!dados.district?.trim()) errors.district = "Este campo é obrigatório";
+                if (!dados.city?.trim()) errors.city = "Este campo é obrigatório";
+                if (!dados.state?.trim()) errors.state = "Este campo é obrigatório";
+                if (!dados.street?.trim()) errors.street = "Este campo é obrigatório";
+                // complement e referenceHouse são opcionais
+                break;
+
+            case 3: // Sickness - Todos são booleanos, não precisa validar
+                break;
+
+            case 4: // MedicalData
+                if (!dados.blood_type) errors.blood_type = "Este campo é obrigatório";
+                if (!dados.cns?.replace(/\D/g, "")) errors.cns = "Este campo é obrigatório";
+                // agreement é opcional
+                break;
+
+            case 5: // MemberGuardian
+                // Regra: pelo menos um responsável completo (nome, email, contato)
+                const paiCompleto = dados.fatherName?.trim() && dados.fatherEmail?.trim() && dados.fatherContact?.replace(/\D/g, "").length >= 10;
+                const maeCompleto = dados.motherName?.trim() && dados.motherEmail?.trim() && dados.motherContact?.replace(/\D/g, "").length >= 10;
+                const responsavelCompleto = dados.responsibleName?.trim() && dados.responsibleEmail?.trim() && dados.responsibleContact?.replace(/\D/g, "").length >= 10;
+
+                if (!paiCompleto && !maeCompleto && !responsavelCompleto) {
+                    // Se nenhum responsável completo, marcar campos incompletos
+                    if (dados.fatherName?.trim() || dados.fatherEmail?.trim() || dados.fatherContact) {
+                        if (!dados.fatherName?.trim()) errors.fatherName = "Necessário para completar dados do pai";
+                        if (!dados.fatherEmail?.trim()) errors.fatherEmail = "Necessário para completar dados do pai";
+                        if (!dados.fatherContact?.replace(/\D/g, "") || dados.fatherContact.replace(/\D/g, "").length < 10) errors.fatherContact = "Necessário para completar dados do pai";
+                    }
+                    if (dados.motherName?.trim() || dados.motherEmail?.trim() || dados.motherContact) {
+                        if (!dados.motherName?.trim()) errors.motherName = "Necessário para completar dados da mãe";
+                        if (!dados.motherEmail?.trim()) errors.motherEmail = "Necessário para completar dados da mãe";
+                        if (!dados.motherContact?.replace(/\D/g, "") || dados.motherContact.replace(/\D/g, "").length < 10) errors.motherContact = "Necessário para completar dados da mãe";
+                    }
+                    if (dados.responsibleName?.trim() || dados.responsibleEmail?.trim() || dados.responsibleContact) {
+                        if (!dados.responsibleName?.trim()) errors.responsibleName = "Necessário para completar dados do responsável";
+                        if (!dados.responsibleEmail?.trim()) errors.responsibleEmail = "Necessário para completar dados do responsável";
+                        if (!dados.responsibleContact?.replace(/\D/g, "") || dados.responsibleContact.replace(/\D/g, "").length < 10) errors.responsibleContact = "Necessário para completar dados do responsável";
+                    }
+                    if (!paiCompleto && !maeCompleto && !responsavelCompleto && Object.keys(errors).length === 0) {
+                        errors.fatherName = "Preencha pelo menos um responsável completo (nome, email e contato)";
+                        errors.motherName = "Preencha pelo menos um responsável completo (nome, email e contato)";
+                        errors.responsibleName = "Preencha pelo menos um responsável completo (nome, email e contato)";
+                    }
+                }
+                break;
+
+            case 6: // InternData
+                // unitRole, classCategory e classRole podem ser "NENHUMA", mas devem estar preenchidos
+                if (!dados.unitRole || dados.unitRole === "") errors.unitRole = "Este campo é obrigatório";
+                if (!dados.classCategory || dados.classCategory === "") errors.classCategory = "Este campo é obrigatório";
+                if (!dados.classRole || dados.classRole === "") errors.classRole = "Este campo é obrigatório";
+                if (!dados.acceptTerms) errors.acceptTerms = "Você deve aceitar os termos de uso";
+                // image/imagePreview é opcional
+                break;
+        }
+
+        return errors;
+    };
+
     const handleProximo = () => {
+        const errors = validarEtapa(etapaAtual);
+        if (Object.keys(errors).length > 0) {
+            setFieldErrors(errors);
+            Toast.fire({ 
+                icon: 'error', 
+                title: 'Campos obrigatórios não preenchidos',
+                text: 'Por favor, preencha todos os campos obrigatórios marcados com *'
+            });
+            // Scroll para o topo para ver os erros
+            document.getElementById('scroll-container')?.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        }
+        // Limpar erros ao avançar
+        setFieldErrors({});
         setEtapaAtual((prev) => Math.min(prev + 1, 6));
         // Scroll para o topo ao mudar de etapa para UX melhor
         document.getElementById('scroll-container')?.scrollTo({ top: 0, behavior: 'smooth' });
@@ -170,14 +266,14 @@ export default function AddMemberPage({ initialData = {}, editMode = false, onCl
         const payload = {
             cpf: data.cpf || "",
             // image: data.image || "",
-            // imageFormat: data.imageFormat || "", //todo!: validar se é necessário enviar isso
+            // imageFormat: data.imageFormat || "", //todo!: NECESSARIO APLICAR LOGICA PARA ATUALIZAÇÃOD E IMAGEM VIA FORM-DATA
             username: data.username || "",
             birthDate: data.birthDate || "",
             sex: data.sex || "",
             birthCertificate: data.birthCertificate || "",
             tshirtSize: data.tshirtSize || "",
             isBaptized: isBaptized,
-            contact: data.contact || "",
+            contact: (data.contact || "").replace(/\D/g, ""),
             issuingAuthority: data.issuingAuthority || "",
             // unit: unit,
             unitName: unit.surname || "",
@@ -185,13 +281,13 @@ export default function AddMemberPage({ initialData = {}, editMode = false, onCl
             classCategory: data.classCategory || "",
             classRole: data.classRole || "",
             fatherName: data.fatherName || "",
-            fatherContact: data.fatherContact || "",
+            fatherContact: (data.fatherContact || "").replace(/\D/g, ""),
             fatherEmail: data.fatherEmail || "",
             motherName: data.motherName || "",
-            motherContact: data.motherContact || "",
+            motherContact: (data.motherContact || "").replace(/\D/g, ""),
             motherEmail: data.motherEmail || "",
             responsibleName: data.responsibleName || "",
-            responsibleContact: data.responsibleContact || "",
+            responsibleContact: (data.responsibleContact || "").replace(/\D/g, ""),
             responsibleEmail: data.responsibleEmail || "",
             address: address,
             medicalData: medicalData,
@@ -248,6 +344,33 @@ export default function AddMemberPage({ initialData = {}, editMode = false, onCl
     };
 
     const handleEnviar = async () => {
+        // Validar todas as etapas antes de enviar
+        const allErrors = {};
+        let firstErrorStep = 6;
+        for (let i = 1; i <= 6; i++) {
+            const errors = validarEtapa(i);
+            if (Object.keys(errors).length > 0) {
+                Object.assign(allErrors, errors);
+                if (firstErrorStep === 6) firstErrorStep = i;
+            }
+        }
+
+        if (Object.keys(allErrors).length > 0) {
+            setFieldErrors(allErrors);
+            Toast.fire({ 
+                icon: 'error', 
+                title: 'Campos obrigatórios não preenchidos',
+                text: 'Por favor, preencha todos os campos obrigatórios marcados com *'
+            });
+            // Ir para a primeira etapa com erro
+            setEtapaAtual(firstErrorStep);
+            document.getElementById('scroll-container')?.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        }
+        
+        // Limpar erros antes de enviar
+        setFieldErrors({});
+
         setLoading(true);
         try {
             const form = buildFormData(formDados);
@@ -264,6 +387,10 @@ export default function AddMemberPage({ initialData = {}, editMode = false, onCl
                 Toast.fire({ icon: 'success', title: editMode ? 'Membro atualizado com sucesso' : 'Membro cadastrado com sucesso' });
                 if (typeof onSave === 'function') onSave(result);
                 if (typeof onClose === 'function') onClose();
+                // Redirecionar para /admin após cadastro
+                if (!editMode) {
+                    setTimeout(() => navigate("/admin"), 1200);
+                }
             }
         } catch (err) {
             console.error(err);
@@ -333,13 +460,13 @@ export default function AddMemberPage({ initialData = {}, editMode = false, onCl
                 <div id="scroll-container" className="flex-1 overflow-y-auto bg-gray-50 p-4 md:p-10">
                     <div className="max-w-5xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-sm border border-gray-100">
                         
-                        {/* Passamos os ESTILOS via props para os filhos */}
-                        {etapaAtual === 1 && <PersonalData dados={formDados} setDados={atualizarDadosEtapa} styles={uiStyles} />}
-                        {etapaAtual === 2 && <Address dados={formDados} setDados={atualizarDadosEtapa} styles={uiStyles} />}
-                        {etapaAtual === 3 && <Sickness dados={formDados} setDados={atualizarDadosEtapa} styles={uiStyles} />}
-                        {etapaAtual === 4 && <MedicalData dados={formDados} setDados={atualizarDadosEtapa} styles={uiStyles} />}
-                        {etapaAtual === 5 && <MemberGuardian dados={formDados} setDados={atualizarDadosEtapa} styles={uiStyles} />}
-                        {etapaAtual === 6 && <InternData dados={formDados} setDados={atualizarDadosEtapa} styles={uiStyles} />}
+                        {/* Passamos os ESTILOS e ERROS via props para os filhos */}
+                        {etapaAtual === 1 && <PersonalData dados={formDados} setDados={atualizarDadosEtapa} styles={uiStyles} errors={fieldErrors} setErrors={setFieldErrors} />}
+                        {etapaAtual === 2 && <Address dados={formDados} setDados={atualizarDadosEtapa} styles={uiStyles} errors={fieldErrors} setErrors={setFieldErrors} />}
+                        {etapaAtual === 3 && <Sickness dados={formDados} setDados={atualizarDadosEtapa} styles={uiStyles} errors={fieldErrors} setErrors={setFieldErrors} />}
+                        {etapaAtual === 4 && <MedicalData dados={formDados} setDados={atualizarDadosEtapa} styles={uiStyles} errors={fieldErrors} setErrors={setFieldErrors} />}
+                        {etapaAtual === 5 && <MemberGuardian dados={formDados} setDados={atualizarDadosEtapa} styles={uiStyles} errors={fieldErrors} setErrors={setFieldErrors} />}
+                        {etapaAtual === 6 && <InternData dados={formDados} setDados={atualizarDadosEtapa} styles={uiStyles} errors={fieldErrors} setErrors={setFieldErrors} />}
                     
                     </div>
                     {/* Espaço extra para mobile */}

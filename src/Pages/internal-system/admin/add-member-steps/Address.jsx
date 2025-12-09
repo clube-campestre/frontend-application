@@ -1,8 +1,18 @@
 import { useState, useEffect } from "react";
 import AddMemberInput from "../../../../components/add-member-input/AddMemberInput";
 
-function Address({ dados, setDados }) {
+function Address({ dados, setDados, errors = {}, setErrors }) {
     const [isLoadingCep, setIsLoadingCep] = useState(false);
+
+    const handleChange = (id, value) => {
+        setDados({ ...dados, [id]: value });
+        // Limpar erro ao digitar
+        if (errors[id] && setErrors) {
+            const newErrors = { ...errors };
+            delete newErrors[id];
+            setErrors(newErrors);
+        }
+    };
 
     // Máscara para CEP
     const formatCep = (value) => {
@@ -13,14 +23,7 @@ function Address({ dados, setDados }) {
         return cep.slice(0, 9);
     };
 
-    // Handler para mudança dos campos
-    const handleChange = (id, value) => {
-        if (id === "cep") {
-            setDados({ ...dados, cep: formatCep(value) });
-        } else {
-            setDados({ ...dados, [id]: value });
-        }
-    };
+    // Handler para mudança dos campos (removido, usando o handleChange acima)
 
     // Busca o endereço pelo CEP
     const buscarCep = async (cep) => {
@@ -32,15 +35,11 @@ function Address({ dados, setDados }) {
             const data = await res.json();
 
             // Depois de receber data da API:
-            const novosDados = {
-                street: data.logradouro,
-                district: data.bairro,
-                city: data.localidade,
-                state: data.uf,
-                cep: formatCep(cepNumerico),
-            };
-            console.log("Atualizando dados com:", novosDados);
-            setDados(novosDados);
+            handleChange("street", data.logradouro || "");
+            handleChange("district", data.bairro || "");
+            handleChange("city", data.localidade || "");
+            handleChange("state", data.uf || "");
+            handleChange("cep", formatCep(cepNumerico));
 
             console.log("Dados do CEP:", dados);
 
@@ -93,8 +92,13 @@ function Address({ dados, setDados }) {
                         type="text"
                         label="CEP"
                         value={dados.cep || ""}
-                        onChange={(e) => handleChange("cep", e.target.value)}
+                        onChange={(e) => {
+                            const formatted = formatCep(e.target.value);
+                            handleChange("cep", formatted);
+                        }}
                         onBlur={(e) => handleBlur("cep", e.target.value)}
+                        required={true}
+                        error={errors.cep}
                         className="w-full" 
                     />
                 </div>
@@ -106,6 +110,8 @@ function Address({ dados, setDados }) {
                         value={dados.houseNumber || ""}
                         onChange={(e) => handleChange("houseNumber", e.target.value)}
                         onBlur={(e) => handleBlur("houseNumber", e.target.value)}
+                        required={true}
+                        error={errors.houseNumber}
                         className="w-full"
                     />
                 </div>
@@ -128,6 +134,8 @@ function Address({ dados, setDados }) {
                         label="Bairro"
                         value={dados.district || ""}
                         onChange={(e) => handleChange("district", e.target.value)}
+                        required={true}
+                        error={errors.district}
                         className="w-full"
                         disabled={isEndereco("district") && isLoadingCep}
                     />
@@ -139,6 +147,8 @@ function Address({ dados, setDados }) {
                         label="Estado"
                         value={dados.state || ""}
                         onChange={(e) => handleChange("state", e.target.value)}
+                        required={true}
+                        error={errors.state}
                         className="w-full"
                         disabled={isEndereco("state") && isLoadingCep}
                     />
@@ -152,6 +162,8 @@ function Address({ dados, setDados }) {
                         label="Cidade"
                         value={dados.city || ""}
                         onChange={(e) => handleChange("city", e.target.value)}
+                        required={true}
+                        error={errors.city}
                         className="w-full"
                         disabled={isEndereco("city") && isLoadingCep}
                     />
@@ -163,6 +175,8 @@ function Address({ dados, setDados }) {
                         label="Logradouro"
                         value={dados.street || ""}
                         onChange={(e) => handleChange("street", e.target.value)}
+                        required={true}
+                        error={errors.street}
                         className="w-full"
                         disabled={isEndereco("street") && isLoadingCep}
                     />

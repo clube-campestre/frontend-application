@@ -14,7 +14,17 @@ const uiStyles = {
     sectionTitle: "col-span-full text-xl font-bold text-gray-800 border-l-4 border-amber-400 pl-3 mb-4 mt-2",
 };
 
-function PersonalData({ dados, setDados }) {
+function PersonalData({ dados, setDados, errors = {}, setErrors }) {
+    const handleChange = (field, value) => {
+        setDados({ ...dados, [field]: value });
+        // Limpar erro ao digitar
+        if (errors[field] && setErrors) {
+            const newErrors = { ...errors };
+            delete newErrors[field];
+            setErrors(newErrors);
+        }
+    };
+
     return (
         <div className="w-full animate-fade-in">
             {/* Grid Principal */}
@@ -35,8 +45,9 @@ function PersonalData({ dados, setDados }) {
                         type="text"
                         label="Nome Completo"
                         value={dados.username || ""}
-                        onChange={(e) => setDados({ ...dados, username: e.target.value })}
-                        // Passamos apenas w-full para não quebrar o layout interno do componente
+                        onChange={(e) => handleChange("username", e.target.value)}
+                        required={true}
+                        error={errors.username}
                         className={uiStyles.inputWrapper}
                     />
                 </div>
@@ -53,8 +64,10 @@ function PersonalData({ dados, setDados }) {
                                 .replace(/[^a-zA-Z0-9]/g, "")
                                 .toUpperCase()
                                 .slice(0, 32);
-                            setDados({ ...dados, birthCertificate: raw });
+                            handleChange("birthCertificate", raw);
                         }}
+                        required={true}
+                        error={errors.birthCertificate}
                         className={uiStyles.inputWrapper}
                     />
                 </div>
@@ -68,8 +81,10 @@ function PersonalData({ dados, setDados }) {
                         label="CPF"
                         value={maskCpf(dados.cpf || "")}
                         onChange={(e) =>
-                            setDados({ ...dados, cpf: e.target.value.replace(/\D/g, "") })
+                            handleChange("cpf", e.target.value.replace(/\D/g, ""))
                         }
+                        required={true}
+                        error={errors.cpf}
                         className={uiStyles.inputWrapper}
                     />
                 </div>
@@ -82,8 +97,10 @@ function PersonalData({ dados, setDados }) {
                         label="Órgão Expedidor"
                         value={dados.issuingAuthority || ""}
                         onChange={(e) =>
-                            setDados({ ...dados, issuingAuthority: e.target.value })
+                            handleChange("issuingAuthority", e.target.value)
                         }
+                        required={true}
+                        error={errors.issuingAuthority}
                         className={uiStyles.inputWrapper}
                     />
                 </div>
@@ -102,7 +119,9 @@ function PersonalData({ dados, setDados }) {
                                 ? dados.birthDate.toISOString().split("T")[0]
                                 : ""
                         }
-                        onChange={(e) => setDados({ ...dados, birthDate: e.target.value })}
+                        onChange={(e) => handleChange("birthDate", e.target.value)}
+                        required={true}
+                        error={errors.birthDate}
                         className={uiStyles.inputWrapper}
                     />
                 </div>
@@ -115,8 +134,10 @@ function PersonalData({ dados, setDados }) {
                         label="Contato (Celular)"
                         value={maskPhone(dados.contact || "")}
                         onChange={(e) =>
-                            setDados({ ...dados, contact: e.target.value.replace(/\D/g, "") })
+                            handleChange("contact", e.target.value.replace(/\D/g, ""))
                         }
+                        required={true}
+                        error={errors.contact}
                         className={uiStyles.inputWrapper}
                     />
                 </div>
@@ -135,7 +156,9 @@ function PersonalData({ dados, setDados }) {
                             { value: "OUTRO", label: "Outro" },
                         ]}
                         value={dados.sex || ""}
-                        onChange={(e) => setDados({ ...dados, sex: e.target.value })}
+                        onChange={(e) => handleChange("sex", e.target.value)}
+                        required={true}
+                        error={errors.sex}
                         className={uiStyles.inputWrapper}
                     />
                 </div>
@@ -156,7 +179,9 @@ function PersonalData({ dados, setDados }) {
                             { value: "XG", label: "XG" },
                         ]}
                         value={dados.tshirtSize || ""}
-                        onChange={(e) => setDados({ ...dados, tshirtSize: e.target.value })}
+                        onChange={(e) => handleChange("tshirtSize", e.target.value)}
+                        required={true}
+                        error={errors.tshirtSize}
                         className={uiStyles.inputWrapper}
                     />
                 </div>
@@ -174,8 +199,10 @@ function PersonalData({ dados, setDados }) {
                         ]}
                         value={dados.isBaptized}
                         onChange={(e) =>
-                            setDados({ ...dados, isBaptized: e.target.value })
+                            handleChange("isBaptized", e.target.value)
                         }
+                        required={true}
+                        error={errors.isBaptized}
                         className={uiStyles.inputWrapper}
                     />
                 </div>
